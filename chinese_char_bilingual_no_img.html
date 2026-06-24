@@ -1,0 +1,795 @@
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #6366F1;
+  --color-primary-light: #EEEDFE;
+  --color-primary-dark: #4F46E5;
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F3F4F6;
+  --color-background-tertiary: #F9FAFB;
+  --color-border-primary: #E5E7EB;
+  --color-border-secondary: #D1D5DB;
+  --color-border-tertiary: #E5E7EB;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Noto Serif TC', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #F8FAFC 0%, #EEF2FF 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-box {
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+  font-size: 14px;
+  width: 180px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-box:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+.search-box::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.spill {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-tertiary);
+}
+
+.spill b {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.pgbar {
+  flex: 1;
+  min-width: 80px;
+  height: 6px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.pgfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-success), #34D399);
+  border-radius: var(--radius-sm);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.cat {
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  padding: 6px 14px;
+  border-radius: var(--radius-lg);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.cat:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.cat.on {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 14px 12px 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+}
+
+.card.done {
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, var(--color-success-light) 0%, #ECFDF5 100%);
+}
+
+.card.done:hover {
+  border-color: var(--color-success);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+}
+
+.done-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.biling {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 10px;
+  background: var(--color-background-tertiary);
+}
+
+.biling-half {
+  flex: 1;
+  text-align: center;
+  padding: 10px 6px 8px;
+}
+
+.biling-half:first-child {
+  border-right: 1px solid var(--color-border-tertiary);
+}
+
+.biling-label {
+  font-size: 10px;
+  color: var(--color-text-tertiary);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+
+.simp-char {
+  font-size: 36px;
+  line-height: 1.1;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--color-text-primary);
+  transition: transform 0.2s ease;
+}
+
+.card:hover .simp-char {
+  transform: scale(1.05);
+}
+
+.trad-char {
+  font-size: 36px;
+  line-height: 1.1;
+  font-family: 'Noto Serif TC', serif;
+  color: var(--color-primary);
+  transition: transform 0.2s ease;
+}
+
+.card:hover .trad-char {
+  transform: scale(1.05);
+}
+
+.same-note {
+  font-size: 9px;
+  color: var(--color-text-tertiary);
+  margin-top: 3px;
+}
+
+.card-pinyin {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 3px;
+  text-align: center;
+}
+
+.card-meaning {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-secondary);
+  width: 340px;
+  max-width: 92vw;
+  padding: 1.75rem 1.75rem 1.5rem;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-cat {
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.modal-cat-badge {
+  display: inline-block;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 3px 12px;
+}
+
+.modal-biling {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.modal-half {
+  text-align: center;
+  flex: 1;
+  padding: 18px 10px 14px;
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--radius-lg);
+  background: var(--color-background-tertiary);
+  transition: all 0.2s ease;
+}
+
+.modal-half:hover {
+  background: var(--color-background-secondary);
+}
+
+.modal-half:last-child {
+  border-color: #C7D2FE;
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, #E0E7FF 100%);
+}
+
+.modal-half-label {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.modal-simp {
+  font-size: 72px;
+  line-height: 1;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--color-text-primary);
+  transition: transform 0.3s ease;
+}
+
+.modal:hover .modal-simp {
+  transform: scale(1.05);
+}
+
+.modal-trad {
+  font-size: 72px;
+  line-height: 1;
+  font-family: 'Noto Serif TC', serif;
+  color: var(--color-primary);
+  transition: transform 0.3s ease;
+}
+
+.modal:hover .modal-trad {
+  transform: scale(1.05);
+}
+
+.modal-trad-same {
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  padding-top: 24px;
+  line-height: 1.6;
+}
+
+.modal-pinyin {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.modal-meaning {
+  text-align: center;
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-bottom: 12px;
+}
+
+.modal-example {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-family: 'Noto Sans SC', sans-serif;
+  margin-bottom: 18px;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-speak {
+  flex: 0 0 auto;
+  border: 1px solid #A5B4FC;
+  color: var(--color-primary);
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-learn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-learn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-learn.done {
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+}
+
+.btn-close {
+  flex: 0 0 auto;
+  border: 1px solid var(--color-border-secondary);
+  color: var(--color-text-secondary);
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+  border-color: var(--color-text-tertiary);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.empty {
+  color: var(--color-text-tertiary);
+  font-size: 15px;
+  padding: 3rem 2rem;
+  text-align: center;
+  grid-column: 1/-1;
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--color-border-tertiary);
+}
+
+@media (max-width: 480px) {
+  #app {
+    padding: 1rem 0.75rem 2rem;
+  }
+  
+  .header h1 {
+    font-size: 18px;
+  }
+  
+  .search-box {
+    width: 100%;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  
+  .simp-char, .trad-char {
+    font-size: 32px;
+  }
+  
+  .modal {
+    width: 95vw;
+    padding: 1.25rem 1.25rem 1rem;
+  }
+  
+  .modal-simp, .modal-trad {
+    font-size: 56px;
+  }
+}
+</style>
+
+<div id="app">
+  <div class="header">
+    <h1>🍎 汉字乐园</h1>
+    <input class="search-box" id="sb" placeholder="🔍 搜索..." oninput="doFilter()">
+    <button class="cat" onclick="exportData()">📤 导出</button>
+    <label class="cat" style="cursor:pointer">📥 导入
+      <input type="file" accept=".json" onchange="importData(event)" style="display:none">
+    </label>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
+  <div class="modal" id="modal">
+    <div class="modal-cat" id="mCat"></div>
+    <div class="modal-biling" id="mBiling"></div>
+    <div class="modal-pinyin" id="mPin"></div>
+    <div class="modal-meaning" id="mMean"></div>
+    <div class="modal-example" id="mEx"></div>
+    <div class="modal-btns">
+      <button class="btn-speak" onclick="speak()">🔊</button>
+      <button class="btn-learn" id="btnL" onclick="toggleL()">⭐ 学会了</button>
+      <button class="btn-close" onclick="closeOv()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script src="raw_data.js"></script>
+<script>
+const TC={1:'#EF4444',2:'#10B981',3:'#F59E0B',4:'#3B82F6',5:'#9CA3AF'};
+const CATS=['全部','数字','家人','身体','动物','植物','颜色','食物','自然','动作','方位','时间','形容','文具','学习','交通工具','天气','情感','职业','物品','建筑','服装','水果','蔬菜','家具','电器','节日','运动','乐器','疾病'];
+
+const seen=new Set(), CHARS=[];
+for(const d of RAW){if(!seen.has(d.s)){seen.add(d.s);CHARS.push(d);}}
+
+let curCat='全部', learned=new Set(), selIdx=null, sq='';
+
+const DB_NAME = 'ChineseCharDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'learnedChars';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+  });
+}
+
+async function loadLearned() {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get('learned');
+    return new Promise((resolve, reject) => {
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const data = request.result;
+        if (data && data.chars) {
+          resolve(new Set(data.chars));
+        } else {
+          const localStorageData = localStorage.getItem('lc3');
+          if (localStorageData) {
+            const lsSet = new Set(JSON.parse(localStorageData));
+            saveLearned(lsSet);
+            resolve(lsSet);
+          } else {
+            resolve(new Set());
+          }
+        }
+      };
+    });
+  } catch (e) {
+    const localStorageData = localStorage.getItem('lc3');
+    return localStorageData ? new Set(JSON.parse(localStorageData)) : new Set();
+  }
+}
+
+async function saveLearned(charsSet) {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    store.put({ chars: [...charsSet] }, 'learned');
+    transaction.oncomplete = () => {
+      localStorage.setItem('lc3', JSON.stringify([...charsSet]));
+    };
+    transaction.onerror = () => {
+      localStorage.setItem('lc3', JSON.stringify([...charsSet]));
+    };
+  } catch (e) {
+    localStorage.setItem('lc3', JSON.stringify([...charsSet]));
+  }
+}
+
+function exportData() {
+  const data = {
+    learned: [...learned],
+    exportTime: new Date().toISOString(),
+    version: '1.0'
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `汉字学习进度_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.learned && Array.isArray(data.learned)) {
+        learned = new Set(data.learned);
+        await saveLearned(learned);
+        renderStats();
+        renderGrid();
+        alert('导入成功！已导入 ' + data.learned.length + ' 个已学汉字');
+      } else {
+        alert('无效的导入文件');
+      }
+    } catch (e) {
+      alert('导入失败：' + e.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function initStorage() {
+  learned = await loadLearned();
+  renderStats();
+  renderCats();
+  renderGrid();
+}
+
+function toneLabel(t){return{1:'一声',2:'二声',3:'三声',4:'四声',5:'轻声'}[t]||'';}
+
+function renderStats(){
+  const tot=CHARS.length,done=[...learned].length,pct=Math.round(done/tot*100);
+  document.getElementById('stats').innerHTML=`
+    <div class="spill">已学 <b>${done}</b> 字</div>
+    <div class="spill">共 <b>${tot}</b> 字</div>
+    <div class="spill">完成 <b>${pct}%</b></div>
+    <div class="pgbar"><div class="pgfill" style="width:${pct}%"></div></div>`;
+}
+
+function renderCats(){
+  document.getElementById('cats').innerHTML=CATS.map(c=>
+    `<button class="cat${c===curCat?' on':''}" onclick="setCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setCat(c){curCat=c;renderCats();renderGrid();}
+function doFilter(){sq=document.getElementById('sb').value.trim();renderGrid();}
+
+function getList(){
+  return CHARS.filter(ch=>{
+    const co=curCat==='全部'||ch.c===curCat;
+    const qo=!sq||ch.s.includes(sq)||ch.t.includes(sq)||ch.p.toLowerCase().includes(sq.toLowerCase())||ch.m.includes(sq);
+    return co&&qo;
+  });
+}
+
+function renderGrid(){
+  const list=getList();
+  if(!list.length){document.getElementById('grid').innerHTML=`<div class="empty">没有找到「${sq}」相关汉字</div>`;return;}
+  document.getElementById('grid').innerHTML=list.map(ch=>{
+    const isL=learned.has(ch.s);
+    const same=ch.s===ch.t;
+    return `<div class="card${isL?' done':''}" onclick="openModal(${CHARS.indexOf(ch)})">
+      ${isL?'<span class="done-badge">✓ 学会</span>':''}
+      <div class="biling">
+        <div class="biling-half">
+          <div class="biling-label">简体</div>
+          <div class="simp-char">${ch.s}</div>
+        </div>
+        <div class="biling-half">
+          <div class="biling-label">繁體</div>
+          <div class="trad-char">${ch.t}</div>
+          ${same?'<div class="same-note">同简体</div>':''}
+        </div>
+      </div>
+      <div class="card-pinyin" style="color:${TC[ch.tn]}">${ch.p} <span style="font-size:11px;color:var(--color-text-tertiary)">${toneLabel(ch.tn)}</span></div>
+      <div class="card-meaning">${ch.m}</div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(idx){
+  selIdx=idx;
+  const ch=CHARS[idx];
+  const same=ch.s===ch.t;
+  document.getElementById('mCat').innerHTML=`<span class="modal-cat-badge">${ch.c}</span>`;
+  document.getElementById('mBiling').innerHTML=`
+    <div class="modal-half">
+      <div class="modal-half-label">简体字</div>
+      <div class="modal-simp">${ch.s}</div>
+    </div>
+    <div class="modal-half">
+      <div class="modal-half-label">繁體字</div>
+      ${same?`<div class="modal-trad-same">与简体<br>相同</div>`:`<div class="modal-trad">${ch.t}</div>`}
+    </div>`;
+  document.getElementById('mPin').innerHTML=`<span style="color:${TC[ch.tn]}">${ch.p}</span> <span style="font-size:14px;color:var(--color-text-tertiary)">${toneLabel(ch.tn)}</span>`;
+  document.getElementById('mMean').textContent=ch.m;
+  document.getElementById('mEx').textContent='例句：'+ch.e;
+  const isL=learned.has(ch.s);
+  const btn=document.getElementById('btnL');
+  btn.textContent=isL?'✅ 已学会':'⭐ 学会了';
+  btn.className='btn-learn'+(isL?' done':'');
+  document.getElementById('ov').style.display='flex';
+}
+
+function closeOv(e){if(!e||e.target.id==='ov'){document.getElementById('ov').style.display='none';selIdx=null;}}
+
+async function toggleL(){
+  if(selIdx===null)return;
+  const ch=CHARS[selIdx];
+  if(learned.has(ch.s))learned.delete(ch.s);else learned.add(ch.s);
+  await saveLearned(learned);
+  renderStats();
+  renderGrid();
+  const isL=learned.has(ch.s);
+  const btn=document.getElementById('btnL');
+  btn.textContent=isL?'✅ 已学会':'⭐ 学会了';
+  btn.className='btn-learn'+(isL?' done':'');
+}
+
+function speak(){
+  if(selIdx===null)return;
+  const ch=CHARS[selIdx];
+  if('speechSynthesis' in window){
+    const u=new SpeechSynthesisUtterance(ch.s);
+    u.lang='zh-CN';u.rate=0.7;
+    speechSynthesis.cancel();speechSynthesis.speak(u);
+  }
+}
+
+initStorage();
+</script>
