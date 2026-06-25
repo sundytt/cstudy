@@ -163,7 +163,7 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
 }
 
@@ -519,7 +519,7 @@ body {
   }
   
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
   
@@ -763,6 +763,7 @@ async function syncToGist() {
       localStorage.setItem('gistId', gistId);
     }
     
+    alert(`✅ 同步成功！\nGist ID: ${gistId}`);
   } catch (e) {
     alert(`❌ 同步失败：${e.message}`);
   }
