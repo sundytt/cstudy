@@ -249,14 +249,11 @@ body {
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
 }
 
-.card-image {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
-  border-radius: var(--radius-md);
-  margin: 0 auto 6px;
-  display: block;
-  background: var(--color-background-secondary);
+.card-emoji {
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 6px;
+  line-height: 1;
 }
 
 .card-word {
@@ -340,15 +337,11 @@ body {
   padding: 6px 24px;
 }
 
-.modal-image {
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: var(--radius-xl);
-  margin: 0 auto 20px;
-  display: block;
-  background: var(--color-background-secondary);
-  box-shadow: var(--shadow-md);
+.modal-emoji {
+  font-size: 80px;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1;
 }
 
 .modal-word {
@@ -528,7 +521,7 @@ body {
 <div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
   <div class="modal" id="modal">
     <div class="modal-cat" id="mCat"></div>
-    <img class="modal-image" id="mImage" src="" alt="">
+    <div class="modal-emoji" id="mEmoji"></div>
     <div class="modal-word" id="mWord"></div>
     <div class="modal-phonetic" id="mPhonetic"></div>
     <div class="modal-meaning" id="mMean"></div>
@@ -1327,9 +1320,61 @@ function getList() {
   });
 }
 
-function getImageUrl(word, size) {
-  const prompt = encodeURIComponent(`${word} ${size === 'small' ? 'icon, simple, cute, flat design' : 'photographic, realistic, high quality'}`);
-  return `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${prompt}&image_size=${size === 'small' ? 'square' : 'square_hd'}`;
+function getEmoji(meaning, category) {
+  const map = {
+    '苹果':'🍎','香蕉':'🍌','橙子':'🍊','葡萄':'🍇','梨':'🍐','桃子':'🍑','西瓜':'🍉','草莓':'🍓',
+    '柠檬':'🍋','芒果':'🥭','菠萝':'🍍','樱桃':'🍒','蓝莓':'🫐','椰子':'🥥','猕猴桃':'🥝',
+    '猫':'🐱','狗':'🐶','鸟':'🐦','鱼':'🐟','马':'🐴','牛':'🐮','兔子':'🐰','熊猫':'🐼',
+    '老虎':'🐯','狮子':'🦁','猴子':'🐵','大象':'🐘','熊':'🐻','猪':'🐷','鸡':'🐔','鸭':'🦆',
+    '红色':'🔴','蓝色':'🔵','绿色':'🟢','黄色':'🟡','白色':'⚪','黑色':'⚫','紫色':'🟣','粉色':'🌸',
+    '爸爸':'👨','妈妈':'👩','哥哥':'👦','姐姐':'👧','爷爷':'👴','奶奶':'👵','家庭':'👨‍👩‍👧‍👦','家':'🏠',
+    '书':'📚','笔':'✏️','学校':'🏫','老师':'👩‍🏫','学生':'👨‍🎓','班级':'🏫','书桌':'🪑','椅子':'💺',
+    '一':'1️⃣','二':'2️⃣','三':'3️⃣','四':'4️⃣','五':'5️⃣','六':'6️⃣','七':'7️⃣','八':'8️⃣',
+    '九':'9️⃣','十':'🔟','零':'0️⃣','百':'💯','千':'🔢','万':'🔢',
+    '跑':'🏃','走':'🚶','跳':'🤸','游泳':'🏊','唱':'🎤','读':'📖','写':'✍️','吃':'🍽️',
+    '喝':'🥤','睡':'😴','玩':'🎮','看':'👀','听':'👂','说':'🗣️','学':'📚','教':'👩‍🏫',
+    '开心':'😊','难过':'😢','生气':'😠','害怕':'😨','惊讶':'😮','爱':'❤️','喜欢':'😍','讨厌':'😒',
+    '大':'🐘','小':'🐭','高':'🦒','矮':'🐸','胖':'🐷','瘦':'🦴','长':'📏','短':'📐',
+    '快':'⚡','慢':'🐢','新':'🆕','旧':'🗓️','热':'🔥','冷':'❄️','好':'👍','坏':'👎',
+    '太阳':'☀️','月亮':'🌙','星星':'⭐','云':'☁️','雨':'🌧️','雪':'❄️','风':'💨','山':'⛰️',
+    '水':'💧','树':'🌳','花':'🌸','草':'🌱','森林':'🌲','海洋':'🌊','河流':'🏞️',
+    '汽车':'🚗','公交车':'🚌','自行车':'🚲','飞机':'✈️','火车':'🚄','船':'🚢',
+    '米饭':'🍚','面条':'🍜','面包':'🍞','鸡蛋':'🥚','牛奶':'🥛','水':'💧','果汁':'🧃','蛋糕':'🎂',
+    '今天':'📅','明天':'📆','昨天':'⏪','早上':'🌅','下午':'☀️','晚上':'🌙','时间':'⏰',
+    '一月':'1️⃣','二月':'2️⃣','三月':'3️⃣','四月':'4️⃣','五月':'5️⃣','六月':'6️⃣',
+    '七月':'7️⃣','八月':'8️⃣','九月':'9️⃣','十月':'🔟','十一月':'1️⃣','十二月':'2️⃣',
+    '星期一':'📅','星期二':'📅','星期三':'📅','星期四':'📅','星期五':'📅','星期六':'🎉','星期日':'🛐',
+    '衬衫':'👔','裤子':'👖','裙子':'👗','鞋子':'👟','帽子':'🎩','袜子':'🧦',
+    '头':'👤','眼睛':'👀','鼻子':'👃','嘴巴':'👄','耳朵':'👂','手':'✋','脚':'🦶',
+    '桌子':'🪑','床':'🛏️','沙发':'🛋️',
+    '电视':'📺','电话':'📱','电脑':'💻','冰箱':'🧊','灯':'💡',
+    '足球':'⚽','篮球':'🏀','游泳':'🏊','跑步':'🏃',
+    '钢琴':'🎹','吉他':'🎸','小提琴':'🎻','鼓':'🥁','笛子':'🪈',
+    '医生':'👨‍⚕️','老师':'👩‍🏫','工人':'👷','农民':'👨‍🌾','警察':'👮','司机':'🚗',
+    '上':'⬆️','下':'⬇️','左':'⬅️','右':'➡️','前':'⏩','后':'⏪','里':'📦','外':'🚪',
+    '晴天':'☀️','下雨':'🌧️','下雪':'❄️','多云':'⛅','刮风':'💨',
+    '很':'✨','非常':'🌟','太':'💫','更':'📈','最':'🏆',
+    '总是':'🔄','通常':'🔁','有时':'🔂','从不':'🚫','已经':'✅','刚刚':'⏱️',
+    '我':'👤','你':'👉','他':'👨','她':'👩','它':'🐾','我们':'👥','你们':'👥','他们':'👥',
+    '这':'👆','那':'👇','这个':'👆','那个':'👇','这些':'👆','那些':'👇',
+    '谁':'❓','什么':'❔','哪里':'📍','什么时候':'⏰','为什么':'🤔','怎么':'❓',
+    '我的':'👉','你的':'👉','他的':'👨','她的':'👩','它的':'🐾','我们的':'👥',
+    '和':'➕','但是':'🔄','或者':'❓','因为':'❗','所以':'➡️','如果':'🤔',
+    '能':'💪','可以':'✅','会':'🎓','应该':'👉','必须':'❗','要':'🎯',
+    '是':'✅','有':'📦','做':'🔧','去':'🚶','来':'🏃','说':'🗣️','看':'👀','听':'👂',
+    '吃':'🍽️','喝':'🥤','睡':'😴','玩':'🎮','学':'📚','工作':'💼','喜欢':'❤️','爱':'❤️',
+    '你好':'👋','嗨':'👋','再见':'👋','拜拜':'👋','谢谢':'🙏','对不起':'🙇',
+    '好的':'👍','不行':'👎','请':'🙏','欢迎':'🎉'
+  };
+  if (map[meaning]) return map[meaning];
+  const catEmoji = {
+    '水果':'🍎','动物':'🐾','颜色':'🎨','家人':'👨‍👩‍👧','学习':'📚','数字':'🔢',
+    '动作':'🏃','情感':'❤️','形容':'✨','自然':'🌿','交通工具':'🚗','食物':'🍔',
+    '时间':'⏰','服装':'👕','身体':'🧍','家具':'🛋️','电器':'💡','运动':'⚽',
+    '乐器':'🎵','职业':'👨‍💼','方位':'🧭','天气':'🌤️','副词':'✨','连词':'🔗',
+    '动词':'🔧','代词':'👤','冠词':'📝','限定词':'📊','问候':'👋','形容词':'✨'
+  };
+  return catEmoji[category] || '📚';
 }
 
 function renderGrid() {
@@ -1337,10 +1382,10 @@ function renderGrid() {
   if (!list.length) { document.getElementById('grid').innerHTML = `<div class="empty">没有找到「${sq}」相关单词</div>`; return; }
   document.getElementById('grid').innerHTML = list.map(w => {
     const isL = learned.has(w.word);
-    const imgUrl = getImageUrl(w.word, 'small');
+    const emoji = getEmoji(w.meaning, w.category);
     return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${ENGLISH_WORDS.indexOf(w)})">
       ${isL ? '<span class="done-badge">✓ 学会</span>' : ''}
-      <img class="card-image" src="${imgUrl}" alt="${w.word}" loading="lazy">
+      <div class="card-emoji">${emoji}</div>
       <div class="card-word">${w.word}</div>
       <div class="card-phonetic">${w.phonetic}</div>
       <div class="card-meaning">${w.meaning}</div>
@@ -1352,8 +1397,7 @@ function openModal(idx) {
   selIdx = idx;
   const w = ENGLISH_WORDS[idx];
   document.getElementById('mCat').innerHTML = `<span class="modal-cat-badge">${w.category}</span>`;
-  document.getElementById('mImage').src = getImageUrl(w.word, 'large');
-  document.getElementById('mImage').alt = w.word;
+  document.getElementById('mEmoji').textContent = getEmoji(w.meaning, w.category);
   document.getElementById('mWord').textContent = w.word;
   document.getElementById('mPhonetic').textContent = w.phonetic;
   document.getElementById('mMean').textContent = w.meaning;
