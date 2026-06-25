@@ -550,6 +550,7 @@ body {
     <button class="cat" onclick="setGistConfig()">⚙️ 配置</button>
     <button class="cat" onclick="syncToGist()">☁️ 上传</button>
     <button class="cat" onclick="syncFromGist()">⬇️ 下载</button>
+    <button class="cat" id="btnDiff" onclick="toggleDiffOnly()">🔄 全部</button>
   </div>
   <div class="stats" id="stats"></div>
   <div class="cats" id="cats"></div>
@@ -579,7 +580,7 @@ const CATS=['全部','数字','家人','身体','动物','植物','颜色','食�
 const seen=new Set(), CHARS=[];
 for(const d of RAW){if(!seen.has(d.s)){seen.add(d.s);CHARS.push(d);}}
 
-let curCat='全部', learned=new Set(), selIdx=null, sq='';
+let curCat='全部', learned=new Set(), selIdx=null, sq='', showDiffOnly=false;
 let gistToken = localStorage.getItem('gistToken') || '';
 let gistId = localStorage.getItem('gistId') || '';
 
@@ -824,7 +825,10 @@ async function initStorage() {
 function toneLabel(t){return{1:'一声',2:'二声',3:'三声',4:'四声',5:'轻声'}[t]||'';}
 
 function renderStats(){
-  const tot=CHARS.length,done=[...learned].length,pct=Math.round(done/tot*100);
+  const list=getList();
+  const tot=list.length;
+  const done=list.filter(ch=>learned.has(ch.s)).length;
+  const pct=tot>0?Math.round(done/tot*100):0;
   document.getElementById('stats').innerHTML=`
     <div class="spill">已学 <b>${done}</b> 字</div>
     <div class="spill">共 <b>${tot}</b> 字</div>
@@ -846,11 +850,20 @@ function renderCats(){
 function setCat(c){curCat=c;renderCats();renderGrid();}
 function doFilter(){sq=document.getElementById('sb').value.trim();renderGrid();}
 
+function toggleDiffOnly(){
+  showDiffOnly=!showDiffOnly;
+  const btn=document.getElementById('btnDiff');
+  btn.className='cat'+(showDiffOnly?' on':'');
+  btn.textContent=showDiffOnly?'🔄 繁简不同':'🔄 全部';
+  renderGrid();
+}
+
 function getList(){
   return CHARS.filter(ch=>{
     const co=curCat==='全部'||ch.c===curCat;
     const qo=!sq||ch.s.includes(sq)||ch.t.includes(sq)||ch.p.toLowerCase().includes(sq.toLowerCase())||ch.m.includes(sq);
-    return co&&qo;
+    const dof=!showDiffOnly||ch.s!==ch.t;
+    return co&&qo&&dof;
   });
 }
 
