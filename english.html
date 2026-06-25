@@ -249,12 +249,22 @@ body {
   box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
 }
 
+.card-image {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  margin: 0 auto 6px;
+  display: block;
+  background: var(--color-background-secondary);
+}
+
 .card-word {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: var(--color-text-primary);
   text-align: center;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   letter-spacing: 0.5px;
 }
 
@@ -328,6 +338,17 @@ body {
   font-size: 24px;
   font-weight: 500;
   padding: 6px 24px;
+}
+
+.modal-image {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: var(--radius-xl);
+  margin: 0 auto 20px;
+  display: block;
+  background: var(--color-background-secondary);
+  box-shadow: var(--shadow-md);
 }
 
 .modal-word {
@@ -497,9 +518,7 @@ body {
   <div class="header">
     <h1>📚 单词乐园</h1>
     <input class="search-box" id="sb" placeholder="🔍 搜索单词..." oninput="doFilter()">
-    <button class="cat" onclick="exportData()">📥 导出</button>
-    <button class="cat" onclick="document.getElementById('importFile').click()">📤 导入</button>
-    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+    
   </div>
   <div class="stats" id="stats"></div>
   <div class="cats" id="cats"></div>
@@ -509,6 +528,7 @@ body {
 <div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
   <div class="modal" id="modal">
     <div class="modal-cat" id="mCat"></div>
+    <img class="modal-image" id="mImage" src="" alt="">
     <div class="modal-word" id="mWord"></div>
     <div class="modal-phonetic" id="mPhonetic"></div>
     <div class="modal-meaning" id="mMean"></div>
@@ -1263,46 +1283,6 @@ async function saveLearned(wordsSet) {
   }
 }
 
-function exportData() {
-  const data = {
-    learned: [...learned],
-    exportTime: new Date().toISOString(),
-    version: '1.0'
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `单词学习进度_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-function importData(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = async (e) => {
-    try {
-      const data = JSON.parse(e.target.result);
-      if (data.learned && Array.isArray(data.learned)) {
-        learned = new Set(data.learned);
-        await saveLearned(learned);
-        renderStats();
-        renderGrid();
-        alert('导入成功！已导入 ' + data.learned.length + ' 个已学单词');
-      } else {
-        alert('无效的导入文件');
-      }
-    } catch (e) {
-      alert('导入失败：' + e.message);
-    }
-  };
-  reader.readAsText(file);
-}
-
 async function initStorage() {
   learned = await loadLearned();
   renderStats();
@@ -1347,13 +1327,20 @@ function getList() {
   });
 }
 
+function getImageUrl(word, size) {
+  const prompt = encodeURIComponent(`${word} ${size === 'small' ? 'icon, simple, cute, flat design' : 'photographic, realistic, high quality'}`);
+  return `https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=${prompt}&image_size=${size === 'small' ? 'square' : 'square_hd'}`;
+}
+
 function renderGrid() {
   const list = getList();
   if (!list.length) { document.getElementById('grid').innerHTML = `<div class="empty">没有找到「${sq}」相关单词</div>`; return; }
   document.getElementById('grid').innerHTML = list.map(w => {
     const isL = learned.has(w.word);
+    const imgUrl = getImageUrl(w.word, 'small');
     return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${ENGLISH_WORDS.indexOf(w)})">
       ${isL ? '<span class="done-badge">✓ 学会</span>' : ''}
+      <img class="card-image" src="${imgUrl}" alt="${w.word}" loading="lazy">
       <div class="card-word">${w.word}</div>
       <div class="card-phonetic">${w.phonetic}</div>
       <div class="card-meaning">${w.meaning}</div>
@@ -1365,6 +1352,8 @@ function openModal(idx) {
   selIdx = idx;
   const w = ENGLISH_WORDS[idx];
   document.getElementById('mCat').innerHTML = `<span class="modal-cat-badge">${w.category}</span>`;
+  document.getElementById('mImage').src = getImageUrl(w.word, 'large');
+  document.getElementById('mImage').alt = w.word;
   document.getElementById('mWord').textContent = w.word;
   document.getElementById('mPhonetic').textContent = w.phonetic;
   document.getElementById('mMean').textContent = w.meaning;
