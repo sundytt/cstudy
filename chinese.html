@@ -543,14 +543,8 @@ body {
   <div class="header">
     <h1>🍎 汉字乐园</h1>
     <input class="search-box" id="sb" placeholder="🔍 搜索..." oninput="doFilter()">
-    <button class="cat" onclick="exportData()">📤 导出</button>
-    <label class="cat" style="cursor:pointer">📥 导入
-      <input type="file" accept=".json" onchange="importData(event)" style="display:none">
-    </label>
+     <button class="cat" id="btnDiff" onclick="toggleDiffOnly()">🔄 全部</button>
     <button class="cat" onclick="setGistConfig()">⚙️ 配置</button>
-    <button class="cat" onclick="syncToGist()">☁️ 上传</button>
-    <button class="cat" onclick="syncFromGist()">⬇️ 下载</button>
-    <button class="cat" id="btnDiff" onclick="toggleDiffOnly()">🔄 全部</button>
   </div>
   <div class="stats" id="stats"></div>
   <div class="cats" id="cats"></div>
@@ -837,8 +831,12 @@ function renderStats(){
 }
 
 function getCatCount(cat) {
-  if (cat === '全部') return CHARS.length;
-  return CHARS.filter(ch => ch.c === cat).length;
+  return CHARS.filter(ch => {
+    const co = cat === '全部' || ch.c === cat;
+    const qo = !sq || ch.s.includes(sq) || ch.t.includes(sq) || ch.p.toLowerCase().includes(sq.toLowerCase()) || ch.m.includes(sq);
+    const dof = !showDiffOnly || ch.s !== ch.t;
+    return co && qo && dof;
+  }).length;
 }
 
 function renderCats(){
@@ -848,13 +846,14 @@ function renderCats(){
 }
 
 function setCat(c){curCat=c;renderCats();renderGrid();}
-function doFilter(){sq=document.getElementById('sb').value.trim();renderGrid();}
+function doFilter(){sq=document.getElementById('sb').value.trim();renderCats();renderGrid();}
 
 function toggleDiffOnly(){
   showDiffOnly=!showDiffOnly;
   const btn=document.getElementById('btnDiff');
   btn.className='cat'+(showDiffOnly?' on':'');
   btn.textContent=showDiffOnly?'🔄 繁简不同':'🔄 全部';
+  renderCats();
   renderGrid();
 }
 
