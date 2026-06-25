@@ -47,6 +47,43 @@ body {
   padding: 1.5rem 1rem 3rem;
 }
 
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  justify-content: center;
+}
+
+.nav-tab {
+  padding: 8px 24px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.nav-tab.chinese {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.nav-tab.english {
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-tab.english:hover {
+  border-color: #8B5CF6;
+  color: #8B5CF6;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
 .header {
   display: flex;
   align-items: center;
@@ -540,6 +577,10 @@ body {
 </style>
 
 <div id="app">
+  <div class="nav-tabs">
+    <div class="nav-tab chinese">📝 汉字学习</div>
+    <div class="nav-tab english" onclick="window.location.href='english.html'">🔤 单词学习</div>
+  </div>
   <div class="header">
     <h1>🍎 汉字乐园</h1>
     <input class="search-box" id="sb" placeholder="🔍 搜索..." oninput="doFilter()">
