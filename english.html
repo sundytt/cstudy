@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>单词乐园 - 英文单词学习</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #8B5CF6;
+  --color-primary-light: #F5F3FF;
+  --color-primary-dark: #7C3AED;
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F3F4F6;
+  --color-background-tertiary: #F9FAFB;
+  --color-border-primary: #E5E7EB;
+  --color-border-secondary: #D1D5DB;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #F8FAFC 0%, #F5F3FF 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-box {
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+  font-size: 14px;
+  width: 180px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-box:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+.search-box::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.spill {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-primary);
+}
+
+.spill b {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.pgbar {
+  flex: 1;
+  min-width: 80px;
+  height: 6px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.pgfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #A78BFA);
+  border-radius: var(--radius-sm);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.cat {
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  padding: 6px 14px;
+  border-radius: var(--radius-lg);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.cat:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.cat.on {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.card {
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 14px 12px 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+}
+
+.card.done {
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, var(--color-success-light) 0%, #ECFDF5 100%);
+}
+
+.card.done:hover {
+  border-color: var(--color-success);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+}
+
+.done-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.card-word {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.card-phonetic {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.card-meaning {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-secondary);
+  width: 840px;
+  max-width: 96vw;
+  padding: 3.5rem 3.5rem 3rem;
+  min-height: 650px;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-cat {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.modal-cat-badge {
+  display: inline-block;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: var(--radius-md);
+  font-size: 24px;
+  font-weight: 500;
+  padding: 6px 24px;
+}
+
+.modal-word {
+  font-size: 80px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+.modal-phonetic {
+  text-align: center;
+  font-size: 28px;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+  margin-bottom: 24px;
+}
+
+.modal-meaning {
+  text-align: center;
+  font-size: 32px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.modal-example {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  padding: 24px 28px;
+  margin-bottom: 36px;
+}
+
+.modal-example-en {
+  font-size: 24px;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.modal-example-zh {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.modal-btns {
+  display: flex;
+  gap: 20px;
+}
+
+.btn-speak {
+  flex: 0 0 auto;
+  border: 2px solid #C4B5FD;
+  color: var(--color-primary);
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 20px 28px;
+  font-size: 32px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.btn-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-learn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 20px;
+  font-size: 28px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-learn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-learn.done {
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+}
+
+.btn-close {
+  flex: 0 0 auto;
+  border: 2px solid var(--color-border-secondary);
+  color: var(--color-text-secondary);
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 20px 28px;
+  font-size: 28px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+  border-color: var(--color-text-tertiary);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.empty {
+  color: var(--color-text-tertiary);
+  font-size: 15px;
+  padding: 3rem 2rem;
+  text-align: center;
+  grid-column: 1/-1;
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--color-border-primary);
+}
+
+@media (max-width: 480px) {
+  #app {
+    padding: 1rem 0.75rem 2rem;
+  }
+  
+  .header h1 {
+    font-size: 18px;
+  }
+  
+  .search-box {
+    width: 100%;
+  }
+  
+  .grid {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+  }
+  
+  .card-word {
+    font-size: 20px;
+  }
+  
+  .modal {
+    width: 95vw;
+    padding: 1.25rem 1.25rem 1rem;
+  }
+  
+  .modal-word {
+    font-size: 48px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="header">
+    <h1>📚 单词乐园</h1>
+    <input class="search-box" id="sb" placeholder="🔍 搜索单词..." oninput="doFilter()">
+    <button class="cat" onclick="exportData()">📥 导出</button>
+    <button class="cat" onclick="document.getElementById('importFile').click()">📤 导入</button>
+    <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
+  <div class="modal" id="modal">
+    <div class="modal-cat" id="mCat"></div>
+    <div class="modal-word" id="mWord"></div>
+    <div class="modal-phonetic" id="mPhonetic"></div>
+    <div class="modal-meaning" id="mMean"></div>
+    <div class="modal-example">
+      <div class="modal-example-en" id="mExEn"></div>
+      <div class="modal-example-zh" id="mExZh"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-speak" onclick="speak()">🔊</button>
+      <button class="btn-learn" id="btnL" onclick="toggleL()">⭐ 学会了</button>
+      <button class="btn-close" onclick="closeOv()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ENGLISH_WORDS = [
+  { word: 'apple', phonetic: '/ˈæpl/', meaning: '苹果', exampleEn: 'I eat an apple every day.', exampleZh: '我每天吃一个苹果。', category: '水果' },
+  { word: 'banana', phonetic: '/bəˈnænə/', meaning: '香蕉', exampleEn: 'Bananas are yellow.', exampleZh: '香蕉是黄色的。', category: '水果' },
+  { word: 'orange', phonetic: '/ˈɔːrɪndʒ/', meaning: '橙子', exampleEn: 'Oranges are sweet and sour.', exampleZh: '橙子又甜又酸。', category: '水果' },
+  { word: 'grape', phonetic: '/ɡreɪp/', meaning: '葡萄', exampleEn: 'Grapes grow in clusters.', exampleZh: '葡萄成串生长。', category: '水果' },
+  { word: 'pear', phonetic: '/per/', meaning: '梨', exampleEn: 'This pear is very juicy.', exampleZh: '这个梨汁很多。', category: '水果' },
+  { word: 'peach', phonetic: '/piːtʃ/', meaning: '桃子', exampleEn: 'Peaches are soft and sweet.', exampleZh: '桃子又软又甜。', category: '水果' },
+  { word: 'watermelon', phonetic: '/ˈwɔːtərmelən/', meaning: '西瓜', exampleEn: 'Watermelon is refreshing in summer.', exampleZh: '西瓜在夏天很清凉。', category: '水果' },
+  { word: 'strawberry', phonetic: '/ˈstrɔːberi/', meaning: '草莓', exampleEn: 'Strawberries are red and sweet.', exampleZh: '草莓又红又甜。', category: '水果' },
+  { word: 'cat', phonetic: '/kæt/', meaning: '猫', exampleEn: 'The cat is sleeping.', exampleZh: '猫正在睡觉。', category: '动物' },
+  { word: 'dog', phonetic: '/dɔːɡ/', meaning: '狗', exampleEn: 'Dogs are man\'s best friends.', exampleZh: '狗是人类最好的朋友。', category: '动物' },
+  { word: 'bird', phonetic: '/bɜːrd/', meaning: '鸟', exampleEn: 'Birds can fly.', exampleZh: '鸟会飞。', category: '动物' },
+  { word: 'fish', phonetic: '/fɪʃ/', meaning: '鱼', exampleEn: 'Fish swim in the water.', exampleZh: '鱼在水里游。', category: '动物' },
+  { word: 'horse', phonetic: '/hɔːrs/', meaning: '马', exampleEn: 'Horses run very fast.', exampleZh: '马跑得很快。', category: '动物' },
+  { word: 'cow', phonetic: '/kaʊ/', meaning: '牛', exampleEn: 'Cows give us milk.', exampleZh: '牛给我们牛奶。', category: '动物' },
+  { word: 'rabbit', phonetic: '/ˈræbɪt/', meaning: '兔子', exampleEn: 'Rabbits have long ears.', exampleZh: '兔子有长长的耳朵。', category: '动物' },
+  { word: 'panda', phonetic: '/ˈpændə/', meaning: '熊猫', exampleEn: 'Pandas love bamboo.', exampleZh: '熊猫喜欢吃竹子。', category: '动物' },
+  { word: 'red', phonetic: '/red/', meaning: '红色', exampleEn: 'The apple is red.', exampleZh: '苹果是红色的。', category: '颜色' },
+  { word: 'blue', phonetic: '/bluː/', meaning: '蓝色', exampleEn: 'The sky is blue.', exampleZh: '天空是蓝色的。', category: '颜色' },
+  { word: 'green', phonetic: '/ɡriːn/', meaning: '绿色', exampleEn: 'Grass is green.', exampleZh: '草是绿色的。', category: '颜色' },
+  { word: 'yellow', phonetic: '/ˈjeləʊ/', meaning: '黄色', exampleEn: 'The sun is yellow.', exampleZh: '太阳是黄色的。', category: '颜色' },
+  { word: 'white', phonetic: '/waɪt/', meaning: '白色', exampleEn: 'Snow is white.', exampleZh: '雪是白色的。', category: '颜色' },
+  { word: 'black', phonetic: '/blæk/', meaning: '黑色', exampleEn: 'The night is black.', exampleZh: '夜晚是黑色的。', category: '颜色' },
+  { word: 'purple', phonetic: '/ˈpɜːrpl/', meaning: '紫色', exampleEn: 'Lavender is purple.', exampleZh: '薰衣草是紫色的。', category: '颜色' },
+  { word: 'pink', phonetic: '/pɪŋk/', meaning: '粉色', exampleEn: 'Roses are pink.', exampleZh: '玫瑰是粉色的。', category: '颜色' },
+  { word: 'father', phonetic: '/ˈfɑːðər/', meaning: '爸爸', exampleEn: 'My father is kind.', exampleZh: '我的爸爸很和蔼。', category: '家人' },
+  { word: 'mother', phonetic: '/ˈmʌðər/', meaning: '妈妈', exampleEn: 'My mother cooks well.', exampleZh: '我的妈妈做饭很好吃。', category: '家人' },
+  { word: 'brother', phonetic: '/ˈbrʌðər/', meaning: '哥哥', exampleEn: 'My brother is tall.', exampleZh: '我的哥哥很高。', category: '家人' },
+  { word: 'sister', phonetic: '/ˈsɪstər/', meaning: '姐姐', exampleEn: 'My sister is beautiful.', exampleZh: '我的姐姐很漂亮。', category: '家人' },
+  { word: 'grandfather', phonetic: '/ˈɡrændfɑːðər/', meaning: '爷爷', exampleEn: 'Grandfather tells stories.', exampleZh: '爷爷讲故事。', category: '家人' },
+  { word: 'grandmother', phonetic: '/ˈɡrændmʌðər/', meaning: '奶奶', exampleEn: 'Grandmother bakes cookies.', exampleZh: '奶奶烤饼干。', category: '家人' },
+  { word: 'family', phonetic: '/ˈfæməli/', meaning: '家庭', exampleEn: 'I love my family.', exampleZh: '我爱我的家人。', category: '家人' },
+  { word: 'home', phonetic: '/hoʊm/', meaning: '家', exampleEn: 'Home is warm.', exampleZh: '家是温暖的。', category: '家人' },
+  { word: 'book', phonetic: '/bʊk/', meaning: '书', exampleEn: 'I read a book every night.', exampleZh: '我每晚读一本书。', category: '学习' },
+  { word: 'pen', phonetic: '/pen/', meaning: '笔', exampleEn: 'I write with a pen.', exampleZh: '我用笔写字。', category: '学习' },
+  { word: 'school', phonetic: '/skuːl/', meaning: '学校', exampleEn: 'I go to school every day.', exampleZh: '我每天去上学。', category: '学习' },
+  { word: 'teacher', phonetic: '/ˈtiːtʃər/', meaning: '老师', exampleEn: 'My teacher is nice.', exampleZh: '我的老师很好。', category: '学习' },
+  { word: 'student', phonetic: '/ˈstuːdnt/', meaning: '学生', exampleEn: 'I am a student.', exampleZh: '我是一名学生。', category: '学习' },
+  { word: 'class', phonetic: '/klæs/', meaning: '班级', exampleZh: '我在三年级一班。', category: '学习' },
+  { word: 'desk', phonetic: '/desk/', meaning: '书桌', exampleEn: 'I study at my desk.', exampleZh: '我在书桌前学习。', category: '学习' },
+  { word: 'chair', phonetic: '/tʃer/', meaning: '椅子', exampleEn: 'Please sit on the chair.', exampleZh: '请坐在椅子上。', category: '学习' },
+  { word: 'one', phonetic: '/wʌn/', meaning: '一', exampleEn: 'I have one apple.', exampleZh: '我有一个苹果。', category: '数字' },
+  { word: 'two', phonetic: '/tuː/', meaning: '二', exampleEn: 'I have two hands.', exampleZh: '我有两只手。', category: '数字' },
+  { word: 'three', phonetic: '/θriː/', meaning: '三', exampleEn: 'Three birds fly.', exampleZh: '三只鸟在飞。', category: '数字' },
+  { word: 'four', phonetic: '/fɔːr/', meaning: '四', exampleEn: 'Four seasons in a year.', exampleZh: '一年有四季。', category: '数字' },
+  { word: 'five', phonetic: '/faɪv/', meaning: '五', exampleEn: 'I have five fingers.', exampleZh: '我有五根手指。', category: '数字' },
+  { word: 'six', phonetic: '/sɪks/', meaning: '六', exampleEn: 'Six days in a week.', exampleZh: '一周有六天上学。', category: '数字' },
+  { word: 'seven', phonetic: '/ˈsevn/', meaning: '七', exampleEn: 'Seven colors in a rainbow.', exampleZh: '彩虹有七种颜色。', category: '数字' },
+  { word: 'eight', phonetic: '/eɪt/', meaning: '八', exampleEn: 'Eight legs on a spider.', exampleZh: '蜘蛛有八条腿。', category: '数字' },
+  { word: 'nine', phonetic: '/naɪn/', meaning: '九', exampleEn: 'Nine players on a team.', exampleZh: '一队有九名队员。', category: '数字' },
+  { word: 'ten', phonetic: '/ten/', meaning: '十', exampleEn: 'Ten students in class.', exampleZh: '班里有十个学生。', category: '数字' },
+  { word: 'run', phonetic: '/rʌn/', meaning: '跑', exampleEn: 'I run every morning.', exampleZh: '我每天早上跑步。', category: '动作' },
+  { word: 'jump', phonetic: '/dʒʌmp/', meaning: '跳', exampleEn: 'The rabbit can jump high.', exampleZh: '兔子能跳得很高。', category: '动作' },
+  { word: 'walk', phonetic: '/wɔːk/', meaning: '走', exampleEn: 'I walk to school.', exampleZh: '我走路去上学。', category: '动作' },
+  { word: 'eat', phonetic: '/iːt/', meaning: '吃', exampleEn: 'I eat breakfast at 7.', exampleZh: '我七点吃早饭。', category: '动作' },
+  { word: 'drink', phonetic: '/drɪŋk/', meaning: '喝', exampleEn: 'I drink water every day.', exampleZh: '我每天喝水。', category: '动作' },
+  { word: 'read', phonetic: '/riːd/', meaning: '读', exampleEn: 'I read books every day.', exampleZh: '我每天读书。', category: '动作' },
+  { word: 'write', phonetic: '/raɪt/', meaning: '写', exampleEn: 'I write with a pen.', exampleZh: '我用笔写字。', category: '动作' },
+  { word: 'draw', phonetic: '/drɔː/', meaning: '画', exampleEn: 'I draw pictures.', exampleZh: '我画画。', category: '动作' },
+  { word: 'sing', phonetic: '/sɪŋ/', meaning: '唱', exampleEn: 'I sing songs.', exampleZh: '我唱歌。', category: '动作' },
+  { word: 'dance', phonetic: '/dæns/', meaning: '跳舞', exampleEn: 'She dances beautifully.', exampleZh: '她跳舞跳得很美。', category: '动作' },
+  { word: 'happy', phonetic: '/ˈhæpi/', meaning: '快乐的', exampleEn: 'I am very happy.', exampleZh: '我非常快乐。', category: '情感' },
+  { word: 'sad', phonetic: '/sæd/', meaning: '悲伤的', exampleEn: 'Don\'t be sad.', exampleZh: '不要难过。', category: '情感' },
+  { word: 'angry', phonetic: '/ˈæŋɡri/', meaning: '生气的', exampleEn: 'Don\'t be angry.', exampleZh: '不要生气。', category: '情感' },
+  { word: 'love', phonetic: '/lʌv/', meaning: '爱', exampleEn: 'I love my family.', exampleZh: '我爱我的家人。', category: '情感' },
+  { word: 'like', phonetic: '/laɪk/', meaning: '喜欢', exampleEn: 'I like apples.', exampleZh: '我喜欢苹果。', category: '情感' },
+  { word: 'beautiful', phonetic: '/ˈbjuːtɪfl/', meaning: '美丽的', exampleEn: 'The flower is beautiful.', exampleZh: '花很美。', category: '情感' },
+  { word: 'big', phonetic: '/bɪɡ/', meaning: '大的', exampleEn: 'The elephant is big.', exampleZh: '大象很大。', category: '形容' },
+  { word: 'small', phonetic: '/smɔːl/', meaning: '小的', exampleEn: 'The cat is small.', exampleZh: '猫很小。', category: '形容' },
+  { word: 'tall', phonetic: '/tɔːl/', meaning: '高的', exampleEn: 'My father is tall.', exampleZh: '我的爸爸很高。', category: '形容' },
+  { word: 'short', phonetic: '/ʃɔːrt/', meaning: '矮的', exampleZh: '我弟弟很矮。', category: '形容' },
+  { word: 'fast', phonetic: '/fæst/', meaning: '快的', exampleEn: 'Cheetahs are fast.', exampleZh: '猎豹跑得很快。', category: '形容' },
+  { word: 'slow', phonetic: '/sloʊ/', meaning: '慢的', exampleEn: 'Turtles are slow.', exampleZh: '乌龟很慢。', category: '形容' },
+  { word: 'hot', phonetic: '/hɑːt/', meaning: '热的', exampleEn: 'Summer is hot.', exampleZh: '夏天很热。', category: '形容' },
+  { word: 'cold', phonetic: '/koʊld/', meaning: '冷的', exampleEn: 'Winter is cold.', exampleZh: '冬天很冷。', category: '形容' },
+  { word: 'sun', phonetic: '/sʌn/', meaning: '太阳', exampleEn: 'The sun is bright.', exampleZh: '太阳很明亮。', category: '自然' },
+  { word: 'moon', phonetic: '/muːn/', meaning: '月亮', exampleEn: 'The moon is round.', exampleZh: '月亮是圆的。', category: '自然' },
+  { word: 'star', phonetic: '/stɑːr/', meaning: '星星', exampleEn: 'Stars shine at night.', exampleZh: '星星在夜晚闪烁。', category: '自然' },
+  { word: 'sky', phonetic: '/skaɪ/', meaning: '天空', exampleEn: 'The sky is blue.', exampleZh: '天空是蓝色的。', category: '自然' },
+  { word: 'cloud', phonetic: '/klaʊd/', meaning: '云', exampleEn: 'Clouds are white.', exampleZh: '云是白色的。', category: '自然' },
+  { word: 'rain', phonetic: '/reɪn/', meaning: '雨', exampleEn: 'It is raining.', exampleZh: '正在下雨。', category: '自然' },
+  { word: 'wind', phonetic: '/wɪnd/', meaning: '风', exampleEn: 'The wind blows.', exampleZh: '风吹过来了。', category: '自然' },
+  { word: 'snow', phonetic: '/snoʊ/', meaning: '雪', exampleEn: 'It is snowing.', exampleZh: '正在下雪。', category: '自然' },
+  { word: 'tree', phonetic: '/triː/', meaning: '树', exampleEn: 'Trees are green.', exampleZh: '树是绿色的。', category: '自然' },
+  { word: 'flower', phonetic: '/ˈflaʊər/', meaning: '花', exampleEn: 'Flowers are colorful.', exampleZh: '花是彩色的。', category: '自然' },
+  { word: 'car', phonetic: '/kɑːr/', meaning: '汽车', exampleEn: 'My dad drives a car.', exampleZh: '我爸爸开车。', category: '交通工具' },
+  { word: 'bus', phonetic: '/bʌs/', meaning: '公交车', exampleEn: 'I take the bus to school.', exampleZh: '我坐公交车上学。', category: '交通工具' },
+  { word: 'bike', phonetic: '/baɪk/', meaning: '自行车', exampleEn: 'I ride a bike.', exampleZh: '我骑自行车。', category: '交通工具' },
+  { word: 'train', phonetic: '/treɪn/', meaning: '火车', exampleEn: 'The train is long.', exampleZh: '火车很长。', category: '交通工具' },
+  { word: 'plane', phonetic: '/pleɪn/', meaning: '飞机', exampleEn: 'Planes fly in the sky.', exampleZh: '飞机在天空中飞。', category: '交通工具' },
+  { word: 'ship', phonetic: '/ʃɪp/', meaning: '船', exampleEn: 'Ships sail on the sea.', exampleZh: '船在海上航行。', category: '交通工具' },
+  { word: 'food', phonetic: '/fuːd/', meaning: '食物', exampleEn: 'We need food to live.', exampleZh: '我们需要食物来生存。', category: '食物' },
+  { word: 'rice', phonetic: '/raɪs/', meaning: '米饭', exampleEn: 'I eat rice every day.', exampleZh: '我每天吃米饭。', category: '食物' },
+  { word: 'bread', phonetic: '/bred/', meaning: '面包', exampleEn: 'I eat bread for breakfast.', exampleZh: '我早餐吃面包。', category: '食物' },
+  { word: 'milk', phonetic: '/mɪlk/', meaning: '牛奶', exampleEn: 'Milk is good for you.', exampleZh: '牛奶对你有好处。', category: '食物' },
+  { word: 'egg', phonetic: '/eɡ/', meaning: '鸡蛋', exampleEn: 'I eat an egg every morning.', exampleZh: '我每天早上吃一个鸡蛋。', category: '食物' },
+  { word: 'meat', phonetic: '/miːt/', meaning: '肉', exampleEn: 'I like to eat meat.', exampleZh: '我喜欢吃肉。', category: '食物' },
+  { word: 'vegetable', phonetic: '/ˈvedʒtəbl/', meaning: '蔬菜', exampleEn: 'Vegetables are healthy.', exampleZh: '蔬菜很健康。', category: '食物' },
+  { word: 'fruit', phonetic: '/fruːt/', meaning: '水果', exampleEn: 'Fruits are sweet.', exampleZh: '水果很甜。', category: '食物' },
+  { word: 'breakfast', phonetic: '/ˈbrekfəst/', meaning: '早餐', exampleEn: 'I eat breakfast at 7.', exampleZh: '我七点吃早餐。', category: '时间' },
+  { word: 'lunch', phonetic: '/lʌntʃ/', meaning: '午餐', exampleEn: 'Lunch is at noon.', exampleZh: '午餐在中午。', category: '时间' },
+  { word: 'dinner', phonetic: '/ˈdɪnər/', meaning: '晚餐', exampleEn: 'Dinner is at 6.', exampleZh: '晚餐在六点。', category: '时间' },
+  { word: 'morning', phonetic: '/ˈmɔːrnɪŋ/', meaning: '早上', exampleEn: 'Good morning!', exampleZh: '早上好！', category: '时间' },
+  { word: 'afternoon', phonetic: '/ˌæftərˈnuːn/', meaning: '下午', exampleEn: 'Good afternoon!', exampleZh: '下午好！', category: '时间' },
+  { word: 'evening', phonetic: '/ˈiːvnɪŋ/', meaning: '晚上', exampleEn: 'Good evening!', exampleZh: '晚上好！', category: '时间' },
+  { word: 'night', phonetic: '/naɪt/', meaning: '夜晚', exampleEn: 'Good night!', exampleZh: '晚安！', category: '时间' },
+  { word: 'today', phonetic: '/təˈdeɪ/', meaning: '今天', exampleEn: 'Today is sunny.', exampleZh: '今天是晴天。', category: '时间' },
+  { word: 'tomorrow', phonetic: '/təˈmɑːroʊ/', meaning: '明天', exampleEn: 'See you tomorrow.', exampleZh: '明天见。', category: '时间' },
+  { word: 'yesterday', phonetic: '/ˈjestərdeɪ/', meaning: '昨天', exampleEn: 'I played yesterday.', exampleZh: '我昨天玩了。', category: '时间' },
+  { word: 'day', phonetic: '/deɪ/', meaning: '天', exampleEn: 'One day at a time.', exampleZh: '一天一天来。', category: '时间' },
+  { word: 'week', phonetic: '/wiːk/', meaning: '星期', exampleEn: 'Seven days in a week.', exampleZh: '一周有七天。', category: '时间' },
+  { word: 'month', phonetic: '/mʌnθ/', meaning: '月', exampleEn: 'Thirty days in a month.', exampleZh: '一个月有三十天。', category: '时间' },
+  { word: 'year', phonetic: '/jɪr/', meaning: '年', exampleEn: 'Happy New Year!', exampleZh: '新年快乐！', category: '时间' },
+  { word: 'shirt', phonetic: '/ʃɜːrt/', meaning: '衬衫', exampleEn: 'I wear a blue shirt.', exampleZh: '我穿蓝色衬衫。', category: '服装' },
+  { word: 'pants', phonetic: '/pænts/', meaning: '裤子', exampleEn: 'My pants are black.', exampleZh: '我的裤子是黑色的。', category: '服装' },
+  { word: 'dress', phonetic: '/dres/', meaning: '连衣裙', exampleEn: 'She wears a red dress.', exampleZh: '她穿红色连衣裙。', category: '服装' },
+  { word: 'shoes', phonetic: '/ʃuːz/', meaning: '鞋子', exampleEn: 'My shoes are new.', exampleZh: '我的鞋子是新的。', category: '服装' },
+  { word: 'socks', phonetic: '/sɑːks/', meaning: '袜子', exampleEn: 'I wear white socks.', exampleZh: '我穿白色袜子。', category: '服装' },
+  { word: 'hat', phonetic: '/hæt/', meaning: '帽子', exampleEn: 'I wear a hat in summer.', exampleZh: '我夏天戴帽子。', category: '服装' },
+  { word: 'coat', phonetic: '/koʊt/', meaning: '外套', exampleEn: 'I wear a coat in winter.', exampleZh: '我冬天穿外套。', category: '服装' },
+  { word: 'sweater', phonetic: '/ˈswetər/', meaning: '毛衣', exampleEn: 'I wear a warm sweater.', exampleZh: '我穿一件暖和的毛衣。', category: '服装' },
+  { word: 'hand', phonetic: '/hænd/', meaning: '手', exampleEn: 'I have two hands.', exampleZh: '我有两只手。', category: '身体' },
+  { word: 'foot', phonetic: '/fʊt/', meaning: '脚', exampleEn: 'I have two feet.', exampleZh: '我有两只脚。', category: '身体' },
+  { word: 'head', phonetic: '/hed/', meaning: '头', exampleEn: 'My head hurts.', exampleZh: '我头痛。', category: '身体' },
+  { word: 'eyes', phonetic: '/aɪz/', meaning: '眼睛', exampleEn: 'My eyes are black.', exampleZh: '我的眼睛是黑色的。', category: '身体' },
+  { word: 'nose', phonetic: '/noʊz/', meaning: '鼻子', exampleEn: 'I smell with my nose.', exampleZh: '我用鼻子闻。', category: '身体' },
+  { word: 'mouth', phonetic: '/maʊθ/', meaning: '嘴巴', exampleEn: 'I eat with my mouth.', exampleZh: '我用嘴巴吃东西。', category: '身体' },
+  { word: 'ears', phonetic: '/ɪrz/', meaning: '耳朵', exampleEn: 'I hear with my ears.', exampleZh: '我用耳朵听。', category: '身体' },
+  { word: 'hair', phonetic: '/her/', meaning: '头发', exampleEn: 'My hair is long.', exampleZh: '我的头发很长。', category: '身体' },
+  { word: 'face', phonetic: '/feɪs/', meaning: '脸', exampleEn: 'Wash your face.', exampleZh: '洗脸。', category: '身体' },
+  { word: 'arm', phonetic: '/ɑːrm/', meaning: '胳膊', exampleEn: 'I raise my arm.', exampleZh: '我举起胳膊。', category: '身体' },
+  { word: 'leg', phonetic: '/leɡ/', meaning: '腿', exampleEn: 'I run with my legs.', exampleZh: '我用腿跑步。', category: '身体' },
+  { word: 'table', phonetic: '/ˈteɪbl/', meaning: '桌子', exampleEn: 'We eat at the table.', exampleZh: '我们在桌子旁吃饭。', category: '家具' },
+  { word: 'bed', phonetic: '/bed/', meaning: '床', exampleEn: 'I sleep in my bed.', exampleZh: '我在床上睡觉。', category: '家具' },
+  { word: 'sofa', phonetic: '/ˈsoʊfə/', meaning: '沙发', exampleEn: 'I sit on the sofa.', exampleZh: '我坐在沙发上。', category: '家具' },
+  { word: 'window', phonetic: '/ˈwɪndoʊ/', meaning: '窗户', exampleEn: 'Open the window.', exampleZh: '打开窗户。', category: '家具' },
+  { word: 'door', phonetic: '/dɔːr/', meaning: '门', exampleEn: 'Close the door.', exampleZh: '关门。', category: '家具' },
+  { word: 'light', phonetic: '/laɪt/', meaning: '灯', exampleEn: 'Turn on the light.', exampleZh: '开灯。', category: '电器' },
+  { word: 'phone', phonetic: '/foʊn/', meaning: '电话', exampleEn: 'Call me on the phone.', exampleZh: '给我打电话。', category: '电器' },
+  { word: 'computer', phonetic: '/kəmˈpjuːtər/', meaning: '电脑', exampleEn: 'I use a computer.', exampleZh: '我用电脑。', category: '电器' },
+  { word: 'TV', phonetic: '/ˌtiː ˈviː/', meaning: '电视', exampleEn: 'I watch TV.', exampleZh: '我看电视。', category: '电器' },
+  { word: 'clock', phonetic: '/klɑːk/', meaning: '时钟', exampleEn: 'The clock shows time.', exampleZh: '时钟显示时间。', category: '电器' },
+  { word: 'game', phonetic: '/ɡeɪm/', meaning: '游戏', exampleEn: 'I play games.', exampleZh: '我玩游戏。', category: '运动' },
+  { word: 'ball', phonetic: '/bɔːl/', meaning: '球', exampleEn: 'I play with a ball.', exampleZh: '我玩球。', category: '运动' },
+  { word: 'swim', phonetic: '/swɪm/', meaning: '游泳', exampleEn: 'I swim in summer.', exampleZh: '我夏天游泳。', category: '运动' },
+  { word: 'sport', phonetic: '/spɔːrt/', meaning: '运动', exampleEn: 'Sports are good for you.', exampleZh: '运动对你有好处。', category: '运动' },
+  { word: 'play', phonetic: '/pleɪ/', meaning: '玩', exampleEn: 'Let\'s play together.', exampleZh: '让我们一起玩。', category: '运动' },
+  { word: 'music', phonetic: '/ˈmjuːzɪk/', meaning: '音乐', exampleEn: 'I love music.', exampleZh: '我喜欢音乐。', category: '乐器' },
+  { word: 'piano', phonetic: '/piˈænəʊ/', meaning: '钢琴', exampleEn: 'I play the piano.', exampleZh: '我弹钢琴。', category: '乐器' },
+  { word: 'guitar', phonetic: '/ɡɪˈtɑːr/', meaning: '吉他', exampleEn: 'He plays the guitar.', exampleZh: '他弹吉他。', category: '乐器' },
+  { word: 'song', phonetic: '/sɒŋ/', meaning: '歌曲', exampleEn: 'I sing a song.', exampleZh: '我唱一首歌。', category: '乐器' },
+  { word: 'dance', phonetic: '/dɑːns/', meaning: '舞蹈', exampleEn: 'She loves to dance.', exampleZh: '她喜欢跳舞。', category: '乐器' },
+  { word: 'doctor', phonetic: '/ˈdɒktər/', meaning: '医生', exampleEn: 'Doctors help sick people.', exampleZh: '医生帮助病人。', category: '职业' },
+  { word: 'nurse', phonetic: '/nɜːs/', meaning: '护士', exampleEn: 'Nurses take care of patients.', exampleZh: '护士照顾病人。', category: '职业' },
+  { word: 'teacher', phonetic: '/ˈtiːtʃər/', meaning: '老师', exampleEn: 'Teachers teach students.', exampleZh: '老师教学生。', category: '职业' },
+  { word: 'fireman', phonetic: '/ˈfaɪəmən/', meaning: '消防员', exampleEn: 'Firemen put out fires.', exampleZh: '消防员灭火。', category: '职业' },
+  { word: 'policeman', phonetic: '/pəˈliːsmən/', meaning: '警察', exampleEn: 'Policemen keep us safe.', exampleZh: '警察保护我们的安全。', category: '职业' },
+  { word: 'work', phonetic: '/wɜːk/', meaning: '工作', exampleEn: 'My dad goes to work.', exampleZh: '我爸爸去工作。', category: '职业' },
+  { word: 'cook', phonetic: '/kʊk/', meaning: '厨师', exampleEn: 'Cooks make food.', exampleZh: '厨师做饭。', category: '职业' },
+  { word: 'driver', phonetic: '/ˈdraɪvər/', meaning: '司机', exampleEn: 'Drivers drive cars.', exampleZh: '司机开车。', category: '职业' },
+  { word: 'happy', phonetic: '/ˈhæpi/', meaning: '开心的', exampleEn: 'I am happy today.', exampleZh: '我今天很开心。', category: '情感' },
+  { word: 'sad', phonetic: '/sæd/', meaning: '难过的', exampleEn: 'Don\'t be sad.', exampleZh: '不要难过。', category: '情感' },
+  { word: 'excited', phonetic: '/ɪkˈsaɪtɪd/', meaning: '兴奋的', exampleEn: 'I am excited to go.', exampleZh: '我很兴奋要去了。', category: '情感' },
+  { word: 'tired', phonetic: '/ˈtaɪərd/', meaning: '累的', exampleEn: 'I am tired now.', exampleZh: '我现在累了。', category: '情感' },
+  { word: 'hungry', phonetic: '/ˈhʌŋɡri/', meaning: '饿的', exampleEn: 'I am hungry.', exampleZh: '我饿了。', category: '情感' },
+  { word: 'thirsty', phonetic: '/ˈθɜːrsti/', meaning: '渴的', exampleEn: 'I am thirsty.', exampleZh: '我渴了。', category: '情感' },
+  { word: 'good', phonetic: '/ɡʊd/', meaning: '好的', exampleEn: 'You did a good job.', exampleZh: '你做得很好。', category: '形容' },
+  { word: 'bad', phonetic: '/bæd/', meaning: '坏的', exampleEn: 'That was a bad idea.', exampleZh: '那是个坏主意。', category: '形容' },
+  { word: 'new', phonetic: '/nuː/', meaning: '新的', exampleEn: 'I have a new bag.', exampleZh: '我有一个新书包。', category: '形容' },
+  { word: 'old', phonetic: '/oʊld/', meaning: '旧的', exampleEn: 'This is an old book.', exampleZh: '这是一本旧书。', category: '形容' },
+  { word: 'clean', phonetic: '/kliːn/', meaning: '干净的', exampleEn: 'Keep your room clean.', exampleZh: '保持房间干净。', category: '形容' },
+  { word: 'dirty', phonetic: '/ˈdɜːrti/', meaning: '脏的', exampleEn: 'Your hands are dirty.', exampleZh: '你的手脏了。', category: '形容' },
+  { word: 'many', phonetic: '/ˈmeni/', meaning: '很多', exampleEn: 'There are many books.', exampleZh: '有很多书。', category: '数字' },
+  { word: 'few', phonetic: '/fjuː/', meaning: '很少', exampleEn: 'There are few apples.', exampleZh: '苹果很少。', category: '数字' },
+  { word: 'some', phonetic: '/sʌm/', meaning: '一些', exampleEn: 'I have some books.', exampleZh: '我有一些书。', category: '数字' },
+  { word: 'all', phonetic: '/ɔːl/', meaning: '全部', exampleEn: 'All students are here.', exampleZh: '所有学生都在这里。', category: '数字' },
+  { word: 'more', phonetic: '/mɔːr/', meaning: '更多', exampleEn: 'I want more.', exampleZh: '我想要更多。', category: '数字' },
+  { word: 'less', phonetic: '/les/', meaning: '更少', exampleEn: 'I need less sugar.', exampleZh: '我需要更少的糖。', category: '数字' },
+  { word: 'up', phonetic: '/ʌp/', meaning: '向上', exampleEn: 'Look up.', exampleZh: '向上看。', category: '方位' },
+  { word: 'down', phonetic: '/daʊn/', meaning: '向下', exampleEn: 'Look down.', exampleZh: '向下看。', category: '方位' },
+  { word: 'left', phonetic: '/left/', meaning: '左边', exampleEn: 'Turn left.', exampleZh: '左转。', category: '方位' },
+  { word: 'right', phonetic: '/raɪt/', meaning: '右边', exampleEn: 'Turn right.', exampleZh: '右转。', category: '方位' },
+  { word: 'front', phonetic: '/frʌnt/', meaning: '前面', exampleEn: 'Stand in front.', exampleZh: '站在前面。', category: '方位' },
+  { word: 'back', phonetic: '/bæk/', meaning: '后面', exampleEn: 'Stand at the back.', exampleZh: '站在后面。', category: '方位' },
+  { word: 'in', phonetic: '/ɪn/', meaning: '在里面', exampleEn: 'The cat is in the box.', exampleZh: '猫在盒子里。', category: '方位' },
+  { word: 'out', phonetic: '/aʊt/', meaning: '在外面', exampleEn: 'Come out.', exampleZh: '出来。', category: '方位' },
+  { word: 'on', phonetic: '/ɒn/', meaning: '在上面', exampleEn: 'The book is on the table.', exampleZh: '书在桌子上。', category: '方位' },
+  { word: 'under', phonetic: '/ˈʌndər/', meaning: '在下面', exampleEn: 'The cat is under the bed.', exampleZh: '猫在床下面。', category: '方位' },
+  { word: 'between', phonetic: '/bɪˈtwiːn/', meaning: '在之间', exampleEn: 'I sit between two friends.', exampleZh: '我坐在两个朋友之间。', category: '方位' },
+  { word: 'beside', phonetic: '/bɪˈsaɪd/', meaning: '在旁边', exampleEn: 'Stand beside me.', exampleZh: '站在我旁边。', category: '方位' },
+  { word: 'school', phonetic: '/skuːl/', meaning: '学校', exampleEn: 'I go to school.', exampleZh: '我去上学。', category: '学习' },
+  { word: 'classroom', phonetic: '/ˈklæsruːm/', meaning: '教室', exampleEn: 'We study in the classroom.', exampleZh: '我们在教室里学习。', category: '学习' },
+  { word: 'book', phonetic: '/bʊk/', meaning: '书', exampleEn: 'I read a book.', exampleZh: '我读一本书。', category: '学习' },
+  { word: 'pen', phonetic: '/pen/', meaning: '钢笔', exampleEn: 'I write with a pen.', exampleZh: '我用钢笔写字。', category: '学习' },
+  { word: 'pencil', phonetic: '/ˈpensl/', meaning: '铅笔', exampleEn: 'I draw with a pencil.', exampleZh: '我用铅笔画画。', category: '学习' },
+  { word: 'eraser', phonetic: '/ɪˈreɪzər/', meaning: '橡皮', exampleEn: 'I erase with an eraser.', exampleZh: '我用橡皮擦掉。', category: '学习' },
+  { word: 'ruler', phonetic: '/ˈruːlər/', meaning: '尺子', exampleEn: 'I measure with a ruler.', exampleZh: '我用尺子量。', category: '学习' },
+  { word: 'desk', phonetic: '/desk/', meaning: '课桌', exampleEn: 'My desk is clean.', exampleZh: '我的课桌很干净。', category: '学习' },
+  { word: 'chair', phonetic: '/tʃeər/', meaning: '椅子', exampleEn: 'Please sit on the chair.', exampleZh: '请坐在椅子上。', category: '学习' },
+  { word: 'friend', phonetic: '/frend/', meaning: '朋友', exampleEn: 'She is my friend.', exampleZh: '她是我的朋友。', category: '情感' },
+  { word: 'love', phonetic: '/lʌv/', meaning: '爱', exampleEn: 'I love you.', exampleZh: '我爱你。', category: '情感' },
+  { word: 'kind', phonetic: '/kaɪnd/', meaning: '善良的', exampleEn: 'She is very kind.', exampleZh: '她很善良。', category: '情感' },
+  { word: 'nice', phonetic: '/naɪs/', meaning: '友好的', exampleEn: 'He is a nice boy.', exampleZh: '他是个友好的男孩。', category: '情感' },
+  { word: 'funny', phonetic: '/ˈfʌni/', meaning: '有趣的', exampleEn: 'He is very funny.', exampleZh: '他很有趣。', category: '情感' },
+  { word: 'smart', phonetic: '/smɑːrt/', meaning: '聪明的', exampleEn: 'She is very smart.', exampleZh: '她很聪明。', category: '情感' },
+  { word: 'beautiful', phonetic: '/ˈbjuːtɪfl/', meaning: '美丽的', exampleEn: 'The garden is beautiful.', exampleZh: '花园很美。', category: '情感' },
+  { word: 'wonderful', phonetic: '/ˈwʌndərfl/', meaning: '精彩的', exampleEn: 'That was wonderful!', exampleZh: '那太棒了！', category: '情感' },
+  { word: 'delicious', phonetic: '/dɪˈlɪʃəs/', meaning: '美味的', exampleEn: 'The food is delicious.', exampleZh: '食物很美味。', category: '食物' },
+  { word: 'sweet', phonetic: '/swiːt/', meaning: '甜的', exampleEn: 'Candy is sweet.', exampleZh: '糖果是甜的。', category: '食物' },
+  { word: 'sour', phonetic: '/saʊər/', meaning: '酸的', exampleEn: 'Lemons are sour.', exampleZh: '柠檬是酸的。', category: '食物' },
+  { word: 'hot', phonetic: '/hɒt/', meaning: '辣的', exampleEn: 'Chili is hot.', exampleZh: '辣椒很辣。', category: '食物' },
+  { word: 'cold', phonetic: '/kəʊld/', meaning: '冷的', exampleEn: 'Ice cream is cold.', exampleZh: '冰淇淋是冷的。', category: '食物' },
+  { word: 'warm', phonetic: '/wɔːm/', meaning: '温暖的', exampleEn: 'The soup is warm.', exampleZh: '汤是温暖的。', category: '食物' },
+  { word: 'cool', phonetic: '/kuːl/', meaning: '凉爽的', exampleEn: 'The water is cool.', exampleZh: '水很凉爽。', category: '食物' },
+  { word: 'fresh', phonetic: '/freʃ/', meaning: '新鲜的', exampleEn: 'The fruit is fresh.', exampleZh: '水果很新鲜。', category: '食物' },
+  { word: 'juicy', phonetic: '/ˈdʒuːsi/', meaning: '多汁的', exampleEn: 'The orange is juicy.', exampleZh: '橙子很多汁。', category: '食物' },
+  { word: 'crispy', phonetic: '/ˈkrɪspi/', meaning: '脆的', exampleEn: 'The chips are crispy.', exampleZh: '薯片很脆。', category: '食物' },
+  { word: 'soft', phonetic: '/sɒft/', meaning: '软的', exampleEn: 'The pillow is soft.', exampleZh: '枕头很软。', category: '形容' },
+  { word: 'hard', phonetic: '/hɑːd/', meaning: '硬的', exampleEn: 'The stone is hard.', exampleZh: '石头很硬。', category: '形容' },
+  { word: 'smooth', phonetic: '/smuːð/', meaning: '光滑的', exampleEn: 'The table is smooth.', exampleZh: '桌子很光滑。', category: '形容' },
+  { word: 'rough', phonetic: '/rʌf/', meaning: '粗糙的', exampleEn: 'The sand is rough.', exampleZh: '沙子很粗糙。', category: '形容' },
+  { word: 'bright', phonetic: '/braɪt/', meaning: '明亮的', exampleEn: 'The sun is bright.', exampleZh: '太阳很明亮。', category: '形容' },
+  { word: 'dark', phonetic: '/dɑːk/', meaning: '黑暗的', exampleEn: 'The room is dark.', exampleZh: '房间很暗。', category: '形容' },
+  { word: 'quiet', phonetic: '/ˈkwaɪət/', meaning: '安静的', exampleEn: 'Be quiet, please.', exampleZh: '请安静。', category: '形容' },
+  { word: 'loud', phonetic: '/laʊd/', meaning: '大声的', exampleEn: 'Don\'t be so loud.', exampleZh: '不要那么大声。', category: '形容' },
+  { word: 'fast', phonetic: '/fɑːst/', meaning: '快速的', exampleEn: 'He runs fast.', exampleZh: '他跑得快。', category: '形容' },
+  { word: 'slow', phonetic: '/sloʊ/', meaning: '慢速的', exampleEn: 'Please speak slowly.', exampleZh: '请慢慢说。', category: '形容' },
+  { word: 'quick', phonetic: '/kwɪk/', meaning: '快的', exampleEn: 'Be quick!', exampleZh: '快点！', category: '形容' },
+  { word: 'late', phonetic: '/leɪt/', meaning: '晚的', exampleEn: 'Don\'t be late.', exampleZh: '不要迟到。', category: '时间' },
+  { word: 'early', phonetic: '/ˈɜːrli/', meaning: '早的', exampleEn: 'Get up early.', exampleZh: '早起。', category: '时间' },
+  { word: 'soon', phonetic: '/suːn/', meaning: '很快', exampleEn: 'See you soon.', exampleZh: '很快再见。', category: '时间' },
+  { word: 'now', phonetic: '/naʊ/', meaning: '现在', exampleEn: 'Do it now.', exampleZh: '现在做。', category: '时间' },
+  { word: 'then', phonetic: '/ðen/', meaning: '然后', exampleEn: 'First this, then that.', exampleZh: '先这个，然后那个。', category: '时间' },
+  { word: 'today', phonetic: '/təˈdeɪ/', meaning: '今天', exampleEn: 'Today is Monday.', exampleZh: '今天是星期一。', category: '时间' },
+  { word: 'tonight', phonetic: '/təˈnaɪt/', meaning: '今晚', exampleEn: 'We will go tonight.', exampleZh: '我们今晚去。', category: '时间' },
+  { word: 'always', phonetic: '/ˈɔːlweɪz/', meaning: '总是', exampleEn: 'I always study hard.', exampleZh: '我总是努力学习。', category: '时间' },
+  { word: 'never', phonetic: '/ˈnevər/', meaning: '从不', exampleEn: 'I never lie.', exampleZh: '我从不说谎。', category: '时间' },
+  { word: 'usually', phonetic: '/ˈjuːʒuəli/', meaning: '通常', exampleEn: 'I usually get up early.', exampleZh: '我通常早起。', category: '时间' },
+  { word: 'sometimes', phonetic: '/ˈsʌmtaɪmz/', meaning: '有时', exampleEn: 'I sometimes play games.', exampleZh: '我有时玩游戏。', category: '时间' },
+  { word: 'often', phonetic: '/ˈɔːfn/', meaning: '经常', exampleEn: 'I often read books.', exampleZh: '我经常读书。', category: '时间' },
+  { word: 'weather', phonetic: '/ˈweðər/', meaning: '天气', exampleEn: 'The weather is nice.', exampleZh: '天气很好。', category: '天气' },
+  { word: 'sunny', phonetic: '/ˈsʌni/', meaning: '晴天的', exampleEn: 'Today is sunny.', exampleZh: '今天是晴天。', category: '天气' },
+  { word: 'rainy', phonetic: '/ˈreɪni/', meaning: '下雨的', exampleEn: 'Today is rainy.', exampleZh: '今天下雨。', category: '天气' },
+  { word: 'cloudy', phonetic: '/ˈklaʊdi/', meaning: '多云的', exampleEn: 'Today is cloudy.', exampleZh: '今天多云。', category: '天气' },
+  { word: 'windy', phonetic: '/ˈwɪndi/', meaning: '有风的', exampleEn: 'Today is windy.', exampleZh: '今天有风。', category: '天气' },
+  { word: 'snowy', phonetic: '/ˈsnoʊi/', meaning: '下雪的', exampleEn: 'Today is snowy.', exampleZh: '今天下雪。', category: '天气' },
+  { word: 'stormy', phonetic: '/ˈstɔːrmi/', meaning: '暴风雨的', exampleEn: 'It is stormy outside.', exampleZh: '外面有暴风雨。', category: '天气' },
+  { word: 'foggy', phonetic: '/ˈfɒɡi/', meaning: '有雾的', exampleEn: 'It is foggy this morning.', exampleZh: '今天早上有雾。', category: '天气' },
+  { word: 'season', phonetic: '/ˈsiːzn/', meaning: '季节', exampleEn: 'There are four seasons.', exampleZh: '有四个季节。', category: '时间' },
+  { word: 'spring', phonetic: '/sprɪŋ/', meaning: '春天', exampleEn: 'Spring is warm.', exampleZh: '春天很温暖。', category: '时间' },
+  { word: 'summer', phonetic: '/ˈsʌmər/', meaning: '夏天', exampleEn: 'Summer is hot.', exampleZh: '夏天很热。', category: '时间' },
+  { word: 'autumn', phonetic: '/ˈɔːtəm/', meaning: '秋天', exampleEn: 'Autumn is cool.', exampleZh: '秋天很凉爽。', category: '时间' },
+  { word: 'winter', phonetic: '/ˈwɪntər/', meaning: '冬天', exampleEn: 'Winter is cold.', exampleZh: '冬天很冷。', category: '时间' },
+  { word: 'april', phonetic: '/ˈeɪprəl/', meaning: '四月', exampleEn: 'April showers bring May flowers.', exampleZh: '四月的雨带来五月的花。', category: '时间' },
+  { word: 'may', phonetic: '/meɪ/', meaning: '五月', exampleEn: 'May is my favorite month.', exampleZh: '五月是我最喜欢的月份。', category: '时间' },
+  { word: 'june', phonetic: '/dʒuːn/', meaning: '六月', exampleEn: 'June is hot.', exampleZh: '六月很热。', category: '时间' },
+  { word: 'july', phonetic: '/dʒuˈlaɪ/', meaning: '七月', exampleEn: 'July is the hottest month.', exampleZh: '七月是最热的月份。', category: '时间' },
+  { word: 'august', phonetic: '/ˈɔːɡəst/', meaning: '八月', exampleEn: 'August is summer.', exampleZh: '八月是夏天。', category: '时间' },
+  { word: 'september', phonetic: '/sepˈtembər/', meaning: '九月', exampleEn: 'September starts school.', exampleZh: '九月开学。', category: '时间' },
+  { word: 'october', phonetic: '/ɑːkˈtoʊbər/', meaning: '十月', exampleEn: 'October has Halloween.', exampleZh: '十月有万圣节。', category: '时间' },
+  { word: 'november', phonetic: '/noʊˈvembər/', meaning: '十一月', exampleEn: 'November is autumn.', exampleZh: '十一月是秋天。', category: '时间' },
+  { word: 'december', phonetic: '/dɪˈsembər/', meaning: '十二月', exampleEn: 'December has Christmas.', exampleZh: '十二月有圣诞节。', category: '时间' },
+  { word: 'january', phonetic: '/ˈdʒænjueri/', meaning: '一月', exampleEn: 'January is cold.', exampleZh: '一月很冷。', category: '时间' },
+  { word: 'february', phonetic: '/ˈfebrueri/', meaning: '二月', exampleEn: 'February is short.', exampleZh: '二月很短。', category: '时间' },
+  { word: 'march', phonetic: '/mɑːrtʃ/', meaning: '三月', exampleEn: 'March comes in like a lion.', exampleZh: '三月像狮子一样来。', category: '时间' },
+  { word: 'monday', phonetic: '/ˈmʌndeɪ/', meaning: '星期一', exampleEn: 'Monday is the first day.', exampleZh: '星期一是第一天。', category: '时间' },
+  { word: 'tuesday', phonetic: '/ˈtuːzdeɪ/', meaning: '星期二', exampleEn: 'Tuesday comes after Monday.', exampleZh: '星期二在星期一之后。', category: '时间' },
+  { word: 'wednesday', phonetic: '/ˈwenzdeɪ/', meaning: '星期三', exampleEn: 'Wednesday is in the middle.', exampleZh: '星期三在中间。', category: '时间' },
+  { word: 'thursday', phonetic: '/ˈθɜːrzdeɪ/', meaning: '星期四', exampleEn: 'Thursday is almost Friday.', exampleZh: '星期四快到星期五了。', category: '时间' },
+  { word: 'friday', phonetic: '/ˈfraɪdeɪ/', meaning: '星期五', exampleEn: 'Friday is fun.', exampleZh: '星期五很有趣。', category: '时间' },
+  { word: 'saturday', phonetic: '/ˈsætərdeɪ/', meaning: '星期六', exampleEn: 'Saturday is the weekend.', exampleZh: '星期六是周末。', category: '时间' },
+  { word: 'sunday', phonetic: '/ˈsʌndeɪ/', meaning: '星期日', exampleEn: 'Sunday is a day of rest.', exampleZh: '星期日是休息日。', category: '时间' },
+  { word: 'break', phonetic: '/breɪk/', meaning: '休息', exampleEn: 'Let\'s take a break.', exampleZh: '让我们休息一下。', category: '动作' },
+  { word: 'build', phonetic: '/bɪld/', meaning: '建造', exampleEn: 'We build a house.', exampleZh: '我们建房子。', category: '动作' },
+  { word: 'buy', phonetic: '/baɪ/', meaning: '买', exampleEn: 'I buy a book.', exampleZh: '我买一本书。', category: '动作' },
+  { word: 'catch', phonetic: '/kætʃ/', meaning: '抓住', exampleEn: 'Catch the ball.', exampleZh: '抓住球。', category: '动作' },
+  { word: 'choose', phonetic: '/tʃuːz/', meaning: '选择', exampleEn: 'Choose your favorite.', exampleZh: '选择你最喜欢的。', category: '动作' },
+  { word: 'close', phonetic: '/kloʊz/', meaning: '关闭', exampleEn: 'Close the door.', exampleZh: '关门。', category: '动作' },
+  { word: 'come', phonetic: '/kʌm/', meaning: '来', exampleEn: 'Come here.', exampleZh: '过来。', category: '动作' },
+  { word: 'cut', phonetic: '/kʌt/', meaning: '切', exampleEn: 'Cut the cake.', exampleZh: '切蛋糕。', category: '动作' },
+  { word: 'do', phonetic: '/duː/', meaning: '做', exampleEn: 'Do your homework.', exampleZh: '做作业。', category: '动作' },
+  { word: 'draw', phonetic: '/drɔː/', meaning: '画', exampleEn: 'Draw a picture.', exampleZh: '画一幅画。', category: '动作' },
+  { word: 'drink', phonetic: '/drɪŋk/', meaning: '喝', exampleEn: 'Drink water.', exampleZh: '喝水。', category: '动作' },
+  { word: 'eat', phonetic: '/iːt/', meaning: '吃', exampleEn: 'Eat your vegetables.', exampleZh: '吃你的蔬菜。', category: '动作' },
+  { word: 'fall', phonetic: '/fɔːl/', meaning: '落下', exampleEn: 'Leaves fall in autumn.', exampleZh: '叶子在秋天落下。', category: '动作' },
+  { word: 'feel', phonetic: '/fiːl/', meaning: '感觉', exampleEn: 'I feel happy.', exampleZh: '我感觉快乐。', category: '动作' },
+  { word: 'find', phonetic: '/faɪnd/', meaning: '找到', exampleEn: 'Find the key.', exampleZh: '找到钥匙。', category: '动作' },
+  { word: 'fly', phonetic: '/flaɪ/', meaning: '飞', exampleEn: 'Birds fly.', exampleZh: '鸟会飞。', category: '动作' },
+  { word: 'forget', phonetic: '/fərˈɡet/', meaning: '忘记', exampleEn: 'Don\'t forget.', exampleZh: '不要忘记。', category: '动作' },
+  { word: 'get', phonetic: '/ɡet/', meaning: '得到', exampleEn: 'Get up early.', exampleZh: '早起。', category: '动作' },
+  { word: 'give', phonetic: '/ɡɪv/', meaning: '给', exampleEn: 'Give me the book.', exampleZh: '把书给我。', category: '动作' },
+  { word: 'go', phonetic: '/ɡoʊ/', meaning: '去', exampleEn: 'Let\'s go.', exampleZh: '我们走吧。', category: '动作' },
+  { word: 'grow', phonetic: '/ɡroʊ/', meaning: '生长', exampleEn: 'Plants grow.', exampleZh: '植物生长。', category: '动作' },
+  { word: 'have', phonetic: '/hæv/', meaning: '有', exampleEn: 'I have a cat.', exampleZh: '我有一只猫。', category: '动作' },
+  { word: 'hear', phonetic: '/hɪr/', meaning: '听见', exampleEn: 'I hear music.', exampleZh: '我听见音乐。', category: '动作' },
+  { word: 'help', phonetic: '/help/', meaning: '帮助', exampleEn: 'Help your friend.', exampleZh: '帮助你的朋友。', category: '动作' },
+  { word: 'hold', phonetic: '/hoʊld/', meaning: '握住', exampleEn: 'Hold my hand.', exampleZh: '握住我的手。', category: '动作' },
+  { word: 'hurt', phonetic: '/hɜːrt/', meaning: '受伤', exampleEn: 'I hurt my knee.', exampleZh: '我的膝盖受伤了。', category: '动作' },
+  { word: 'keep', phonetic: '/kiːp/', meaning: '保持', exampleEn: 'Keep quiet.', exampleZh: '保持安静。', category: '动作' },
+  { word: 'know', phonetic: '/noʊ/', meaning: '知道', exampleEn: 'I know the answer.', exampleZh: '我知道答案。', category: '动作' },
+  { word: 'learn', phonetic: '/lɜːrn/', meaning: '学习', exampleEn: 'Learn new words.', exampleZh: '学习新单词。', category: '动作' },
+  { word: 'leave', phonetic: '/liːv/', meaning: '离开', exampleEn: 'Leave now.', exampleZh: '现在离开。', category: '动作' },
+  { word: 'let', phonetic: '/let/', meaning: '让', exampleEn: 'Let me try.', exampleZh: '让我试试。', category: '动作' },
+  { word: 'like', phonetic: '/laɪk/', meaning: '喜欢', exampleEn: 'I like ice cream.', exampleZh: '我喜欢冰淇淋。', category: '动作' },
+  { word: 'listen', phonetic: '/ˈlɪsn/', meaning: '听', exampleEn: 'Listen to me.', exampleZh: '听我说。', category: '动作' },
+  { word: 'look', phonetic: '/lʊk/', meaning: '看', exampleEn: 'Look at the sky.', exampleZh: '看天空。', category: '动作' },
+  { word: 'make', phonetic: '/meɪk/', meaning: '制作', exampleEn: 'Make a cake.', exampleZh: '做蛋糕。', category: '动作' },
+  { word: 'meet', phonetic: '/miːt/', meaning: '遇见', exampleEn: 'Nice to meet you.', exampleZh: '很高兴见到你。', category: '动作' },
+  { word: 'open', phonetic: '/ˈoʊpən/', meaning: '打开', exampleEn: 'Open the window.', exampleZh: '打开窗户。', category: '动作' },
+  { word: 'play', phonetic: '/pleɪ/', meaning: '玩', exampleEn: 'Play with me.', exampleZh: '和我一起玩。', category: '动作' },
+  { word: 'put', phonetic: '/pʊt/', meaning: '放', exampleEn: 'Put it there.', exampleZh: '把它放在那里。', category: '动作' },
+  { word: 'read', phonetic: '/riːd/', meaning: '读', exampleEn: 'Read a story.', exampleZh: '读故事。', category: '动作' },
+  { word: 'ride', phonetic: '/raɪd/', meaning: '骑', exampleEn: 'Ride a bike.', exampleZh: '骑自行车。', category: '动作' },
+  { word: 'run', phonetic: '/rʌn/', meaning: '跑', exampleEn: 'Run fast.', exampleZh: '跑得快。', category: '动作' },
+  { word: 'say', phonetic: '/seɪ/', meaning: '说', exampleEn: 'Say hello.', exampleZh: '说你好。', category: '动作' },
+  { word: 'see', phonetic: '/siː/', meaning: '看见', exampleEn: 'I see you.', exampleZh: '我看见你。', category: '动作' },
+  { word: 'sell', phonetic: '/sel/', meaning: '卖', exampleEn: 'Sell the fruit.', exampleZh: '卖水果。', category: '动作' },
+  { word: 'send', phonetic: '/send/', meaning: '发送', exampleEn: 'Send a letter.', exampleZh: '寄一封信。', category: '动作' },
+  { word: 'set', phonetic: '/set/', meaning: '放置', exampleEn: 'Set the table.', exampleZh: '摆桌子。', category: '动作' },
+  { word: 'show', phonetic: '/ʃoʊ/', meaning: '展示', exampleEn: 'Show me.', exampleZh: '给我看。', category: '动作' },
+  { word: 'sing', phonetic: '/sɪŋ/', meaning: '唱', exampleEn: 'Sing a song.', exampleZh: '唱歌。', category: '动作' },
+  { word: 'sit', phonetic: '/sɪt/', meaning: '坐', exampleEn: 'Sit down.', exampleZh: '坐下。', category: '动作' },
+  { word: 'sleep', phonetic: '/sliːp/', meaning: '睡觉', exampleEn: 'Go to sleep.', exampleZh: '去睡觉。', category: '动作' },
+  { word: 'speak', phonetic: '/spiːk/', meaning: '说话', exampleEn: 'Speak English.', exampleZh: '说英语。', category: '动作' },
+  { word: 'spend', phonetic: '/spend/', meaning: '花费', exampleEn: 'Spend time.', exampleZh: '花费时间。', category: '动作' },
+  { word: 'stand', phonetic: '/stænd/', meaning: '站', exampleEn: 'Stand up.', exampleZh: '站起来。', category: '动作' },
+  { word: 'stay', phonetic: '/steɪ/', meaning: '停留', exampleEn: 'Stay here.', exampleZh: '留在这里。', category: '动作' },
+  { word: 'stop', phonetic: '/stɑːp/', meaning: '停止', exampleEn: 'Stop now.', exampleZh: '现在停止。', category: '动作' },
+  { word: 'take', phonetic: '/teɪk/', meaning: '拿', exampleEn: 'Take this.', exampleZh: '拿这个。', category: '动作' },
+  { word: 'talk', phonetic: '/tɔːk/', meaning: '谈话', exampleEn: 'Talk to me.', exampleZh: '和我说话。', category: '动作' },
+  { word: 'tell', phonetic: '/tel/', meaning: '告诉', exampleEn: 'Tell me a story.', exampleZh: '给我讲故事。', category: '动作' },
+  { word: 'think', phonetic: '/θɪŋk/', meaning: '思考', exampleEn: 'Think about it.', exampleZh: '想想看。', category: '动作' },
+  { word: 'throw', phonetic: '/θroʊ/', meaning: '扔', exampleEn: 'Throw the ball.', exampleZh: '扔球。', category: '动作' },
+  { word: 'understand', phonetic: '/ˌʌndərˈstænd/', meaning: '理解', exampleEn: 'I understand.', exampleZh: '我理解。', category: '动作' },
+  { word: 'use', phonetic: '/juːz/', meaning: '使用', exampleEn: 'Use a computer.', exampleZh: '使用电脑。', category: '动作' },
+  { word: 'visit', phonetic: '/ˈvɪzɪt/', meaning: '访问', exampleEn: 'Visit my friend.', exampleZh: '拜访我的朋友。', category: '动作' },
+  { word: 'wait', phonetic: '/weɪt/', meaning: '等待', exampleEn: 'Wait for me.', exampleZh: '等我。', category: '动作' },
+  { word: 'walk', phonetic: '/wɔːk/', meaning: '走', exampleEn: 'Walk to school.', exampleZh: '走路去上学。', category: '动作' },
+  { word: 'wash', phonetic: '/wɑːʃ/', meaning: '洗', exampleEn: 'Wash your hands.', exampleZh: '洗手。', category: '动作' },
+  { word: 'watch', phonetic: '/wɑːtʃ/', meaning: '观看', exampleEn: 'Watch TV.', exampleZh: '看电视。', category: '动作' },
+  { word: 'water', phonetic: '/ˈwɔːtər/', meaning: '浇水', exampleEn: 'Water the plants.', exampleZh: '给植物浇水。', category: '动作' },
+  { word: 'wear', phonetic: '/wer/', meaning: '穿', exampleEn: 'Wear a coat.', exampleZh: '穿外套。', category: '动作' },
+  { word: 'welcome', phonetic: '/ˈwelkəm/', meaning: '欢迎', exampleEn: 'Welcome home.', exampleZh: '欢迎回家。', category: '动作' },
+  { word: 'win', phonetic: '/wɪn/', meaning: '赢', exampleEn: 'Win the game.', exampleZh: '赢得比赛。', category: '动作' },
+  { word: 'work', phonetic: '/wɜːrk/', meaning: '工作', exampleEn: 'Work hard.', exampleZh: '努力工作。', category: '动作' },
+  { word: 'write', phonetic: '/raɪt/', meaning: '写', exampleEn: 'Write a letter.', exampleZh: '写一封信。', category: '动作' },
+  { word: 'answer', phonetic: '/ˈɑːnsər/', meaning: '回答', exampleEn: 'Answer the question.', exampleZh: '回答问题。', category: '学习' },
+  { word: 'ask', phonetic: '/æsk/', meaning: '问', exampleEn: 'Ask a question.', exampleZh: '问问题。', category: '学习' },
+  { word: 'begin', phonetic: '/bɪˈɡɪn/', meaning: '开始', exampleEn: 'Begin now.', exampleZh: '现在开始。', category: '学习' },
+  { word: 'complete', phonetic: '/kəmˈpliːt/', meaning: '完成', exampleEn: 'Complete the task.', exampleZh: '完成任务。', category: '学习' },
+  { word: 'finish', phonetic: '/ˈfɪnɪʃ/', meaning: '完成', exampleEn: 'Finish your work.', exampleZh: '完成你的工作。', category: '学习' },
+  { word: 'graduate', phonetic: '/ˈɡrædʒueɪt/', meaning: '毕业', exampleEn: 'Graduate from school.', exampleZh: '从学校毕业。', category: '学习' },
+  { word: 'improve', phonetic: '/ɪmˈpruːv/', meaning: '改进', exampleEn: 'Improve your skills.', exampleZh: '提高你的技能。', category: '学习' },
+  { word: 'practice', phonetic: '/ˈpræktɪs/', meaning: '练习', exampleEn: 'Practice every day.', exampleZh: '每天练习。', category: '学习' },
+  { word: 'review', phonetic: '/rɪˈvjuː/', meaning: '复习', exampleEn: 'Review your notes.', exampleZh: '复习你的笔记。', category: '学习' },
+  { word: 'study', phonetic: '/ˈstʌdi/', meaning: '学习', exampleEn: 'Study hard.', exampleZh: '努力学习。', category: '学习' },
+  { word: 'teach', phonetic: '/tiːtʃ/', meaning: '教', exampleEn: 'Teach me English.', exampleZh: '教我英语。', category: '学习' },
+  { word: 'textbook', phonetic: '/ˈteɪkstbʊk/', meaning: '课本', exampleEn: 'Open your textbook.', exampleZh: '打开你的课本。', category: '学习' },
+  { word: 'homework', phonetic: '/ˈhoʊmwɜːrk/', meaning: '作业', exampleEn: 'Do your homework.', exampleZh: '做作业。', category: '学习' },
+  { word: 'exam', phonetic: '/ɪɡˈzæm/', meaning: '考试', exampleEn: 'Take an exam.', exampleZh: '参加考试。', category: '学习' },
+  { word: 'test', phonetic: '/test/', meaning: '测试', exampleEn: 'Take a test.', exampleZh: '参加测试。', category: '学习' },
+  { word: 'grade', phonetic: '/ɡreɪd/', meaning: '成绩', exampleEn: 'Get a good grade.', exampleZh: '取得好成绩。', category: '学习' },
+  { word: 'lesson', phonetic: '/ˈlesn/', meaning: '课', exampleEn: 'Have a lesson.', exampleZh: '上课。', category: '学习' },
+  { word: 'project', phonetic: '/ˈprɒdʒekt/', meaning: '项目', exampleEn: 'Work on a project.', exampleZh: '做项目。', category: '学习' },
+  { word: 'research', phonetic: '/rɪˈsɜːrtʃ/', meaning: '研究', exampleEn: 'Do research.', exampleZh: '做研究。', category: '学习' },
+  { word: 'science', phonetic: '/ˈsaɪəns/', meaning: '科学', exampleEn: 'Science is fun.', exampleZh: '科学很有趣。', category: '学习' },
+  { word: 'history', phonetic: '/ˈhɪstri/', meaning: '历史', exampleEn: 'History is interesting.', exampleZh: '历史很有趣。', category: '学习' },
+  { word: 'math', phonetic: '/mæθ/', meaning: '数学', exampleEn: 'Math is challenging.', exampleZh: '数学很有挑战性。', category: '学习' },
+  { word: 'physics', phonetic: '/ˈfɪzɪks/', meaning: '物理', exampleEn: 'Physics is cool.', exampleZh: '物理很酷。', category: '学习' },
+  { word: 'chemistry', phonetic: '/ˈkemɪstri/', meaning: '化学', exampleEn: 'Chemistry is amazing.', exampleZh: '化学很神奇。', category: '学习' },
+  { word: 'biology', phonetic: '/baɪˈɒlədʒi/', meaning: '生物', exampleEn: 'Biology is about life.', exampleZh: '生物是关于生命的。', category: '学习' },
+  { word: 'geography', phonetic: '/dʒiˈɒɡrəfi/', meaning: '地理', exampleEn: 'Geography is about Earth.', exampleZh: '地理是关于地球的。', category: '学习' },
+  { word: 'language', phonetic: '/ˈlæŋɡwɪdʒ/', meaning: '语言', exampleEn: 'English is a language.', exampleZh: '英语是一门语言。', category: '学习' },
+  { word: 'vocabulary', phonetic: '/vəˈkæbjələri/', meaning: '词汇', exampleEn: 'Build your vocabulary.', exampleZh: '扩大你的词汇量。', category: '学习' },
+  { word: 'grammar', phonetic: '/ˈɡræmər/', meaning: '语法', exampleEn: 'Learn grammar rules.', exampleZh: '学习语法规则。', category: '学习' },
+  { word: 'sentence', phonetic: '/ˈsentəns/', meaning: '句子', exampleEn: 'Make a sentence.', exampleZh: '造一个句子。', category: '学习' },
+  { word: 'paragraph', phonetic: '/ˈpærəɡrɑːf/', meaning: '段落', exampleEn: 'Write a paragraph.', exampleZh: '写一个段落。', category: '学习' },
+  { word: 'essay', phonetic: '/ˈeseɪ/', meaning: '文章', exampleEn: 'Write an essay.', exampleZh: '写一篇文章。', category: '学习' },
+  { word: 'speech', phonetic: '/spiːtʃ/', meaning: '演讲', exampleEn: 'Give a speech.', exampleZh: '做演讲。', category: '学习' },
+  { word: 'presentation', phonetic: '/ˌpriːzenˈteɪʃn/', meaning: '演示', exampleEn: 'Make a presentation.', exampleZh: '做演示。', category: '学习' },
+  { word: 'library', phonetic: '/ˈlaɪbreri/', meaning: '图书馆', exampleEn: 'Go to the library.', exampleZh: '去图书馆。', category: '学习' },
+  { word: 'dictionary', phonetic: '/ˈdɪkʃəneri/', meaning: '字典', exampleEn: 'Use a dictionary.', exampleZh: '使用字典。', category: '学习' },
+  { word: 'notebook', phonetic: '/ˈnoʊtbʊk/', meaning: '笔记本', exampleEn: 'Write in your notebook.', exampleZh: '在笔记本上写。', category: '学习' },
+  { word: 'backpack', phonetic: '/ˈbækpæk/', meaning: '背包', exampleEn: 'Carry your backpack.', exampleZh: '背你的背包。', category: '学习' },
+  { word: 'high', phonetic: '/haɪ/', meaning: '高的', exampleEn: 'The tree is high.', exampleZh: '树很高。', category: '形容' },
+  { word: 'low', phonetic: '/loʊ/', meaning: '低的', exampleEn: 'The sun is low.', exampleZh: '太阳很低。', category: '形容' },
+  { word: 'wide', phonetic: '/waɪd/', meaning: '宽的', exampleEn: 'The road is wide.', exampleZh: '路很宽。', category: '形容' },
+  { word: 'narrow', phonetic: '/ˈnæroʊ/', meaning: '窄的', exampleEn: 'The path is narrow.', exampleZh: '小路很窄。', category: '形容' },
+  { word: 'deep', phonetic: '/diːp/', meaning: '深的', exampleEn: 'The lake is deep.', exampleZh: '湖很深。', category: '形容' },
+  { word: 'shallow', phonetic: '/ˈʃæloʊ/', meaning: '浅的', exampleEn: 'The water is shallow.', exampleZh: '水很浅。', category: '形容' },
+  { word: 'long', phonetic: '/lɔːŋ/', meaning: '长的', exampleEn: 'The river is long.', exampleZh: '河很长。', category: '形容' },
+  { word: 'short', phonetic: '/ʃɔːrt/', meaning: '短的', exampleEn: 'The pencil is short.', exampleZh: '铅笔很短。', category: '形容' },
+  { word: 'thick', phonetic: '/θɪk/', meaning: '厚的', exampleEn: 'The book is thick.', exampleZh: '书很厚。', category: '形容' },
+  { word: 'thin', phonetic: '/θɪn/', meaning: '薄的', exampleEn: 'The paper is thin.', exampleZh: '纸很薄。', category: '形容' },
+  { word: 'round', phonetic: '/raʊnd/', meaning: '圆的', exampleEn: 'The ball is round.', exampleZh: '球是圆的。', category: '形容' },
+  { word: 'square', phonetic: '/skwer/', meaning: '方的', exampleEn: 'The box is square.', exampleZh: '盒子是方的。', category: '形容' },
+  { word: 'triangular', phonetic: '/traɪˈæŋɡjələr/', meaning: '三角形的', exampleEn: 'The sign is triangular.', exampleZh: '标志是三角形的。', category: '形容' },
+  { word: 'oval', phonetic: '/ˈoʊvl/', meaning: '椭圆形的', exampleEn: 'The egg is oval.', exampleZh: '鸡蛋是椭圆形的。', category: '形容' },
+  { word: 'rectangular', phonetic: '/rekˈtæŋɡjələr/', meaning: '长方形的', exampleEn: 'The table is rectangular.', exampleZh: '桌子是长方形的。', category: '形容' },
+  { word: 'beautiful', phonetic: '/ˈbjuːtɪfl/', meaning: '美丽的', exampleEn: 'The flower is beautiful.', exampleZh: '花很美。', category: '形容' },
+  { word: 'ugly', phonetic: '/ˈʌɡli/', meaning: '丑陋的', exampleEn: 'The monster is ugly.', exampleZh: '怪物很丑。', category: '形容' },
+  { word: 'handsome', phonetic: '/ˈhænsəm/', meaning: '帅气的', exampleEn: 'He is handsome.', exampleZh: '他很帅气。', category: '形容' },
+  { word: 'pretty', phonetic: '/ˈprɪti/', meaning: '漂亮的', exampleEn: 'She is pretty.', exampleZh: '她很漂亮。', category: '形容' },
+  { word: 'cute', phonetic: '/kjuːt/', meaning: '可爱的', exampleEn: 'The baby is cute.', exampleZh: '宝宝很可爱。', category: '形容' },
+  { word: 'lovely', phonetic: '/ˈlʌvli/', meaning: '可爱的', exampleEn: 'The puppy is lovely.', exampleZh: '小狗很可爱。', category: '形容' },
+  { word: 'friendly', phonetic: '/ˈfrendli/', meaning: '友好的', exampleEn: 'He is friendly.', exampleZh: '他很友好。', category: '形容' },
+  { word: 'unfriendly', phonetic: '/ʌnˈfrendli/', meaning: '不友好的', exampleEn: 'She seems unfriendly.', exampleZh: '她看起来不友好。', category: '形容' },
+  { word: 'kind', phonetic: '/kaɪnd/', meaning: '善良的', exampleEn: 'She is very kind.', exampleZh: '她很善良。', category: '形容' },
+  { word: 'cruel', phonetic: '/kruːl/', meaning: '残忍的', exampleEn: 'Don\'t be cruel.', exampleZh: '不要残忍。', category: '形容' },
+  { word: 'honest', phonetic: '/ˈɒnɪst/', meaning: '诚实的', exampleEn: 'Be honest.', exampleZh: '要诚实。', category: '形容' },
+  { word: 'dishonest', phonetic: '/dɪsˈɒnɪst/', meaning: '不诚实的', exampleEn: 'Don\'t be dishonest.', exampleZh: '不要不诚实。', category: '形容' },
+  { word: 'brave', phonetic: '/breɪv/', meaning: '勇敢的', exampleEn: 'Be brave.', exampleZh: '要勇敢。', category: '形容' },
+  { word: 'cowardly', phonetic: '/ˈkaʊərdli/', meaning: '胆小的', exampleEn: 'Don\'t be cowardly.', exampleZh: '不要胆小。', category: '形容' },
+  { word: 'smart', phonetic: '/smɑːrt/', meaning: '聪明的', exampleEn: 'She is smart.', exampleZh: '她很聪明。', category: '形容' },
+  { word: 'stupid', phonetic: '/ˈstuːpɪd/', meaning: '愚蠢的', exampleEn: 'Don\'t be stupid.', exampleZh: '不要愚蠢。', category: '形容' },
+  { word: 'clever', phonetic: '/ˈklevər/', meaning: '机灵的', exampleEn: 'He is clever.', exampleZh: '他很机灵。', category: '形容' },
+  { word: 'foolish', phonetic: '/ˈfuːlɪʃ/', meaning: '傻的', exampleEn: 'That was foolish.', exampleZh: '那很傻。', category: '形容' },
+  { word: 'lazy', phonetic: '/ˈleɪzi/', meaning: '懒的', exampleEn: 'Don\'t be lazy.', exampleZh: '不要懒。', category: '形容' },
+  { word: 'hardworking', phonetic: '/ˈhɑːrdwɜːrkɪŋ/', meaning: '勤奋的', exampleEn: 'Be hardworking.', exampleZh: '要勤奋。', category: '形容' },
+  { word: 'careful', phonetic: '/ˈkerfl/', meaning: '小心的', exampleEn: 'Be careful.', exampleZh: '要小心。', category: '形容' },
+  { word: 'careless', phonetic: '/ˈkerləs/', meaning: '粗心的', exampleEn: 'Don\'t be careless.', exampleZh: '不要粗心。', category: '形容' },
+  { word: 'polite', phonetic: '/pəˈlaɪt/', meaning: '礼貌的', exampleEn: 'Be polite.', exampleZh: '要有礼貌。', category: '形容' },
+  { word: 'rude', phonetic: '/ruːd/', meaning: '粗鲁的', exampleEn: 'Don\'t be rude.', exampleZh: '不要粗鲁。', category: '形容' },
+  { word: 'patient', phonetic: '/ˈpeɪʃnt/', meaning: '耐心的', exampleEn: 'Be patient.', exampleZh: '要有耐心。', category: '形容' },
+  { word: 'impatient', phonetic: '/ɪmˈpeɪʃnt/', meaning: '不耐烦的', exampleEn: 'Don\'t be impatient.', exampleZh: '不要不耐烦。', category: '形容' },
+  { word: 'quiet', phonetic: '/ˈkwaɪət/', meaning: '安静的', exampleEn: 'Be quiet.', exampleZh: '安静点。', category: '形容' },
+  { word: 'noisy', phonetic: '/ˈnɔɪzi/', meaning: '吵闹的', exampleEn: 'Don\'t be noisy.', exampleZh: '不要吵闹。', category: '形容' },
+  { word: 'active', phonetic: '/ˈæktɪv/', meaning: '活跃的', exampleEn: 'Be active.', exampleZh: '要活跃。', category: '形容' },
+  { word: 'passive', phonetic: '/ˈpæsɪv/', meaning: '被动的', exampleEn: 'Don\'t be passive.', exampleZh: '不要被动。', category: '形容' },
+  { word: 'creative', phonetic: '/kriˈeɪtɪv/', meaning: '有创造力的', exampleEn: 'Be creative.', exampleZh: '要有创造力。', category: '形容' },
+  { word: 'boring', phonetic: '/ˈbɔːrɪŋ/', meaning: '无聊的', exampleEn: 'Don\'t be boring.', exampleZh: '不要无聊。', category: '形容' },
+  { word: 'exciting', phonetic: '/ɪkˈsaɪtɪŋ/', meaning: '令人兴奋的', exampleEn: 'That is exciting.', exampleZh: '那很令人兴奋。', category: '形容' },
+  { word: 'boring', phonetic: '/ˈbɔːrɪŋ/', meaning: '无聊的', exampleEn: 'This is boring.', exampleZh: '这很无聊。', category: '形容' },
+  { word: 'interesting', phonetic: '/ˈɪntrəstɪŋ/', meaning: '有趣的', exampleEn: 'This is interesting.', exampleZh: '这很有趣。', category: '形容' },
+  { word: 'funny', phonetic: '/ˈfʌni/', meaning: '有趣的', exampleEn: 'He is funny.', exampleZh: '他很有趣。', category: '形容' },
+  { word: 'sad', phonetic: '/sæd/', meaning: '难过的', exampleEn: 'Don\'t be sad.', exampleZh: '不要难过。', category: '形容' },
+  { word: 'happy', phonetic: '/ˈhæpi/', meaning: '快乐的', exampleEn: 'Be happy.', exampleZh: '要快乐。', category: '形容' },
+  { word: 'angry', phonetic: '/ˈæŋɡri/', meaning: '生气的', exampleEn: 'Don\'t be angry.', exampleZh: '不要生气。', category: '形容' },
+  { word: 'calm', phonetic: '/kɑːm/', meaning: '平静的', exampleEn: 'Stay calm.', exampleZh: '保持平静。', category: '形容' },
+  { word: 'excited', phonetic: '/ɪkˈsaɪtɪd/', meaning: '兴奋的', exampleEn: 'I am excited.', exampleZh: '我很兴奋。', category: '形容' },
+  { word: 'nervous', phonetic: '/ˈnɜːrvəs/', meaning: '紧张的', exampleEn: 'Don\'t be nervous.', exampleZh: '不要紧张。', category: '形容' },
+  { word: 'anxious', phonetic: '/ˈæŋkʃəs/', meaning: '焦虑的', exampleEn: 'Don\'t be anxious.', exampleZh: '不要焦虑。', category: '形容' },
+  { word: 'confident', phonetic: '/ˈkɒnfɪdənt/', meaning: '自信的', exampleEn: 'Be confident.', exampleZh: '要自信。', category: '形容' },
+  { word: 'shy', phonetic: '/ʃaɪ/', meaning: '害羞的', exampleEn: 'Don\'t be shy.', exampleZh: '不要害羞。', category: '形容' },
+  { word: 'proud', phonetic: '/praʊd/', meaning: '自豪的', exampleEn: 'I am proud.', exampleZh: '我很自豪。', category: '形容' },
+  { word: 'ashamed', phonetic: '/əˈʃeɪmd/', meaning: '羞愧的', exampleEn: 'Don\'t be ashamed.', exampleZh: '不要羞愧。', category: '形容' },
+  { word: 'grateful', phonetic: '/ˈɡreɪtfl/', meaning: '感激的', exampleEn: 'Be grateful.', exampleZh: '要感激。', category: '形容' },
+  { word: 'thankful', phonetic: '/ˈθæŋkfl/', meaning: '感谢的', exampleEn: 'I am thankful.', exampleZh: '我很感谢。', category: '形容' },
+  { word: 'lucky', phonetic: '/ˈlʌki/', meaning: '幸运的', exampleEn: 'I am lucky.', exampleZh: '我很幸运。', category: '形容' },
+  { word: 'unlucky', phonetic: '/ʌnˈlʌki/', meaning: '不幸的', exampleEn: 'He is unlucky.', exampleZh: '他很不幸。', category: '形容' },
+  { word: 'famous', phonetic: '/ˈfeɪməs/', meaning: '著名的', exampleEn: 'He is famous.', exampleZh: '他很著名。', category: '形容' },
+  { word: 'unknown', phonetic: '/ˌʌnˈnoʊn/', meaning: '未知的', exampleEn: 'The answer is unknown.', exampleZh: '答案未知。', category: '形容' },
+  { word: 'rich', phonetic: '/rɪtʃ/', meaning: '富有的', exampleEn: 'He is rich.', exampleZh: '他很富有。', category: '形容' },
+  { word: 'poor', phonetic: '/pʊr/', meaning: '贫穷的', exampleEn: 'She is poor.', exampleZh: '她很贫穷。', category: '形容' },
+  { word: 'healthy', phonetic: '/ˈhelθi/', meaning: '健康的', exampleEn: 'Be healthy.', exampleZh: '要健康。', category: '形容' },
+  { word: 'sick', phonetic: '/sɪk/', meaning: '生病的', exampleEn: 'He is sick.', exampleZh: '他生病了。', category: '形容' },
+  { word: 'strong', phonetic: '/strɒŋ/', meaning: '强壮的', exampleEn: 'Be strong.', exampleZh: '要强壮。', category: '形容' },
+  { word: 'weak', phonetic: '/wiːk/', meaning: '虚弱的', exampleEn: 'Don\'t be weak.', exampleZh: '不要虚弱。', category: '形容' },
+  { word: 'young', phonetic: '/jʌŋ/', meaning: '年轻的', exampleEn: 'He is young.', exampleZh: '他很年轻。', category: '形容' },
+  { word: 'old', phonetic: '/oʊld/', meaning: '老的', exampleEn: 'She is old.', exampleZh: '她很老。', category: '形容' },
+  { word: 'young', phonetic: '/jʌŋ/', meaning: '年轻的', exampleEn: 'He is young.', exampleZh: '他很年轻。', category: '形容' },
+  { word: 'busy', phonetic: '/ˈbɪzi/', meaning: '忙碌的', exampleEn: 'I am busy.', exampleZh: '我很忙。', category: '形容' },
+  { word: 'free', phonetic: '/friː/', meaning: '空闲的', exampleEn: 'I am free.', exampleZh: '我有空。', category: '形容' },
+  { word: 'full', phonetic: '/fʊl/', meaning: '满的', exampleEn: 'The cup is full.', exampleZh: '杯子满了。', category: '形容' },
+  { word: 'empty', phonetic: '/ˈempti/', meaning: '空的', exampleEn: 'The box is empty.', exampleZh: '盒子是空的。', category: '形容' },
+  { word: 'same', phonetic: '/seɪm/', meaning: '相同的', exampleEn: 'We are the same.', exampleZh: '我们是一样的。', category: '形容' },
+  { word: 'different', phonetic: '/ˈdɪfrənt/', meaning: '不同的', exampleEn: 'We are different.', exampleZh: '我们是不同的。', category: '形容' },
+  { word: 'special', phonetic: '/ˈspeʃl/', meaning: '特别的', exampleEn: 'This is special.', exampleZh: '这很特别。', category: '形容' },
+  { word: 'ordinary', phonetic: '/ˈɔːrdneri/', meaning: '普通的', exampleEn: 'This is ordinary.', exampleZh: '这很普通。', category: '形容' },
+  { word: 'important', phonetic: '/ɪmˈpɔːrtnt/', meaning: '重要的', exampleEn: 'This is important.', exampleZh: '这很重要。', category: '形容' },
+  { word: 'unimportant', phonetic: '/ˌʌnɪmˈpɔːrtnt/', meaning: '不重要的', exampleEn: 'This is unimportant.', exampleZh: '这不重要。', category: '形容' },
+  { word: 'necessary', phonetic: '/ˈnesəseri/', meaning: '必要的', exampleEn: 'This is necessary.', exampleZh: '这是必要的。', category: '形容' },
+  { word: 'unnecessary', phonetic: '/ʌnˈnesəseri/', meaning: '不必要的', exampleEn: 'This is unnecessary.', exampleZh: '这是不必要的。', category: '形容' },
+  { word: 'possible', phonetic: '/ˈpɒsəbl/', meaning: '可能的', exampleEn: 'This is possible.', exampleZh: '这是可能的。', category: '形容' },
+  { word: 'impossible', phonetic: '/ɪmˈpɒsəbl/', meaning: '不可能的', exampleEn: 'This is impossible.', exampleZh: '这是不可能的。', category: '形容' },
+  { word: 'able', phonetic: '/ˈeɪbl/', meaning: '能够的', exampleEn: 'I am able.', exampleZh: '我能够。', category: '形容' },
+  { word: 'unable', phonetic: '/ʌnˈeɪbl/', meaning: '不能够的', exampleEn: 'I am unable.', exampleZh: '我不能够。', category: '形容' },
+  { word: 'willing', phonetic: '/ˈwɪlɪŋ/', meaning: '愿意的', exampleEn: 'I am willing.', exampleZh: '我愿意。', category: '形容' },
+  { word: 'unwilling', phonetic: '/ʌnˈwɪlɪŋ/', meaning: '不愿意的', exampleEn: 'I am unwilling.', exampleZh: '我不愿意。', category: '形容' },
+  { word: 'ready', phonetic: '/ˈredi/', meaning: '准备好的', exampleEn: 'I am ready.', exampleZh: '我准备好了。', category: '形容' },
+  { word: 'unready', phonetic: '/ʌnˈredi/', meaning: '没准备好的', exampleEn: 'I am unready.', exampleZh: '我没准备好。', category: '形容' },
+  { word: 'sure', phonetic: '/ʃʊr/', meaning: '确定的', exampleEn: 'I am sure.', exampleZh: '我确定。', category: '形容' },
+  { word: 'unsure', phonetic: '/ˌʌnˈʃʊr/', meaning: '不确定的', exampleEn: 'I am unsure.', exampleZh: '我不确定。', category: '形容' },
+  { word: 'certain', phonetic: '/ˈsɜːrtn/', meaning: '确定的', exampleEn: 'I am certain.', exampleZh: '我确定。', category: '形容' },
+  { word: 'uncertain', phonetic: '/ʌnˈsɜːrtn/', meaning: '不确定的', exampleEn: 'I am uncertain.', exampleZh: '我不确定。', category: '形容' },
+  { word: 'clear', phonetic: '/klɪr/', meaning: '清楚的', exampleEn: 'This is clear.', exampleZh: '这很清楚。', category: '形容' },
+  { word: 'unclear', phonetic: '/ˌʌnˈklɪr/', meaning: '不清楚的', exampleEn: 'This is unclear.', exampleZh: '这不清楚。', category: '形容' },
+  { word: 'simple', phonetic: '/ˈsɪmpl/', meaning: '简单的', exampleEn: 'This is simple.', exampleZh: '这很简单。', category: '形容' },
+  { word: 'difficult', phonetic: '/ˈdɪfɪkəlt/', meaning: '困难的', exampleEn: 'This is difficult.', exampleZh: '这很困难。', category: '形容' },
+  { word: 'easy', phonetic: '/ˈiːzi/', meaning: '容易的', exampleEn: 'This is easy.', exampleZh: '这很容易。', category: '形容' },
+  { word: 'hard', phonetic: '/hɑːrd/', meaning: '困难的', exampleEn: 'This is hard.', exampleZh: '这很难。', category: '形容' },
+  { word: 'quick', phonetic: '/kwɪk/', meaning: '快的', exampleEn: 'Be quick.', exampleZh: '快点。', category: '形容' },
+  { word: 'slow', phonetic: '/sloʊ/', meaning: '慢的', exampleEn: 'Don\'t be slow.', exampleZh: '不要慢。', category: '形容' },
+  { word: 'fast', phonetic: '/fæst/', meaning: '快的', exampleEn: 'Be fast.', exampleZh: '要快。', category: '形容' },
+  { word: 'slowly', phonetic: '/ˈsloʊli/', meaning: '慢慢地', exampleEn: 'Walk slowly.', exampleZh: '慢慢走。', category: '副词' },
+  { word: 'quickly', phonetic: '/ˈkwɪkli/', meaning: '快速地', exampleEn: 'Run quickly.', exampleZh: '快跑。', category: '副词' },
+  { word: 'carefully', phonetic: '/ˈkerfəli/', meaning: '小心地', exampleEn: 'Drive carefully.', exampleZh: '小心驾驶。', category: '副词' },
+  { word: 'carelessly', phonetic: '/ˈkerləsli/', meaning: '粗心地', exampleEn: 'Don\'t drive carelessly.', exampleZh: '不要粗心驾驶。', category: '副词' },
+  { word: 'happily', phonetic: '/ˈhæpəli/', meaning: '快乐地', exampleEn: 'Sing happily.', exampleZh: '快乐地唱歌。', category: '副词' },
+  { word: 'sadly', phonetic: '/ˈsædli/', meaning: '难过地', exampleEn: 'Don\'t cry sadly.', exampleZh: '不要难过地哭。', category: '副词' },
+  { word: 'angrily', phonetic: '/ˈæŋɡrəli/', meaning: '生气地', exampleEn: 'Don\'t shout angrily.', exampleZh: '不要生气地大喊。', category: '副词' },
+  { word: 'calmly', phonetic: '/ˈkɑːmli/', meaning: '平静地', exampleEn: 'Speak calmly.', exampleZh: '平静地说话。', category: '副词' },
+  { word: 'quietly', phonetic: '/ˈkwaɪətli/', meaning: '安静地', exampleEn: 'Talk quietly.', exampleZh: '安静地说话。', category: '副词' },
+  { word: 'loudly', phonetic: '/ˈlaʊdli/', meaning: '大声地', exampleEn: 'Don\'t talk loudly.', exampleZh: '不要大声说话。', category: '副词' },
+  { word: 'well', phonetic: '/wel/', meaning: '好地', exampleEn: 'Do it well.', exampleZh: '做好它。', category: '副词' },
+  { word: 'badly', phonetic: '/ˈbædli/', meaning: '坏地', exampleEn: 'Don\'t do it badly.', exampleZh: '不要做坏它。', category: '副词' },
+  { word: 'very', phonetic: '/ˈveri/', meaning: '非常', exampleEn: 'This is very good.', exampleZh: '这非常好。', category: '副词' },
+  { word: 'too', phonetic: '/tuː/', meaning: '太', exampleEn: 'This is too big.', exampleZh: '这太大了。', category: '副词' },
+  { word: 'so', phonetic: '/soʊ/', meaning: '如此', exampleEn: 'This is so nice.', exampleZh: '这如此美好。', category: '副词' },
+  { word: 'also', phonetic: '/ˈɔːlsoʊ/', meaning: '也', exampleEn: 'I also like it.', exampleZh: '我也喜欢它。', category: '副词' },
+  { word: 'still', phonetic: '/stɪl/', meaning: '仍然', exampleEn: 'I still like it.', exampleZh: '我仍然喜欢它。', category: '副词' },
+  { word: 'already', phonetic: '/ɔːlˈredi/', meaning: '已经', exampleEn: 'I already did it.', exampleZh: '我已经做了。', category: '副词' },
+  { word: 'yet', phonetic: '/jet/', meaning: '还', exampleEn: 'I haven\'t done it yet.', exampleZh: '我还没做。', category: '副词' },
+  { word: 'just', phonetic: '/dʒʌst/', meaning: '刚刚', exampleEn: 'I just did it.', exampleZh: '我刚刚做了。', category: '副词' },
+  { word: 'almost', phonetic: '/ˈɔːlmoʊst/', meaning: '几乎', exampleEn: 'I almost forgot.', exampleZh: '我几乎忘了。', category: '副词' },
+  { word: 'nearly', phonetic: '/ˈnɪrli/', meaning: '几乎', exampleEn: 'I nearly missed it.', exampleZh: '我几乎错过了。', category: '副词' },
+  { word: 'hardly', phonetic: '/ˈhɑːrdli/', meaning: '几乎不', exampleEn: 'I hardly know him.', exampleZh: '我几乎不认识他。', category: '副词' },
+  { word: 'never', phonetic: '/ˈnevər/', meaning: '从不', exampleEn: 'I never lie.', exampleZh: '我从不说谎。', category: '副词' },
+  { word: 'always', phonetic: '/ˈɔːlweɪz/', meaning: '总是', exampleEn: 'I always study hard.', exampleZh: '我总是努力学习。', category: '副词' },
+  { word: 'usually', phonetic: '/ˈjuːʒuəli/', meaning: '通常', exampleEn: 'I usually get up early.', exampleZh: '我通常早起。', category: '副词' },
+  { word: 'sometimes', phonetic: '/ˈsʌmtaɪmz/', meaning: '有时', exampleEn: 'I sometimes play games.', exampleZh: '我有时玩游戏。', category: '副词' },
+  { word: 'often', phonetic: '/ˈɔːfn/', meaning: '经常', exampleEn: 'I often read books.', exampleZh: '我经常读书。', category: '副词' },
+  { word: 'rarely', phonetic: '/ˈrerli/', meaning: '很少', exampleEn: 'I rarely eat fast food.', exampleZh: '我很少吃快餐。', category: '副词' },
+  { word: 'seldom', phonetic: '/ˈseldəm/', meaning: '很少', exampleEn: 'I seldom go there.', exampleZh: '我很少去那里。', category: '副词' },
+  { word: 'here', phonetic: '/hɪr/', meaning: '这里', exampleEn: 'Come here.', exampleZh: '过来。', category: '副词' },
+  { word: 'there', phonetic: '/ðer/', meaning: '那里', exampleEn: 'Go there.', exampleZh: '去那里。', category: '副词' },
+  { word: 'everywhere', phonetic: '/ˈevriwer/', meaning: '到处', exampleEn: 'I looked everywhere.', exampleZh: '我到处找。', category: '副词' },
+  { word: 'somewhere', phonetic: '/ˈsʌmwer/', meaning: '某处', exampleEn: 'I put it somewhere.', exampleZh: '我把它放在某处。', category: '副词' },
+  { word: 'anywhere', phonetic: '/ˈeniwer/', meaning: '任何地方', exampleEn: 'You can go anywhere.', exampleZh: '你可以去任何地方。', category: '副词' },
+  { word: 'nowhere', phonetic: '/ˈnoʊwer/', meaning: '无处', exampleEn: 'I found nowhere.', exampleZh: '我无处可寻。', category: '副词' },
+  { word: 'upstairs', phonetic: '/ˌʌpˈsterz/', meaning: '楼上', exampleEn: 'Go upstairs.', exampleZh: '上楼。', category: '副词' },
+  { word: 'downstairs', phonetic: '/ˌdaʊnˈsterz/', meaning: '楼下', exampleEn: 'Go downstairs.', exampleZh: '下楼。', category: '副词' },
+  { word: 'outside', phonetic: '/ˌaʊtˈsaɪd/', meaning: '外面', exampleEn: 'Go outside.', exampleZh: '出去。', category: '副词' },
+  { word: 'inside', phonetic: '/ˌɪnˈsaɪd/', meaning: '里面', exampleEn: 'Come inside.', exampleZh: '进来。', category: '副词' },
+  { word: 'today', phonetic: '/təˈdeɪ/', meaning: '今天', exampleEn: 'Today is sunny.', exampleZh: '今天是晴天。', category: '时间' },
+  { word: 'tomorrow', phonetic: '/təˈmɑːroʊ/', meaning: '明天', exampleEn: 'See you tomorrow.', exampleZh: '明天见。', category: '时间' },
+  { word: 'yesterday', phonetic: '/ˈjestərdeɪ/', meaning: '昨天', exampleEn: 'I played yesterday.', exampleZh: '我昨天玩了。', category: '时间' },
+  { word: 'tonight', phonetic: '/təˈnaɪt/', meaning: '今晚', exampleEn: 'We will go tonight.', exampleZh: '我们今晚去。', category: '时间' },
+  { word: 'soon', phonetic: '/suːn/', meaning: '很快', exampleEn: 'See you soon.', exampleZh: '很快再见。', category: '时间' },
+  { word: 'now', phonetic: '/naʊ/', meaning: '现在', exampleEn: 'Do it now.', exampleZh: '现在做。', category: '时间' },
+  { word: 'then', phonetic: '/ðen/', meaning: '然后', exampleEn: 'First this, then that.', exampleZh: '先这个，然后那个。', category: '时间' },
+  { word: 'after', phonetic: '/ˈæftər/', meaning: '之后', exampleEn: 'After school.', exampleZh: '放学后。', category: '时间' },
+  { word: 'before', phonetic: '/bɪˈfɔːr/', meaning: '之前', exampleEn: 'Before dinner.', exampleZh: '晚饭前。', category: '时间' },
+  { word: 'ago', phonetic: '/əˈɡoʊ/', meaning: '以前', exampleEn: 'Three days ago.', exampleZh: '三天前。', category: '时间' },
+  { word: 'since', phonetic: '/sɪns/', meaning: '自从', exampleEn: 'Since last year.', exampleZh: '自从去年。', category: '时间' },
+  { word: 'for', phonetic: '/fɔːr/', meaning: '持续', exampleEn: 'For two hours.', exampleZh: '持续两个小时。', category: '时间' },
+  { word: 'during', phonetic: '/ˈdjʊrɪŋ/', meaning: '在...期间', exampleEn: 'During the day.', exampleZh: '在白天期间。', category: '时间' },
+  { word: 'while', phonetic: '/waɪl/', meaning: '当...时', exampleEn: 'While I was reading.', exampleZh: '当我读书时。', category: '时间' },
+  { word: 'when', phonetic: '/wen/', meaning: '当...时', exampleEn: 'When I was young.', exampleZh: '当我年轻时。', category: '时间' },
+  { word: 'if', phonetic: '/ɪf/', meaning: '如果', exampleEn: 'If you go.', exampleZh: '如果你去。', category: '连词' },
+  { word: 'because', phonetic: '/bɪˈkɔːz/', meaning: '因为', exampleEn: 'Because I like it.', exampleZh: '因为我喜欢。', category: '连词' },
+  { word: 'so', phonetic: '/soʊ/', meaning: '所以', exampleEn: 'I like it, so I buy it.', exampleZh: '我喜欢它，所以我买了。', category: '连词' },
+  { word: 'but', phonetic: '/bʌt/', meaning: '但是', exampleEn: 'I like it, but it is expensive.', exampleZh: '我喜欢它，但它很贵。', category: '连词' },
+  { word: 'and', phonetic: '/ænd/', meaning: '和', exampleEn: 'You and me.', exampleZh: '你和我。', category: '连词' },
+  { word: 'or', phonetic: '/ɔːr/', meaning: '或者', exampleEn: 'Tea or coffee.', exampleZh: '茶或者咖啡。', category: '连词' },
+  { word: 'not', phonetic: '/nɒt/', meaning: '不', exampleEn: 'I am not happy.', exampleZh: '我不开心。', category: '副词' },
+  { word: 'no', phonetic: '/noʊ/', meaning: '不', exampleEn: 'No, thank you.', exampleZh: '不，谢谢。', category: '副词' },
+  { word: 'yes', phonetic: '/jes/', meaning: '是', exampleEn: 'Yes, please.', exampleZh: '是的，请。', category: '副词' },
+  { word: 'please', phonetic: '/pliːz/', meaning: '请', exampleEn: 'Please help me.', exampleZh: '请帮助我。', category: '副词' },
+  { word: 'thank', phonetic: '/θæŋk/', meaning: '感谢', exampleEn: 'Thank you.', exampleZh: '谢谢。', category: '动词' },
+  { word: 'sorry', phonetic: '/ˈsɒri/', meaning: '抱歉', exampleEn: 'I am sorry.', exampleZh: '我很抱歉。', category: '形容词' },
+  { word: 'excuse', phonetic: '/ɪkˈskjuːz/', meaning: '原谅', exampleEn: 'Excuse me.', exampleZh: '打扰一下。', category: '动词' },
+  { word: 'hello', phonetic: '/həˈloʊ/', meaning: '你好', exampleEn: 'Hello, how are you?', exampleZh: '你好，你好吗？', category: '问候' },
+  { word: 'hi', phonetic: '/haɪ/', meaning: '嗨', exampleEn: 'Hi, there!', exampleZh: '嗨！', category: '问候' },
+  { word: 'goodbye', phonetic: '/ˌɡʊdˈbaɪ/', meaning: '再见', exampleEn: 'Goodbye, see you later.', exampleZh: '再见，回头见。', category: '问候' },
+  { word: 'bye', phonetic: '/baɪ/', meaning: '再见', exampleEn: 'Bye, take care.', exampleZh: '再见，保重。', category: '问候' },
+  { word: 'good', phonetic: '/ɡʊd/', meaning: '好的', exampleEn: 'Good morning.', exampleZh: '早上好。', category: '问候' },
+  { word: 'morning', phonetic: '/ˈmɔːrnɪŋ/', meaning: '早上', exampleEn: 'Good morning.', exampleZh: '早上好。', category: '问候' },
+  { word: 'afternoon', phonetic: '/ˌæftərˈnuːn/', meaning: '下午', exampleEn: 'Good afternoon.', exampleZh: '下午好。', category: '问候' },
+  { word: 'evening', phonetic: '/ˈiːvnɪŋ/', meaning: '晚上', exampleEn: 'Good evening.', exampleZh: '晚上好。', category: '问候' },
+  { word: 'night', phonetic: '/naɪt/', meaning: '夜晚', exampleEn: 'Good night.', exampleZh: '晚安。', category: '问候' },
+  { word: 'welcome', phonetic: '/ˈwelkəm/', meaning: '欢迎', exampleEn: 'You are welcome.', exampleZh: '不客气。', category: '问候' },
+  { word: 'please', phonetic: '/pliːz/', meaning: '请', exampleEn: 'Please come in.', exampleZh: '请进。', category: '问候' },
+  { word: 'thank', phonetic: '/θæŋk/', meaning: '感谢', exampleEn: 'Thank you very much.', exampleZh: '非常感谢。', category: '问候' },
+  { word: 'you', phonetic: '/juː/', meaning: '你', exampleEn: 'You are nice.', exampleZh: '你很好。', category: '代词' },
+  { word: 'me', phonetic: '/miː/', meaning: '我', exampleEn: 'Give me that.', exampleZh: '把那个给我。', category: '代词' },
+  { word: 'him', phonetic: '/hɪm/', meaning: '他', exampleEn: 'Tell him.', exampleZh: '告诉他。', category: '代词' },
+  { word: 'her', phonetic: '/hɜːr/', meaning: '她', exampleEn: 'Tell her.', exampleZh: '告诉她。', category: '代词' },
+  { word: 'it', phonetic: '/ɪt/', meaning: '它', exampleEn: 'It is big.', exampleZh: '它很大。', category: '代词' },
+  { word: 'we', phonetic: '/wiː/', meaning: '我们', exampleEn: 'We are friends.', exampleZh: '我们是朋友。', category: '代词' },
+  { word: 'they', phonetic: '/ðeɪ/', meaning: '他们', exampleEn: 'They are here.', exampleZh: '他们在这里。', category: '代词' },
+  { word: 'this', phonetic: '/ðɪs/', meaning: '这个', exampleEn: 'This is good.', exampleZh: '这个很好。', category: '代词' },
+  { word: 'that', phonetic: '/ðæt/', meaning: '那个', exampleEn: 'That is nice.', exampleZh: '那个很好。', category: '代词' },
+  { word: 'these', phonetic: '/ðiːz/', meaning: '这些', exampleEn: 'These are books.', exampleZh: '这些是书。', category: '代词' },
+  { word: 'those', phonetic: '/ðoʊz/', meaning: '那些', exampleEn: 'Those are pens.', exampleZh: '那些是笔。', category: '代词' },
+  { word: 'what', phonetic: '/wʌt/', meaning: '什么', exampleEn: 'What is this?', exampleZh: '这是什么？', category: '代词' },
+  { word: 'who', phonetic: '/huː/', meaning: '谁', exampleEn: 'Who are you?', exampleZh: '你是谁？', category: '代词' },
+  { word: 'which', phonetic: '/wɪtʃ/', meaning: '哪一个', exampleEn: 'Which one?', exampleZh: '哪一个？', category: '代词' },
+  { word: 'whose', phonetic: '/huːz/', meaning: '谁的', exampleEn: 'Whose is this?', exampleZh: '这是谁的？', category: '代词' },
+  { word: 'why', phonetic: '/waɪ/', meaning: '为什么', exampleEn: 'Why are you here?', exampleZh: '你为什么在这里？', category: '代词' },
+  { word: 'how', phonetic: '/haʊ/', meaning: '如何', exampleEn: 'How are you?', exampleZh: '你好吗？', category: '代词' },
+  { word: 'where', phonetic: '/wer/', meaning: '哪里', exampleEn: 'Where are you?', exampleZh: '你在哪里？', category: '代词' },
+  { word: 'when', phonetic: '/wen/', meaning: '何时', exampleEn: 'When is the party?', exampleZh: '派对在什么时候？', category: '代词' },
+  { word: 'my', phonetic: '/maɪ/', meaning: '我的', exampleEn: 'This is my book.', exampleZh: '这是我的书。', category: '代词' },
+  { word: 'your', phonetic: '/jʊr/', meaning: '你的', exampleEn: 'This is your pen.', exampleZh: '这是你的笔。', category: '代词' },
+  { word: 'his', phonetic: '/hɪz/', meaning: '他的', exampleEn: 'This is his bag.', exampleZh: '这是他的包。', category: '代词' },
+  { word: 'her', phonetic: '/hɜːr/', meaning: '她的', exampleEn: 'This is her desk.', exampleZh: '这是她的桌子。', category: '代词' },
+  { word: 'its', phonetic: '/ɪts/', meaning: '它的', exampleEn: 'This is its home.', exampleZh: '这是它的家。', category: '代词' },
+  { word: 'our', phonetic: '/ˈaʊər/', meaning: '我们的', exampleEn: 'This is our school.', exampleZh: '这是我们的学校。', category: '代词' },
+  { word: 'their', phonetic: '/ðer/', meaning: '他们的', exampleEn: 'This is their classroom.', exampleZh: '这是他们的教室。', category: '代词' },
+  { word: 'a', phonetic: '/ə/', meaning: '一个', exampleEn: 'A cat.', exampleZh: '一只猫。', category: '冠词' },
+  { word: 'an', phonetic: '/æn/', meaning: '一个', exampleEn: 'An apple.', exampleZh: '一个苹果。', category: '冠词' },
+  { word: 'the', phonetic: '/ðə/', meaning: '这个', exampleEn: 'The dog.', exampleZh: '这只狗。', category: '冠词' },
+  { word: 'some', phonetic: '/sʌm/', meaning: '一些', exampleEn: 'Some books.', exampleZh: '一些书。', category: '限定词' },
+  { word: 'any', phonetic: '/ˈeni/', meaning: '任何', exampleEn: 'Any questions?', exampleZh: '有任何问题吗？', category: '限定词' },
+  { word: 'many', phonetic: '/ˈmeni/', meaning: '很多', exampleEn: 'Many people.', exampleZh: '很多人。', category: '限定词' },
+  { word: 'much', phonetic: '/mʌtʃ/', meaning: '很多', exampleEn: 'Much water.', exampleZh: '很多水。', category: '限定词' },
+  { word: 'few', phonetic: '/fjuː/', meaning: '很少', exampleEn: 'Few people.', exampleZh: '很少人。', category: '限定词' },
+  { word: 'little', phonetic: '/ˈlɪtl/', meaning: '很少', exampleEn: 'Little time.', exampleZh: '很少时间。', category: '限定词' },
+  { word: 'all', phonetic: '/ɔːl/', meaning: '全部', exampleEn: 'All students.', exampleZh: '所有学生。', category: '限定词' },
+  { word: 'both', phonetic: '/boʊθ/', meaning: '两者', exampleEn: 'Both of them.', exampleZh: '他们两个。', category: '限定词' },
+  { word: 'each', phonetic: '/iːtʃ/', meaning: '每个', exampleEn: 'Each day.', exampleZh: '每一天。', category: '限定词' },
+  { word: 'every', phonetic: '/ˈevri/', meaning: '每个', exampleEn: 'Every student.', exampleZh: '每个学生。', category: '限定词' },
+  { word: 'either', phonetic: '/ˈiːðər/', meaning: '两者之一', exampleEn: 'Either one.', exampleZh: '两者之一。', category: '限定词' },
+  { word: 'neither', phonetic: '/ˈniːðər/', meaning: '两者都不', exampleEn: 'Neither one.', exampleZh: '两者都不。', category: '限定词' },
+  { word: 'other', phonetic: '/ˈʌðər/', meaning: '其他', exampleEn: 'Other books.', exampleZh: '其他书。', category: '限定词' },
+  { word: 'another', phonetic: '/əˈnʌðər/', meaning: '另一个', exampleEn: 'Another book.', exampleZh: '另一本书。', category: '限定词' },
+  { word: 'more', phonetic: '/mɔːr/', meaning: '更多', exampleEn: 'More time.', exampleZh: '更多时间。', category: '限定词' },
+  { word: 'most', phonetic: '/moʊst/', meaning: '最多', exampleEn: 'Most people.', exampleZh: '大多数人。', category: '限定词' },
+  { word: 'less', phonetic: '/les/', meaning: '更少', exampleEn: 'Less time.', exampleZh: '更少时间。', category: '限定词' },
+  { word: 'least', phonetic: '/liːst/', meaning: '最少', exampleEn: 'Least effort.', exampleZh: '最少努力。', category: '限定词' },
+  { word: 'enough', phonetic: '/ɪˈnʌf/', meaning: '足够', exampleEn: 'Enough time.', exampleZh: '足够的时间。', category: '限定词' },
+  { word: 'such', phonetic: '/sʌtʃ/', meaning: '这样的', exampleEn: 'Such a nice day.', exampleZh: '这样美好的一天。', category: '限定词' },
+  { word: 'what', phonetic: '/wʌt/', meaning: '多么', exampleEn: 'What a beautiful day!', exampleZh: '多么美好的一天！', category: '限定词' },
+  { word: 'which', phonetic: '/wɪtʃ/', meaning: '哪一个', exampleEn: 'Which book?', exampleZh: '哪本书？', category: '限定词' },
+  { word: 'whose', phonetic: '/huːz/', meaning: '谁的', exampleEn: 'Whose bag?', exampleZh: '谁的包？', category: '限定词' },
+  { word: 'be', phonetic: '/biː/', meaning: '是', exampleEn: 'I am.', exampleZh: '我是。', category: '动词' },
+  { word: 'am', phonetic: '/æm/', meaning: '是', exampleEn: 'I am happy.', exampleZh: '我很快乐。', category: '动词' },
+  { word: 'is', phonetic: '/ɪz/', meaning: '是', exampleEn: 'He is tall.', exampleZh: '他很高。', category: '动词' },
+  { word: 'are', phonetic: '/ɑːr/', meaning: '是', exampleEn: 'You are nice.', exampleZh: '你很好。', category: '动词' },
+  { word: 'was', phonetic: '/wʌz/', meaning: '是', exampleEn: 'I was there.', exampleZh: '我当时在那里。', category: '动词' },
+  { word: 'were', phonetic: '/wɜːr/', meaning: '是', exampleEn: 'You were here.', exampleZh: '你当时在这里。', category: '动词' },
+  { word: 'been', phonetic: '/bɪn/', meaning: '已经', exampleEn: 'I have been there.', exampleZh: '我去过那里。', category: '动词' },
+  { word: 'being', phonetic: '/ˈbiːɪŋ/', meaning: '正在', exampleEn: 'I am being careful.', exampleZh: '我正在小心。', category: '动词' },
+  { word: 'have', phonetic: '/hæv/', meaning: '有', exampleEn: 'I have a book.', exampleZh: '我有一本书。', category: '动词' },
+  { word: 'has', phonetic: '/hæz/', meaning: '有', exampleEn: 'He has a pen.', exampleZh: '他有一支笔。', category: '动词' },
+  { word: 'had', phonetic: '/hæd/', meaning: '有', exampleEn: 'I had a dog.', exampleZh: '我曾经有一只狗。', category: '动词' },
+  { word: 'do', phonetic: '/duː/', meaning: '做', exampleEn: 'I do my homework.', exampleZh: '我做作业。', category: '动词' },
+  { word: 'does', phonetic: '/dʌz/', meaning: '做', exampleEn: 'He does his work.', exampleZh: '他做他的工作。', category: '动词' },
+  { word: 'did', phonetic: '/dɪd/', meaning: '做', exampleEn: 'I did it.', exampleZh: '我做了。', category: '动词' },
+  { word: 'will', phonetic: '/wɪl/', meaning: '将会', exampleEn: 'I will go.', exampleZh: '我将会去。', category: '动词' },
+  { word: 'would', phonetic: '/wʊd/', meaning: '会', exampleEn: 'I would like it.', exampleZh: '我想要。', category: '动词' },
+  { word: 'could', phonetic: '/kʊd/', meaning: '能够', exampleEn: 'I could do it.', exampleZh: '我能够做。', category: '动词' },
+  { word: 'should', phonetic: '/ʃʊd/', meaning: '应该', exampleEn: 'You should study.', exampleZh: '你应该学习。', category: '动词' },
+  { word: 'may', phonetic: '/meɪ/', meaning: '可以', exampleEn: 'You may go.', exampleZh: '你可以去。', category: '动词' },
+  { word: 'might', phonetic: '/maɪt/', meaning: '可能', exampleEn: 'It might rain.', exampleZh: '可能会下雨。', category: '动词' },
+  { word: 'must', phonetic: '/mʌst/', meaning: '必须', exampleEn: 'You must come.', exampleZh: '你必须来。', category: '动词' },
+  { word: 'need', phonetic: '/niːd/', meaning: '需要', exampleEn: 'I need help.', exampleZh: '我需要帮助。', category: '动词' },
+  { word: 'dare', phonetic: '/der/', meaning: '敢', exampleEn: 'I dare not.', exampleZh: '我不敢。', category: '动词' },
+  { word: 'used', phonetic: '/juːzd/', meaning: '过去常常', exampleEn: 'I used to play.', exampleZh: '我过去常常玩。', category: '动词' },
+  { word: 'ought', phonetic: '/ɔːt/', meaning: '应该', exampleEn: 'You ought to know.', exampleZh: '你应该知道。', category: '动词' },
+  { word: 'shall', phonetic: '/ʃæl/', meaning: '将要', exampleEn: 'I shall go.', exampleZh: '我将要去。', category: '动词' },
+  { word: 'should', phonetic: '/ʃʊd/', meaning: '应该', exampleEn: 'We should help.', exampleZh: '我们应该帮助。', category: '动词' },
+  { word: 'can', phonetic: '/kæn/', meaning: '能够', exampleEn: 'I can swim.', exampleZh: '我能游泳。', category: '动词' },
+  { word: 'cannot', phonetic: '/ˈkænɒt/', meaning: '不能够', exampleEn: 'I cannot swim.', exampleZh: '我不能游泳。', category: '动词' },
+  { word: 'could', phonetic: '/kʊd/', meaning: '能够', exampleEn: 'I could swim.', exampleZh: '我曾经能游泳。', category: '动词' },
+  { word: 'may', phonetic: '/meɪ/', meaning: '可以', exampleEn: 'May I come in?', exampleZh: '我可以进来吗？', category: '动词' },
+  { word: 'might', phonetic: '/maɪt/', meaning: '可能', exampleEn: 'He might come.', exampleZh: '他可能来。', category: '动词' },
+  { word: 'must', phonetic: '/mʌst/', meaning: '必须', exampleEn: 'You must study.', exampleZh: '你必须学习。', category: '动词' },
+  { word: 'have', phonetic: '/hæv/', meaning: '必须', exampleEn: 'You have to go.', exampleZh: '你必须去。', category: '动词' },
+  { word: 'need', phonetic: '/niːd/', meaning: '需要', exampleEn: 'You need to study.', exampleZh: '你需要学习。', category: '动词' },
+  { word: 'dare', phonetic: '/der/', meaning: '敢', exampleEn: 'Dare to try.', exampleZh: '敢去尝试。', category: '动词' },
+  { word: 'used', phonetic: '/juːzd/', meaning: '过去常常', exampleEn: 'I used to go.', exampleZh: '我过去常常去。', category: '动词' },
+  { word: 'ought', phonetic: '/ɔːt/', meaning: '应该', exampleEn: 'You ought to go.', exampleZh: '你应该去。', category: '动词' },
+  { word: 'shall', phonetic: '/ʃæl/', meaning: '将要', exampleEn: 'Shall we go?', exampleZh: '我们走吧？', category: '动词' },
+  { word: 'will', phonetic: '/wɪl/', meaning: '将会', exampleEn: 'Will you come?', exampleZh: '你会来吗？', category: '动词' },
+  { word: 'would', phonetic: '/wʊd/', meaning: '会', exampleEn: 'Would you like tea?', exampleZh: '你想要茶吗？', category: '动词' }
+];
+
+const CATS = ['全部', ...new Set(ENGLISH_WORDS.map(w => w.category))];
+
+let curCat = '全部', learned = new Set(), selIdx = null, sq = '';
+
+const DB_NAME = 'EnglishWordDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'learnedWords';
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+  });
+}
+
+async function loadLearned() {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get('learned');
+    return new Promise((resolve, reject) => {
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const data = request.result;
+        if (data && data.words) {
+          resolve(new Set(data.words));
+        } else {
+          const localStorageData = localStorage.getItem('ewl1');
+          if (localStorageData) {
+            const lsSet = new Set(JSON.parse(localStorageData));
+            saveLearned(lsSet);
+            resolve(lsSet);
+          } else {
+            resolve(new Set());
+          }
+        }
+      };
+    });
+  } catch (e) {
+    const localStorageData = localStorage.getItem('ewl1');
+    return localStorageData ? new Set(JSON.parse(localStorageData)) : new Set();
+  }
+}
+
+async function saveLearned(wordsSet) {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    store.put({ words: [...wordsSet] }, 'learned');
+    transaction.oncomplete = () => {
+      localStorage.setItem('ewl1', JSON.stringify([...wordsSet]));
+    };
+    transaction.onerror = () => {
+      localStorage.setItem('ewl1', JSON.stringify([...wordsSet]));
+    };
+  } catch (e) {
+    localStorage.setItem('ewl1', JSON.stringify([...wordsSet]));
+  }
+}
+
+function exportData() {
+  const data = {
+    learned: [...learned],
+    exportTime: new Date().toISOString(),
+    version: '1.0'
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `单词学习进度_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function importData(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.learned && Array.isArray(data.learned)) {
+        learned = new Set(data.learned);
+        await saveLearned(learned);
+        renderStats();
+        renderGrid();
+        alert('导入成功！已导入 ' + data.learned.length + ' 个已学单词');
+      } else {
+        alert('无效的导入文件');
+      }
+    } catch (e) {
+      alert('导入失败：' + e.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+async function initStorage() {
+  learned = await loadLearned();
+  renderStats();
+  renderCats();
+  renderGrid();
+}
+
+function renderStats() {
+  const list = getList();
+  const tot = list.length;
+  const done = list.filter(w => learned.has(w.word)).length;
+  const pct = tot > 0 ? Math.round(done / tot * 100) : 0;
+  document.getElementById('stats').innerHTML = `
+    <div class="spill">已学 <b>${done}</b> 词</div>
+    <div class="spill">共 <b>${tot}</b> 词</div>
+    <div class="spill">完成 <b>${pct}%</b></div>
+    <div class="pgbar"><div class="pgfill" style="width:${pct}%"></div></div>`;
+}
+
+function getCatCount(cat) {
+  return ENGLISH_WORDS.filter(w => {
+    const co = cat === '全部' || w.category === cat;
+    const qo = !sq || w.word.toLowerCase().includes(sq.toLowerCase()) || w.meaning.includes(sq);
+    return co && qo;
+  }).length;
+}
+
+function renderCats() {
+  document.getElementById('cats').innerHTML = CATS.map(c =>
+    `<button class="cat${c === curCat ? ' on' : ''}" onclick="setCat('${c}')">${c} <span style="font-size:11px;opacity:0.7">[${getCatCount(c)}]</span></button>`
+  ).join('');
+}
+
+function setCat(c) { curCat = c; renderCats(); renderGrid(); }
+function doFilter() { sq = document.getElementById('sb').value.trim(); renderCats(); renderGrid(); }
+
+function getList() {
+  return ENGLISH_WORDS.filter(w => {
+    const co = curCat === '全部' || w.category === curCat;
+    const qo = !sq || w.word.toLowerCase().includes(sq.toLowerCase()) || w.meaning.includes(sq);
+    return co && qo;
+  });
+}
+
+function renderGrid() {
+  const list = getList();
+  if (!list.length) { document.getElementById('grid').innerHTML = `<div class="empty">没有找到「${sq}」相关单词</div>`; return; }
+  document.getElementById('grid').innerHTML = list.map(w => {
+    const isL = learned.has(w.word);
+    return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${ENGLISH_WORDS.indexOf(w)})">
+      ${isL ? '<span class="done-badge">✓ 学会</span>' : ''}
+      <div class="card-word">${w.word}</div>
+      <div class="card-phonetic">${w.phonetic}</div>
+      <div class="card-meaning">${w.meaning}</div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(idx) {
+  selIdx = idx;
+  const w = ENGLISH_WORDS[idx];
+  document.getElementById('mCat').innerHTML = `<span class="modal-cat-badge">${w.category}</span>`;
+  document.getElementById('mWord').textContent = w.word;
+  document.getElementById('mPhonetic').textContent = w.phonetic;
+  document.getElementById('mMean').textContent = w.meaning;
+  document.getElementById('mExEn').textContent = w.exampleEn || '';
+  document.getElementById('mExZh').textContent = w.exampleZh || '';
+  const isL = learned.has(w.word);
+  const btn = document.getElementById('btnL');
+  btn.textContent = isL ? '✅ 已学会' : '⭐ 学会了';
+  btn.className = 'btn-learn' + (isL ? ' done' : '');
+  document.getElementById('ov').style.display = 'flex';
+}
+
+function closeOv(e) { if (!e || e.target.id === 'ov') { document.getElementById('ov').style.display = 'none'; selIdx = null; } }
+
+async function toggleL() {
+  if (selIdx === null) return;
+  const w = ENGLISH_WORDS[selIdx];
+  if (learned.has(w.word)) learned.delete(w.word); else learned.add(w.word);
+  await saveLearned(learned);
+  renderStats();
+  renderGrid();
+  const isL = learned.has(w.word);
+  const btn = document.getElementById('btnL');
+  btn.textContent = isL ? '✅ 已学会' : '⭐ 学会了';
+  btn.className = 'btn-learn' + (isL ? ' done' : '');
+}
+
+function speak() {
+  if (selIdx === null) return;
+  const w = ENGLISH_WORDS[selIdx];
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance(w.word);
+    u.lang = 'en-US'; u.rate = 0.8;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  }
+}
+
+initStorage();
+</script>
+</body>
+</html>
