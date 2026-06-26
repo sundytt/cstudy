@@ -322,6 +322,51 @@ body {
   }
 }
 
+.btn-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  color: var(--color-text-primary);
+}
+
+.btn-nav:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.btn-nav-prev {
+  left: -24px;
+}
+
+.btn-nav-next {
+  right: -24px;
+}
+
+.modal-counter {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  margin-top: 16px;
+}
+
+.modal {
+  position: relative;
+}
+
 .modal-cat {
   text-align: center;
   margin-bottom: 24px;
@@ -520,6 +565,8 @@ body {
 
 <div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
   <div class="modal" id="modal">
+    <button class="btn-nav btn-nav-prev" onclick="prevItem()">‹</button>
+    <button class="btn-nav btn-nav-next" onclick="nextItem()">›</button>
     <div class="modal-cat" id="mCat"></div>
     <div class="modal-emoji" id="mEmoji"></div>
     <div class="modal-word" id="mWord"></div>
@@ -534,6 +581,7 @@ body {
       <button class="btn-learn" id="btnL" onclick="toggleL()">⭐ 学会了</button>
       <button class="btn-close" onclick="closeOv()">关闭</button>
     </div>
+    <div class="modal-counter" id="mCounter"></div>
   </div>
 </div>
 
@@ -555,6 +603,16 @@ const ENGLISH_WORDS = [
   { word: 'cow', phonetic: '/kaʊ/', meaning: '牛', exampleEn: 'Cows give us milk.', exampleZh: '牛给我们牛奶。', category: '动物' },
   { word: 'rabbit', phonetic: '/ˈræbɪt/', meaning: '兔子', exampleEn: 'Rabbits have long ears.', exampleZh: '兔子有长长的耳朵。', category: '动物' },
   { word: 'panda', phonetic: '/ˈpændə/', meaning: '熊猫', exampleEn: 'Pandas love bamboo.', exampleZh: '熊猫喜欢吃竹子。', category: '动物' },
+  { word: 'tiger', phonetic: '/ˈtaɪɡər/', meaning: '老虎', exampleEn: 'Tigers are very strong.', exampleZh: '老虎很强壮。', category: '动物' },
+  { word: 'lion', phonetic: '/ˈlaɪən/', meaning: '狮子', exampleEn: 'Lions are the king of animals.', exampleZh: '狮子是百兽之王。', category: '动物' },
+  { word: 'monkey', phonetic: '/ˈmʌŋki/', meaning: '猴子', exampleEn: 'Monkeys are very clever.', exampleZh: '猴子很聪明。', category: '动物' },
+  { word: 'duck', phonetic: '/dʌk/', meaning: '鸭子', exampleEn: 'Ducks can swim.', exampleZh: '鸭子会游泳。', category: '动物' },
+  { word: 'chicken', phonetic: '/ˈtʃɪkɪn/', meaning: '鸡', exampleEn: 'Chickens lay eggs.', exampleZh: '鸡会下蛋。', category: '动物' },
+  { word: 'sheep', phonetic: '/ʃiːp/', meaning: '羊', exampleEn: 'Sheep have soft wool.', exampleZh: '羊有柔软的毛。', category: '动物' },
+  { word: 'pig', phonetic: '/pɪɡ/', meaning: '猪', exampleEn: 'Pigs are pink and fat.', exampleZh: '猪是粉红色的，胖胖的。', category: '动物' },
+  { word: 'mouse', phonetic: '/maʊs/', meaning: '老鼠', exampleEn: 'The mouse is small.', exampleZh: '老鼠很小。', category: '动物' },
+  { word: 'snake', phonetic: '/sneɪk/', meaning: '蛇', exampleEn: 'Snakes have no legs.', exampleZh: '蛇没有腿。', category: '动物' },
+  { word: 'elephant', phonetic: '/ˈelɪfənt/', meaning: '大象', exampleEn: 'Elephants have long noses.', exampleZh: '大象有长长的鼻子。', category: '动物' },
   { word: 'red', phonetic: '/red/', meaning: '红色', exampleEn: 'The apple is red.', exampleZh: '苹果是红色的。', category: '颜色' },
   { word: 'blue', phonetic: '/bluː/', meaning: '蓝色', exampleEn: 'The sky is blue.', exampleZh: '天空是蓝色的。', category: '颜色' },
   { word: 'green', phonetic: '/ɡriːn/', meaning: '绿色', exampleEn: 'Grass is green.', exampleZh: '草是绿色的。', category: '颜色' },
@@ -1325,7 +1383,7 @@ function getEmoji(meaning, category) {
     '苹果':'🍎','香蕉':'🍌','橙子':'🍊','葡萄':'🍇','梨':'🍐','桃子':'🍑','西瓜':'🍉','草莓':'🍓',
     '柠檬':'🍋','芒果':'🥭','菠萝':'🍍','樱桃':'🍒','蓝莓':'🫐','椰子':'🥥','猕猴桃':'🥝',
     '猫':'🐱','狗':'🐶','鸟':'🐦','鱼':'🐟','马':'🐴','牛':'🐮','兔子':'🐰','熊猫':'🐼',
-    '老虎':'🐯','狮子':'🦁','猴子':'🐵','大象':'🐘','熊':'🐻','猪':'🐷','鸡':'🐔','鸭':'🦆',
+    '老虎':'🐯','狮子':'🦁','猴子':'🐵','大象':'🐘','熊':'🐻','猪':'🐷','鸡':'🐔','鸭':'🦆','羊':'🐑','老鼠':'🐭','蛇':'🐍',
     '红色':'🔴','蓝色':'🔵','绿色':'🟢','黄色':'🟡','白色':'⚪','黑色':'⚫','紫色':'🟣','粉色':'🌸',
     '爸爸':'👨','妈妈':'👩','哥哥':'👦','姐姐':'👧','爷爷':'👴','奶奶':'👵','家庭':'👨‍👩‍👧‍👦','家':'🏠',
     '书':'📚','笔':'✏️','学校':'🏫','老师':'👩‍🏫','学生':'👨‍🎓','班级':'🏫','书桌':'🪑','椅子':'💺',
@@ -1490,8 +1548,27 @@ function openModal(idx) {
   const btn = document.getElementById('btnL');
   btn.textContent = isL ? '✅ 已学会' : '⭐ 学会了';
   btn.className = 'btn-learn' + (isL ? ' done' : '');
+  document.getElementById('mCounter').textContent = `${idx+1} / ${ENGLISH_WORDS.length}`;
+  document.querySelector('.btn-nav-prev').style.opacity = idx === 0 ? '0.3' : '1';
+  document.querySelector('.btn-nav-next').style.opacity = idx === ENGLISH_WORDS.length - 1 ? '0.3' : '1';
   document.getElementById('ov').style.display = 'flex';
 }
+
+function prevItem() {
+  if (selIdx > 0) openModal(selIdx - 1);
+}
+
+function nextItem() {
+  if (selIdx < ENGLISH_WORDS.length - 1) openModal(selIdx + 1);
+}
+
+document.addEventListener('keydown', function(e) {
+  if (document.getElementById('ov').style.display !== 'none') {
+    if (e.key === 'ArrowLeft') prevItem();
+    if (e.key === 'ArrowRight') nextItem();
+    if (e.key === 'Escape') closeOv();
+  }
+});
 
 function closeOv(e) { if (!e || e.target.id === 'ov') { document.getElementById('ov').style.display = 'none'; selIdx = null; } }
 

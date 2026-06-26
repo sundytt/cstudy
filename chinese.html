@@ -372,6 +372,51 @@ body {
   }
 }
 
+.btn-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  color: var(--color-text-primary);
+}
+
+.btn-nav:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.btn-nav-prev {
+  left: -24px;
+}
+
+.btn-nav-next {
+  right: -24px;
+}
+
+.modal-counter {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  margin-top: 16px;
+}
+
+.modal {
+  position: relative;
+}
+
 .modal-cat {
   text-align: center;
   margin-bottom: 24px;
@@ -616,6 +661,8 @@ body {
 
 <div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
   <div class="modal" id="modal">
+    <button class="btn-nav btn-nav-prev" onclick="prevItem()">‹</button>
+    <button class="btn-nav btn-nav-next" onclick="nextItem()">›</button>
     <div class="modal-cat" id="mCat"></div>
     <div class="modal-emoji" id="mEmoji"></div>
     <div class="modal-biling" id="mBiling"></div>
@@ -627,6 +674,7 @@ body {
       <button class="btn-learn" id="btnL" onclick="toggleL()">⭐ 学会了</button>
       <button class="btn-close" onclick="closeOv()">关闭</button>
     </div>
+    <div class="modal-counter" id="mCounter"></div>
   </div>
 </div>
 
@@ -1038,10 +1086,11 @@ function getEmoji(meaning,category){
     '音乐':'🎵','钢琴':'🎹','小提琴':'🎻','长笛':'🪈',
     '眼睛，看东西':'👀','耳朵，听声音':'👂','嘴巴，说话吃饭':'👄','手，拿东西':'✋','脚，走路跑步':'🦶',
     '猫，喵喵叫':'🐱','狗，汪汪叫':'🐶','鸟，会飞的动物':'🐦','鱼，在水里游':'🐟','马，跑得很快':'🐴',
+    '狮子，百兽之王':'🦁','豹子，跑得很快':'🐆','老鹰，天空之王':'🦅','燕子，春天的鸟':'🐦','青蛙，呱呱叫':'🐸','虾，弯弯的':'🦐','螃蟹，横着走':'🦀','蜜蜂，采花蜜':'🐝','蝴蝶，很美丽':'🦋','蚂蚁，很勤劳':'🐜',
     '红色，像苹果':'🔴','黄色，像太阳':'🟡','蓝色，像天空':'🔵','绿色，像叶子':'🟢','白色，像雪':'⚪',
     '一千':'🔢','一万':'🔢','单个，单独':'👤','倍数':'🔢',
     '人，人类':'👥','儿子':'👶','女儿':'👧','孙子':'👶','孩子':'👶','丈夫':'👨','妻子':'👩','兄长':'👦','嫂子':'👩',
-    '头，思考的地方':'🧠','牙齿，咬食物':'🦷','心，感受爱':'❤️','舌头，品尝味道':'👅','脸，面部':'😀','眉毛':'🤨','头发':'💇','脖子':'🧣','肩膀':'💪','背部':'🦴','腰，腰部':'🩲','腿，下肢':'🦵','肚子':'🤰',
+    '头，思考的地方':'🧠','牙齿，咬食物':'🦷','心，感受爱':'❤️','舌头，品尝味道':'👅','脸，面部':'😀','眉毛':'🤨','头发':'💇','脖子':'🧣','肩膀':'💪','背部':'🧍','腰，腰部':'🩲','腿，下肢':'🦵','肚子':'🤰',
     '羊，白色软毛':'🐑','龙，中国神兽':'🐉','老鼠':'🐭','蛇，长长的':'🐍','鸭子，会游泳':'🦆','鹅，大白鹅':'🦢','狐狸，很狡猾':'🦊','狼，很凶猛':'🐺','鹿，有角':'🦌',
     '果实，好吃的':'🍎','根，在地下':'🌱','竹子，熊猫爱吃':'🎋','大米，做饭用':'🍚','麦子':'🌾','豆子':'🫘','稻谷':'🌾','棉花，软软的':'☁️','麻，做布料':'🧵','莲花':'🪷','荷花':'🪷','向日葵':'🌻','松树':'🌲','柏树':'🌲',
     '橙色，像橘子':'🟠','灰色':'⬜','棕色':'🟤','青色':'🟢','金色':'🥇','银色':'🥈','彩色':'🌈',
@@ -1140,8 +1189,27 @@ function openModal(idx){
   const btn=document.getElementById('btnL');
   btn.textContent=isL?'✅ 已学会':'⭐ 学会了';
   btn.className='btn-learn'+(isL?' done':'');
+  document.getElementById('mCounter').textContent=`${idx+1} / ${CHARS.length}`;
+  document.querySelector('.btn-nav-prev').style.opacity=idx===0?'0.3':'1';
+  document.querySelector('.btn-nav-next').style.opacity=idx===CHARS.length-1?'0.3':'1';
   document.getElementById('ov').style.display='flex';
 }
+
+function prevItem(){
+  if(selIdx>0)openModal(selIdx-1);
+}
+
+function nextItem(){
+  if(selIdx<CHARS.length-1)openModal(selIdx+1);
+}
+
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('ov').style.display!=='none'){
+    if(e.key==='ArrowLeft')prevItem();
+    if(e.key==='ArrowRight')nextItem();
+    if(e.key==='Escape')closeOv();
+  }
+});
 
 function closeOv(e){if(!e||e.target.id==='ov'){document.getElementById('ov').style.display='none';selIdx=null;}}
 
