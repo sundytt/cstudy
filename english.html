@@ -504,6 +504,33 @@ body {
   background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
 }
 
+.btn-backtop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  background: var(--color-background-primary);
+  color: var(--color-primary);
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-backtop:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
 .btn-close {
   flex: 0 0 auto;
   border: 2px solid var(--color-border-secondary);
@@ -1726,6 +1753,19 @@ if ('speechSynthesis' in window) {
 }
 
 initStorage();
+
+window.addEventListener('scroll', function() {
+  const btn = document.getElementById('btnBackTop');
+  if (btn) {
+    btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+  }
+});
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 </script>
+
+<button id="btnBackTop" class="btn-backtop" onclick="scrollToTop()" style="display:none">↑</button>
 </body>
 </html>
