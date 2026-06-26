@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学乐园 - 20以内加法解法思路</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #F59E0B;
+  --color-primary-light: #FEF3C7;
+  --color-primary-dark: #D97706;
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-info: #3B82F6;
+  --color-info-light: #DBEAFE;
+  --color-purple: #8B5CF6;
+  --color-purple-light: #EDE9FE;
+  --color-pink: #EC4899;
+  --color-pink-light: #FCE7F3;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F3F4F6;
+  --color-background-tertiary: #F9FAFB;
+  --color-border-primary: #E5E7EB;
+  --color-border-secondary: #D1D5DB;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-tab {
+  padding: 8px 24px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.nav-tab.chinese {
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-tab.chinese:hover {
+  border-color: #6366F1;
+  color: #6366F1;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-tab.english {
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-tab.english:hover {
+  border-color: #8B5CF6;
+  color: #8B5CF6;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-tab.math {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 32px;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: var(--color-text-secondary);
+  font-size: 16px;
+}
+
+.input-section {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.input-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+.input-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.num-input {
+  width: 80px;
+  height: 64px;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  border: 3px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  font-family: var(--font-sans);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.num-input:focus {
+  border-color: var(--color-primary-dark);
+  box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
+}
+
+.plus-sign {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.equals-sign {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.answer-box {
+  width: 80px;
+  height: 64px;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  border: 3px solid var(--color-success);
+  border-radius: var(--radius-md);
+  background: var(--color-success-light);
+  color: var(--color-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-group {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  padding: 12px 24px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: var(--font-sans);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+  background: var(--color-background-secondary);
+  color: var(--color-text-secondary);
+  border: 2px solid var(--color-border-secondary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--color-text-tertiary);
+  color: var(--color-text-primary);
+}
+
+.methods-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.method-card {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  border-left: 6px solid var(--color-primary);
+  transition: all 0.3s ease;
+}
+
+.method-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.method-card.method-1 {
+  border-left-color: var(--color-primary);
+}
+
+.method-card.method-2 {
+  border-left-color: var(--color-info);
+}
+
+.method-card.method-3 {
+  border-left-color: var(--color-purple);
+}
+
+.method-card.method-4 {
+  border-left-color: var(--color-pink);
+}
+
+.method-card.method-5 {
+  border-left-color: var(--color-success);
+}
+
+.method-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.method-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+
+.method-1 .method-icon {
+  background: var(--color-primary-light);
+}
+
+.method-2 .method-icon {
+  background: var(--color-info-light);
+}
+
+.method-3 .method-icon {
+  background: var(--color-purple-light);
+}
+
+.method-4 .method-icon {
+  background: var(--color-pink-light);
+}
+
+.method-5 .method-icon {
+  background: var(--color-success-light);
+}
+
+.method-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.method-desc {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.method-steps {
+  background: var(--color-background-tertiary);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--color-border-tertiary);
+}
+
+.step:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.step:first-child {
+  padding-top: 0;
+}
+
+.step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.method-2 .step-num {
+  background: var(--color-info);
+}
+
+.method-3 .step-num {
+  background: var(--color-purple);
+}
+
+.method-4 .step-num {
+  background: var(--color-pink);
+}
+
+.method-5 .step-num {
+  background: var(--color-success);
+}
+
+.step-content {
+  flex: 1;
+  font-size: 16px;
+  color: var(--color-text-primary);
+  line-height: 1.6;
+}
+
+.step-content .highlight {
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.method-1 .highlight {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.method-2 .highlight {
+  background: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.method-3 .highlight {
+  background: var(--color-purple-light);
+  color: var(--color-purple);
+}
+
+.method-4 .highlight {
+  background: var(--color-pink-light);
+  color: var(--color-pink);
+}
+
+.method-5 .highlight {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.calc-visual {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.calc-block {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.calc-block.orange {
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+}
+
+.calc-block.blue {
+  background: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.calc-block.purple {
+  background: var(--color-purple-light);
+  color: var(--color-purple);
+}
+
+.calc-block.green {
+  background: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.calc-block.pink {
+  background: var(--color-pink-light);
+  color: var(--color-pink);
+}
+
+.calc-operator {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.final-answer {
+  margin-top: 16px;
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--color-success-light) 0%, #A7F3D0 100%);
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: #065F46;
+}
+
+.tip-box {
+  background: #FEF3C7;
+  border-left: 4px solid var(--color-primary);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  margin-top: 12px;
+  font-size: 14px;
+  color: #92400E;
+  line-height: 1.6;
+}
+
+.tip-box strong {
+  color: #78350F;
+}
+
+.btn-backtop {
+  position: fixed;
+  bottom: 20px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  background: var(--color-background-primary);
+  color: var(--color-primary);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-backtop:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.practice-section {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.practice-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+.practice-equation {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+.practice-input {
+  width: 100px;
+  height: 64px;
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  border: 3px solid var(--color-info);
+  border-radius: var(--radius-md);
+  background: var(--color-info-light);
+  color: var(--color-info);
+  font-family: var(--font-sans);
+  outline: none;
+  margin-bottom: 16px;
+}
+
+.practice-input:focus {
+  border-color: var(--color-info);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.practice-result {
+  font-size: 20px;
+  font-weight: 600;
+  min-height: 32px;
+  margin-bottom: 12px;
+}
+
+.practice-result.correct {
+  color: var(--color-success);
+}
+
+.practice-result.wrong {
+  color: #EF4444;
+}
+
+.score-display {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.score-item {
+  text-align: center;
+}
+
+.score-num {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.score-label {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 600px) {
+  .header h1 {
+    font-size: 26px;
+  }
+  
+  .num-input, .answer-box {
+    width: 64px;
+    height: 52px;
+    font-size: 26px;
+  }
+  
+  .plus-sign, .equals-sign {
+    font-size: 32px;
+  }
+  
+  .practice-equation {
+    font-size: 36px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="nav-tabs">
+    <div class="nav-tab chinese" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
+    <div class="nav-tab english" onclick="window.location.href='english.html'">🔤 单词学习</div>
+    <div class="nav-tab math">➕ 加法思路</div>
+    <div class="nav-tab english" onclick="window.location.href='math_subtraction.html'">➖ 减法思路</div>
+  </div>
+
+  <div class="header">
+    <h1>🧮 20以内加法解法思路</h1>
+    <p>多种方法帮你理解加法，找到最适合你的计算方式！</p>
+  </div>
+
+  <div class="practice-section">
+    <div class="practice-title">🏆 练一练</div>
+    <div class="practice-equation" id="practiceEq">9 + 6 = ?</div>
+    <input type="number" class="practice-input" id="practiceInput" placeholder="?" onkeydown="if(event.key==='Enter')checkAnswer()">
+    <div class="practice-result" id="practiceResult"></div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="checkAnswer()">✅ 检查答案</button>
+      <button class="btn btn-secondary" onclick="nextPractice()">➡️ 下一题</button>
+    </div>
+    <div class="score-display">
+      <div class="score-item">
+        <div class="score-num" id="correctCount">0</div>
+        <div class="score-label">✅ 答对</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" id="totalCount">0</div>
+        <div class="score-label">📝 总题数</div>
+      </div>
+      <div class="score-item">
+        <div class="score-num" id="accuracy">0%</div>
+        <div class="score-label">🎯 正确率</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-section">
+    <div class="input-title">📐 输入题目（20以内加法）</div>
+    <div class="input-row">
+      <input type="number" class="num-input" id="num1" value="9" min="1" max="20" oninput="updateMethods()">
+      <span class="plus-sign">+</span>
+      <input type="number" class="num-input" id="num2" value="6" min="1" max="20" oninput="updateMethods()">
+      <span class="equals-sign">=</span>
+      <div class="answer-box" id="answer">15</div>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="randomProblem()">🎲 随机出题</button>
+      <button class="btn btn-secondary" onclick="resetInput()">🔄 重置</button>
+    </div>
+  </div>
+
+  <div class="methods-section" id="methodsSection">
+    <div class="method-card method-1">
+      <div class="method-header">
+        <div class="method-icon">⭐</div>
+        <div>
+          <div class="method-title">方法一：凑十法</div>
+          <div class="method-desc">最常用的方法，把一个数拆成两部分，凑出10</div>
+        </div>
+      </div>
+      <div class="method-steps" id="method1Steps">
+      </div>
+      <div class="tip-box">
+        <strong>💡 小提示：</strong>凑十法的口诀是「看大数，分小数，凑成十，加剩数」。
+        记住9和1、8和2、7和3、6和4、5和5可以凑成10！
+      </div>
+    </div>
+
+    <div class="method-card method-2">
+      <div class="method-header">
+        <div class="method-icon">🔢</div>
+        <div>
+          <div class="method-title">方法二：数数法</div>
+          <div class="method-desc">从大数开始，接着往下数小数</div>
+        </div>
+      </div>
+      <div class="method-steps" id="method2Steps">
+      </div>
+      <div class="tip-box">
+        <strong>💡 小提示：</strong>一定要从大的数开始数哦，这样数的次数少，不容易错！
+      </div>
+    </div>
+
+    <div class="method-card method-3">
+      <div class="method-header">
+        <div class="method-icon">🧩</div>
+        <div>
+          <div class="method-title">方法三：分解法</div>
+          <div class="method-desc">把两个数都拆成「十加几」，先算十位再算个位</div>
+        </div>
+      </div>
+      <div class="method-steps" id="method3Steps">
+      </div>
+      <div class="tip-box">
+        <strong>💡 小提示：</strong>当两个数都比较大时（比如都大于5），用分解法更清楚。
+        整十加整十，几个加几个，最后加起来。
+      </div>
+    </div>
+
+    <div class="method-card method-4">
+      <div class="method-header">
+        <div class="method-icon">🎯</div>
+        <div>
+          <div class="method-title">方法四：凑整法</div>
+          <div class="method-desc">把接近10的数看成10，再调整</div>
+        </div>
+      </div>
+      <div class="method-steps" id="method4Steps">
+      </div>
+      <div class="tip-box">
+        <strong>💡 小提示：</strong>9离10最近，8也离10很近。看到9就想10，多算了1就减1！
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="btnBackTop" class="btn-backtop" onclick="scrollToTop()" style="display:none">↑</button>
+
+<script>
+let practiceAnswer = 15;
+let correctCount = 0;
+let totalCount = 0;
+
+function getNums() {
+  let a = parseInt(document.getElementById('num1').value) || 0;
+  let b = parseInt(document.getElementById('num2').value) || 0;
+  a = Math.max(1, Math.min(20, a));
+  b = Math.max(1, Math.min(20, b));
+  return [a, b];
+}
+
+function updateMethods() {
+  const [a, b] = getNums();
+  const sum = a + b;
+  
+  document.getElementById('answer').textContent = sum;
+  
+  renderMethod1(a, b, sum);
+  renderMethod2(a, b, sum);
+  renderMethod3(a, b, sum);
+  renderMethod4(a, b, sum);
+}
+
+function renderMethod1(a, b, sum) {
+  const big = Math.max(a, b);
+  const small = Math.min(a, b);
+  const need = 10 - big;
+  const rest = small - need;
+  
+  let stepsHtml = '';
+  
+  stepsHtml += `<div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      找到较大的数：<span class="highlight">${big}</span>（${big > small ? a + ' 比 ' + b + ' 大' : b + ' 比 ' + a + ' 大'}）
+    </div>
+  </div>`;
+  
+  stepsHtml += `<div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      把 <span class="highlight">${small}</span> 拆成两部分：<span class="highlight">${need}</span> 和 <span class="highlight">${rest}</span>
+      <div class="calc-visual">
+        <div class="calc-block orange">${small}</div>
+        <div class="calc-operator">=</div>
+        <div class="calc-block orange">${need}</div>
+        <div class="calc-operator">+</div>
+        <div class="calc-block orange">${rest}</div>
+      </div>
+      （因为 ${big} + ${need} = 10，所以拆出 ${need}）
+    </div>
+  </div>`;
+  
+  stepsHtml += `<div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      先算：<span class="highlight">${big} + ${need} = 10</span>
+      <div class="calc-visual">
+        <div class="calc-block orange">${big}</div>
+        <div class="calc-operator">+</div>
+        <div class="calc-block orange">${need}</div>
+        <div class="calc-operator">=</div>
+        <div class="calc-block green">10</div>
+      </div>
+    </div>
+  </div>`;
+  
+  stepsHtml += `<div class="step">
+    <div class="step-num">4</div>
+    <div class="step-content">
+      再算：<span class="highlight">10 + ${rest} = ${sum}</span>
+      <div class="calc-visual">
+        <div class="calc-block green">10</div>
+        <div class="calc-operator">+</div>
+        <div class="calc-block orange">${rest}</div>
+        <div class="calc-operator">=</div>
+        <div class="calc-block green">${sum}</div>
+      </div>
+    </div>
+  </div>`;
+  
+  if (rest < 0) {
+    stepsHtml = '<div style="color:var(--color-text-secondary);padding:16px;text-align:center;">这道题用凑十法需要拆大数，试试其他方法吧！</div>';
+  }
+  
+  document.getElementById('method1Steps').innerHTML = stepsHtml + 
+    (rest >= 0 ? `<div class="final-answer">${a} + ${b} = ${sum}</div>` : '');
+}
+
+function renderMethod2(a, b, sum) {
+  const big = Math.max(a, b);
+  const small = Math.min(a, b);
+  
+  let stepsHtml = '';
+  
+  stepsHtml += `<div class="step">
+    <div class="step-num">1</div>
+    <div class="step-content">
+      找到较大的数：<span class="highlight">${big}</span>
+    </div>
+  </div>`;
+  
+  let countStr = '';
+  for (let i = 1; i <= small; i++) {
+    countStr += `<div class="calc-block blue">${big + i}</div>`;
+  }
+  
+  stepsHtml += `<div class="step">
+    <div class="step-num">2</div>
+    <div class="step-content">
+      从 <span class="highlight">${big}</span> 开始，往后数 <span class="highlight">${small}</span> 个数：
+      <div class="calc-visual">
+        <div class="calc-block blue">${big}</div>
+        <div class="calc-operator">→</div>
+        ${countStr}
+      </div>
+    </div>
+  </div>`;
+  
+  stepsHtml += `<div class="step">
+    <div class="step-num">3</div>
+    <div class="step-content">
+      数到第 <span class="highlight">${small}</span> 个就是答案：<span class="highlight">${sum}</span>
+    </div>
+  </div>`;
+  
+  document.getElementById('method2Steps').innerHTML = stepsHtml + 
+    `<div class="final-answer">${a} + ${b} = ${sum}</div>`;
+}
+
+function renderMethod3(a, b, sum) {
+  const aTen = Math.floor(a / 10);
+  const aOne = a % 10;
+  const bTen = Math.floor(b / 10);
+  const bOne = b % 10;
+  const tenSum = aTen + bTen;
+  const oneSum = aOne + bOne;
+  
+  let stepsHtml = '';
+  
+  if (aTen > 0 || bTen > 0) {
+    stepsHtml += `<div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        把两个数拆成「十 + 几」：
+        <div class="calc-visual">
+          <div class="calc-block purple">${a}</div>
+          <div class="calc-operator">=</div>
+          <div class="calc-block purple">${aTen * 10}</div>
+          <div class="calc-operator">+</div>
+          <div class="calc-block purple">${aOne}</div>
+        </div>
+        <div class="calc-visual">
+          <div class="calc-block purple">${b}</div>
+          <div class="calc-operator">=</div>
+          <div class="calc-block purple">${bTen * 10}</div>
+          <div class="calc-operator">+</div>
+          <div class="calc-block purple">${bOne}</div>
+        </div>
+      </div>
+    </div>`;
+    
+    stepsHtml += `<div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        先算十位：<span class="highlight">${aTen * 10} + ${bTen * 10} = ${tenSum * 10}</span>
+        <div class="calc-visual">
+          <div class="calc-block purple">${aTen * 10}</div>
+          <div class="calc-operator">+</div>
+          <div class="calc-block purple">${bTen * 10}</div>
+          <div class="calc-operator">=</div>
+          <div class="calc-block green">${tenSum * 10}</div>
+        </div>
+      </div>
+    </div>`;
+    
+    stepsHtml += `<div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        再算个位：<span class="highlight">${aOne} + ${bOne} = ${oneSum}</span>
+        <div class="calc-visual">
+          <div class="calc-block purple">${aOne}</div>
+          <div class="calc-operator">+</div>
+          <div class="calc-block purple">${bOne}</div>
+          <div class="calc-operator">=</div>
+          <div class="calc-block green">${oneSum}</div>
+        </div>
+      </div>
+    </div>`;
+    
+    stepsHtml += `<div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        最后加起来：<span class="highlight">${tenSum * 10} + ${oneSum} = ${sum}</span>
+        <div class="calc-visual">
+          <div class="calc-block green">${tenSum * 10}</div>
+          <div class="calc-operator">+</div>
+          <div class="calc-block green">${oneSum}</div>
+          <div class="calc-operator">=</div>
+          <div class="calc-block green">${sum}</div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    stepsHtml += `<div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        这两个数都是一位数，直接相加：
+        <div class="calc-visual">
+          <div class="calc-block purple">${a}</div>
+          <div class="calc-operator">+</div>
+          <div class="calc-block purple">${b}</div>
+          <div class="calc-operator">=</div>
+          <div class="calc-block green">${sum}</div>
+        </div>
+      </div>
+    </div>`;
+    
+    stepsHtml += `<div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        也可以用凑十法：把 <span class="highlight">${Math.max(a,b)}</span> 凑成10
+      </div>
+    </div>`;
+  }
+  
+  document.getElementById('method3Steps').innerHTML = stepsHtml + 
+    `<div class="final-answer">${a} + ${b} = ${sum}</div>`;
+}
+
+function renderMethod4(a, b, sum) {
+  let stepsHtml = '';
+  
+  const near10 = a >= 8 ? a : (b >= 8 ? b : 0);
+  const other = near10 === a ? b : a;
+  
+  if (near10 >= 8) {
+    const diff = 10 - near10;
+    
+    stepsHtml += `<div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        发现 <span class="highlight">${near10}</span> 很接近10，只差 <span class="highlight">${diff}</span>
+      </div>
+    </div>`;
+    
+    stepsHtml += `<div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        把 <span class="highlight">${near10}</span> 看成 <span class="highlight">10</span> 来算：
+        <span class="highlight">10 + ${other} = ${10 + other}</span>
+        <div class="calc-visual">
+          <div class="calc-block pink">10</div>
+          <div class="calc-operator">+</div>
+          <div class="calc-block pink">${other}</div>
+          <div class="calc-operator">=</div>
+          <div class="calc-block green">${10 + other}</div>
+        </div>
+      </div>
+    </div>`;
+    
+    stepsHtml += `<div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        因为多算了 <span class="highlight">${diff}</span>，所以要减去：
+        <span class="highlight">${10 + other} - ${diff} = ${sum}</span>
+        <div class="calc-visual">
+          <div class="calc-block green">${10 + other}</div>
+          <div class="calc-operator">−</div>
+          <div class="calc-block pink">${diff}</div>
+          <div class="calc-operator">=</div>
+          <div class="calc-block green">${sum}</div>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    stepsHtml += `<div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        这道题两个数都离10有点远，可以直接算：
+        <span class="highlight">${a} + ${b} = ${sum}</span>
+      </div>
+    </div>`;
+  }
+  
+  document.getElementById('method4Steps').innerHTML = stepsHtml + 
+    `<div class="final-answer">${a} + ${b} = ${sum}</div>`;
+}
+
+function randomProblem() {
+  const a = Math.floor(Math.random() * 10) + 1;
+  const b = Math.floor(Math.random() * 10) + 1;
+  const sum = a + b;
+  
+  if (sum > 20) {
+    randomProblem();
+    return;
+  }
+  
+  document.getElementById('num1').value = a;
+  document.getElementById('num2').value = b;
+  updateMethods();
+}
+
+function resetInput() {
+  document.getElementById('num1').value = 9;
+  document.getElementById('num2').value = 6;
+  updateMethods();
+}
+
+function nextPractice() {
+  const a = Math.floor(Math.random() * 10) + 1;
+  const b = Math.floor(Math.random() * 10) + 1;
+  const sum = a + b;
+  
+  if (sum > 20) {
+    nextPractice();
+    return;
+  }
+  
+  practiceAnswer = sum;
+  document.getElementById('practiceEq').textContent = `${a} + ${b} = ?`;
+  document.getElementById('practiceInput').value = '';
+  document.getElementById('practiceResult').textContent = '';
+  document.getElementById('practiceResult').className = 'practice-result';
+  document.getElementById('practiceInput').focus();
+  
+  document.getElementById('num1').value = a;
+  document.getElementById('num2').value = b;
+  updateMethods();
+}
+
+function checkAnswer() {
+  const userAnswer = parseInt(document.getElementById('practiceInput').value);
+  const resultEl = document.getElementById('practiceResult');
+  
+  if (isNaN(userAnswer)) {
+    resultEl.textContent = '请输入答案哦！';
+    resultEl.className = 'practice-result wrong';
+    return;
+  }
+  
+  totalCount++;
+  document.getElementById('totalCount').textContent = totalCount;
+  
+  if (userAnswer === practiceAnswer) {
+    correctCount++;
+    resultEl.textContent = '🎉 答对了！太棒了！';
+    resultEl.className = 'practice-result correct';
+  } else {
+    resultEl.textContent = `❌ 答错了，正确答案是 ${practiceAnswer}`;
+    resultEl.className = 'practice-result wrong';
+  }
+  
+  document.getElementById('correctCount').textContent = correctCount;
+  document.getElementById('accuracy').textContent = 
+    totalCount > 0 ? Math.round(correctCount / totalCount * 100) + '%' : '0%';
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('scroll', function() {
+  const btn = document.getElementById('btnBackTop');
+  if (btn) {
+    btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  }
+});
+
+updateMethods();
+nextPractice();
+</script>
+
+</body>
+</html>
