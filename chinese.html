@@ -1040,7 +1040,6 @@ async function syncToGist() {
       localStorage.setItem('gistId', gistId);
     }
     
-    alert(`✅ 同步成功！\nGist ID: ${gistId}`);
   } catch (e) {
     alert(`❌ 同步失败：${e.message}`);
   }
@@ -1081,7 +1080,6 @@ async function syncFromGist() {
       await saveLearned(learned);
       renderStats();
       renderGrid();
-      alert(`✅ 从 Gist 同步成功！\n已加载 ${data.learned.length} 个已学汉字`);
     } else {
       alert('Gist 中的数据格式无效');
     }
