@@ -1403,9 +1403,14 @@ async function toggleL(){
 function getVoice(lang){
   const voices=speechSynthesis.getVoices();
   const targetLang=lang==='yue'?'zh-HK':'zh-CN';
+  // First try exact match
   let voice=voices.find(v=>v.lang===targetLang);
-  if(!voice)voice=voices.find(v=>v.lang.startsWith('zh'));
-  if(!voice)voice=voices[0];
+  // Then try any Chinese variant
+  if(!voice)voice=voices.find(v=>v.lang.includes('zh'));
+  // Then try Chinese without region
+  if(!voice)voice=voices.find(v=>v.lang==='zh');
+  // Fallback to any available voice
+  if(!voice && voices.length>0)voice=voices[0];
   return voice;
 }
 
@@ -1413,13 +1418,20 @@ function speak(lang){
   if(selIdx===null)return;
   const ch=CHARS[selIdx];
   if('speechSynthesis' in window){
-    speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(ch.s);
-    u.lang=lang==='yue'?'zh-HK':'zh-CN';
-    u.rate=0.7;
-    const voice=getVoice(lang);
-    if(voice)u.voice=voice;
-    speechSynthesis.speak(u);
+    try{
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(ch.s);
+      u.lang=lang==='yue'?'zh-HK':'zh-CN';
+      u.rate=0.9;
+      u.pitch=1.0;
+      u.volume=1.0;
+      const voice=getVoice(lang);
+      if(voice){
+        u.voice=voice;
+        u.voiceURI=voice.voiceURI;
+      }
+      speechSynthesis.speak(u);
+    }catch(e){console.log('Speech error:',e);}
   }
 }
 
@@ -1427,22 +1439,32 @@ function speakEx(lang){
   if(selIdx===null)return;
   const ch=CHARS[selIdx];
   if('speechSynthesis' in window){
-    speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(ch.e);
-    u.lang=lang==='yue'?'zh-HK':'zh-CN';
-    u.rate=0.6;
-    const voice=getVoice(lang);
-    if(voice)u.voice=voice;
-    speechSynthesis.speak(u);
+    try{
+      speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(ch.e);
+      u.lang=lang==='yue'?'zh-HK':'zh-CN';
+      u.rate=0.85;
+      u.pitch=1.0;
+      u.volume=1.0;
+      const voice=getVoice(lang);
+      if(voice){
+        u.voice=voice;
+        u.voiceURI=voice.voiceURI;
+      }
+      speechSynthesis.speak(u);
+    }catch(e){console.log('Speech error:',e);}
   }
 }
 
-// Preload voices
+// Preload voices and wait for them to load
 if('speechSynthesis' in window){
-  speechSynthesis.getVoices();
-  speechSynthesis.onvoiceschanged=function(){
-    speechSynthesis.getVoices();
-  };
+  const loadVoices=()=>speechSynthesis.getVoices();
+  loadVoices();
+  if(speechSynthesis.onvoiceschanged===undefined){
+    speechSynthesis.onvoiceschanged=loadVoices;
+  }
+  // Some browsers need a delay to load voices
+  setTimeout(loadVoices,100);
 }
 
 initStorage();
