@@ -511,6 +511,24 @@ body {
   margin-bottom: 12px;
 }
 
+.pinyin-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.pinyin-label {
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  min-width: 24px;
+}
+
+.pinyin-value {
+  font-size: 32px;
+}
+
 .modal-meaning {
   text-align: center;
   font-size: 32px;
@@ -527,6 +545,48 @@ body {
   text-align: center;
   font-family: 'Noto Sans SC', sans-serif;
   margin-bottom: 36px;
+}
+
+.ex-label {
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  margin-bottom: 8px;
+}
+
+.ex-text {
+  margin-bottom: 12px;
+}
+
+.ex-btns {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-ex-speak {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--color-background-primary);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ex-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.btn-ex-speak-yue {
+  color: #D97706;
+  border-color: #FCD34D;
+}
+
+.btn-ex-speak-yue:hover {
+  background: #FEF3C7;
+  border-color: #F59E0B;
 }
 
 .modal-btns {
@@ -552,6 +612,16 @@ body {
   border-color: var(--color-primary);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+}
+
+.btn-speak-yue {
+  border-color: #FCD34D;
+  color: #D97706;
+}
+
+.btn-speak-yue:hover {
+  background: #FEF3C7;
+  border-color: #F59E0B;
 }
 
 .btn-learn {
@@ -664,6 +734,19 @@ body {
     font-size: 20px;
   }
 
+  .pinyin-row {
+    margin: 2px 0;
+  }
+
+  .pinyin-label {
+    font-size: 12px;
+    min-width: 20px;
+  }
+
+  .pinyin-value {
+    font-size: 24px;
+  }
+
   .modal-meaning {
     font-size: 22px;
   }
@@ -671,6 +754,20 @@ body {
   .modal-example {
     font-size: 14px;
     margin-top: 12px;
+    padding: 12px 16px;
+  }
+
+  .ex-label {
+    font-size: 12px;
+  }
+
+  .ex-text {
+    font-size: 16px;
+  }
+
+  .btn-ex-speak {
+    padding: 2px 8px;
+    font-size: 11px;
   }
 
   .modal-emoji {
@@ -705,6 +802,10 @@ body {
     padding: 10px 16px;
     font-size: 14px;
   }
+
+  .btn-speak {
+    flex: 0 0 auto;
+  }
 }
 </style>
 </head>
@@ -737,7 +838,8 @@ body {
     <div class="modal-meaning" id="mMean"></div>
     <div class="modal-example" id="mEx"></div>
     <div class="modal-btns">
-      <button class="btn-speak" onclick="speak()">🔊</button>
+      <button class="btn-speak" onclick="speak('zh-CN')" title="普通话">🔊普</button>
+      <button class="btn-speak btn-speak-yue" onclick="speak('yue')" title="粤语">🔊粤</button>
       <button class="btn-learn" id="btnL" onclick="toggleL()">⭐ 学会了</button>
       <button class="btn-close" onclick="closeOv()">关闭</button>
     </div>
@@ -1249,9 +1351,13 @@ function openModal(idx){
       <div class="modal-half-label">繁體字</div>
       ${same?`<div class="modal-trad-same">与简体<br>相同</div>`:`<div class="modal-trad">${ch.t}</div>`}
     </div>`;
-  document.getElementById('mPin').innerHTML=`<span style="color:${TC[ch.tn]}">${ch.p}</span> <span style="font-size:14px;color:var(--color-text-tertiary)">${toneLabel(ch.tn)}</span>`;
+  const yueHtml = ch.y ? `<div class="pinyin-row"><span class="pinyin-label">粤</span><span class="pinyin-value">${ch.y}</span></div>` : '';
+  document.getElementById('mPin').innerHTML=`
+    <div class="pinyin-row"><span class="pinyin-label">普</span><span style="color:${TC[ch.tn]}">${ch.p}</span> <span style="font-size:14px;color:var(--color-text-tertiary)">${toneLabel(ch.tn)}</span></div>
+    ${yueHtml}
+  `;
   document.getElementById('mMean').textContent=ch.m;
-  document.getElementById('mEx').textContent='例句：'+ch.e;
+  document.getElementById('mEx').innerHTML=`<div class="ex-label">例句</div><div class="ex-text">${ch.e}</div><div class="ex-btns"><button class="btn-ex-speak" onclick="speakEx('zh-CN')">🔊普</button><button class="btn-ex-speak btn-ex-speak-yue" onclick="speakEx('yue')">🔊粤</button></div>`;
   const isL=learned.has(ch.s);
   const btn=document.getElementById('btnL');
   btn.textContent=isL?'✅ 已学会':'⭐ 学会了';
@@ -1294,12 +1400,24 @@ async function toggleL(){
   btn.className='btn-learn'+(isL?' done':'');
 }
 
-function speak(){
+function speak(lang){
   if(selIdx===null)return;
   const ch=CHARS[selIdx];
   if('speechSynthesis' in window){
     const u=new SpeechSynthesisUtterance(ch.s);
-    u.lang='zh-CN';u.rate=0.7;
+    u.lang=lang==='yue'?'zh-HK':'zh-CN';
+    u.rate=0.7;
+    speechSynthesis.cancel();speechSynthesis.speak(u);
+  }
+}
+
+function speakEx(lang){
+  if(selIdx===null)return;
+  const ch=CHARS[selIdx];
+  if('speechSynthesis' in window){
+    const u=new SpeechSynthesisUtterance(ch.e);
+    u.lang=lang==='yue'?'zh-HK':'zh-CN';
+    u.rate=0.6;
     speechSynthesis.cancel();speechSynthesis.speak(u);
   }
 }
