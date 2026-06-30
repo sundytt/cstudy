@@ -170,6 +170,70 @@ body {
   transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.daily-goal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+  border-radius: var(--radius-md);
+  border: 1px solid #FCD34D;
+  box-shadow: var(--shadow-sm);
+}
+
+.daily-goal-icon {
+  font-size: 24px;
+}
+
+.daily-goal-text {
+  font-size: 14px;
+  color: #92400E;
+  font-weight: 500;
+}
+
+.daily-goal-text b {
+  color: #B45309;
+  font-weight: 700;
+}
+
+.daily-goal-bar {
+  flex: 1;
+  min-width: 80px;
+  height: 8px;
+  background: rgba(180, 83, 9, 0.2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.daily-goal-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #F59E0B, #D97706);
+  border-radius: var(--radius-sm);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.daily-goal.completed {
+  background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+  border-color: #34D399;
+}
+
+.daily-goal.completed .daily-goal-text {
+  color: #065F46;
+}
+
+.daily-goal.completed .daily-goal-text b {
+  color: #047857;
+}
+
+.daily-goal.completed .daily-goal-bar {
+  background: rgba(6, 95, 70, 0.2);
+}
+
+.daily-goal.completed .daily-goal-fill {
+  background: linear-gradient(90deg, var(--color-success), #059669);
+}
+
 .cats {
   display: flex;
   gap: 8px;
@@ -554,6 +618,9 @@ body {
 }
 
 .ex-text {
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1.6;
   margin-bottom: 12px;
 }
 
@@ -789,7 +856,7 @@ body {
   }
 
   .ex-text {
-    font-size: 16px;
+    font-size: 24px;
   }
 
   .btn-ex-speak {
@@ -852,6 +919,7 @@ body {
     <button class="cat" onclick="setGistConfig()">⚙️ 配置</button>
   </div>
   <div class="stats" id="stats"></div>
+  <div class="daily-goal" id="dailyGoal"></div>
   <div class="cats" id="cats"></div>
   <div class="grid" id="grid"></div>
 </div>
@@ -863,9 +931,9 @@ body {
     <div class="modal-cat" id="mCat"></div>
     <div class="modal-emoji" id="mEmoji"></div>
     <div class="modal-biling" id="mBiling"></div>
+    <div class="modal-example" id="mEx"></div>
     <div class="modal-pinyin" id="mPin"></div>
     <div class="modal-meaning" id="mMean"></div>
-    <div class="modal-example" id="mEx"></div>
     <div class="modal-btns">
       <button class="btn-speak" onclick="speak('zh-CN')" title="普通话">🔊普</button>
       <button class="btn-speak btn-speak-yue" onclick="speak('yue')" title="粤语">🔊粤</button>
@@ -1117,9 +1185,50 @@ async function syncFromGist() {
   }
 }
 
+const DAILY_GOAL = 10;
+
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function getDailyProgress() {
+  const today = getTodayStr();
+  const data = localStorage.getItem('dailyProgress');
+  if (!data) return { date: today, count: 0 };
+  const parsed = JSON.parse(data);
+  if (parsed.date === today) {
+    return parsed;
+  }
+  return { date: today, count: 0 };
+}
+
+function saveDailyProgress(count) {
+  const today = getTodayStr();
+  localStorage.setItem('dailyProgress', JSON.stringify({ date: today, count }));
+}
+
+function renderDailyGoal() {
+  const progress = getDailyProgress();
+  const isCompleted = progress.count >= DAILY_GOAL;
+  const percentage = Math.min(Math.round(progress.count / DAILY_GOAL * 100), 100);
+  const icon = isCompleted ? '🏆' : '🎯';
+  const text = isCompleted 
+    ? `🎉 太棒了！今日目标已达成！` 
+    : `📅 今日目标：学习 <b>${progress.count}/${DAILY_GOAL}</b> 个汉字`;
+  
+  document.getElementById('dailyGoal').className = `daily-goal${isCompleted ? ' completed' : ''}`;
+  document.getElementById('dailyGoal').innerHTML = `
+    <div class="daily-goal-icon">${icon}</div>
+    <div class="daily-goal-text">${text}</div>
+    <div class="daily-goal-bar"><div class="daily-goal-fill" style="width:${percentage}%"></div></div>
+  `;
+}
+
 async function initStorage() {
   learned = await loadLearned();
   renderStats();
+  renderDailyGoal();
   renderCats();
   renderGrid();
 }
@@ -1416,10 +1525,18 @@ function closeOv(e){if(!e||e.target.id==='ov'){document.getElementById('ov').sty
 async function toggleL(){
   if(selIdx===null)return;
   const ch=CHARS[selIdx];
-  if(learned.has(ch.s))learned.delete(ch.s);else learned.add(ch.s);
+  const wasLearned = learned.has(ch.s);
+  if(wasLearned){
+    learned.delete(ch.s);
+  } else {
+    learned.add(ch.s);
+    const progress = getDailyProgress();
+    saveDailyProgress(progress.count + 1);
+  }
   await saveLearned(learned);
   if(gistToken) await syncToGist();
   renderStats();
+  renderDailyGoal();
   renderGrid();
   const isL=learned.has(ch.s);
   const btn=document.getElementById('btnL');
@@ -1430,14 +1547,32 @@ async function toggleL(){
 function getVoice(lang){
   const voices=speechSynthesis.getVoices();
   const targetLang=lang==='yue'?'zh-HK':'zh-CN';
-  // First try exact match
-  let voice=voices.find(v=>v.lang===targetLang);
-  // Then try any Chinese variant
-  if(!voice)voice=voices.find(v=>v.lang.includes('zh'));
-  // Then try Chinese without region
-  if(!voice)voice=voices.find(v=>v.lang==='zh');
-  // Fallback to any available voice
-  if(!voice && voices.length>0)voice=voices[0];
+  
+  const priorityPatterns = [
+    /Microsoft Yaoyao/,
+    /Google 普通话/,
+    /Google Chinese/,
+    /Microsoft Xiaoxiao/,
+    /Microsoft Huihui/,
+    /Tingting/,
+    /Sinji/,
+    /Liangliang/,
+    /Meimei/
+  ];
+  
+  let voice = voices.find(v => v.lang === targetLang);
+  
+  if (!voice) {
+    for (const pattern of priorityPatterns) {
+      voice = voices.find(v => v.name.match(pattern));
+      if (voice) break;
+    }
+  }
+  
+  if (!voice) voice = voices.find(v => v.lang.includes('zh'));
+  if (!voice) voice = voices.find(v => v.lang === 'zh');
+  if (!voice && voices.length > 0) voice = voices[0];
+  
   return voice;
 }
 
@@ -1447,17 +1582,31 @@ function speak(lang){
   if('speechSynthesis' in window){
     try{
       speechSynthesis.cancel();
-      const u=new SpeechSynthesisUtterance(ch.s);
-      u.lang=lang==='yue'?'zh-HK':'zh-CN';
-      u.rate=0.9;
-      u.pitch=1.0;
-      u.volume=1.0;
-      const voice=getVoice(lang);
-      if(voice){
-        u.voice=voice;
-        u.voiceURI=voice.voiceURI;
-      }
-      speechSynthesis.speak(u);
+      
+      setTimeout(() => {
+        const u=new SpeechSynthesisUtterance(ch.s);
+        u.lang=lang==='yue'?'zh-HK':'zh-CN';
+        u.rate=0.85;
+        u.pitch=1.0;
+        u.volume=1.0;
+        u.range = 0;
+        
+        const voice=getVoice(lang);
+        if(voice){
+          u.voice=voice;
+          u.voiceURI=voice.voiceURI;
+        }
+        
+        u.onend = () => {
+          speechSynthesis.cancel();
+        };
+        
+        u.onerror = (e) => {
+          console.log('Speech error:', e);
+        };
+        
+        speechSynthesis.speak(u);
+      }, 50);
     }catch(e){console.log('Speech error:',e);}
   }
 }
@@ -1468,17 +1617,31 @@ function speakEx(lang){
   if('speechSynthesis' in window){
     try{
       speechSynthesis.cancel();
-      const u=new SpeechSynthesisUtterance(ch.e);
-      u.lang=lang==='yue'?'zh-HK':'zh-CN';
-      u.rate=0.85;
-      u.pitch=1.0;
-      u.volume=1.0;
-      const voice=getVoice(lang);
-      if(voice){
-        u.voice=voice;
-        u.voiceURI=voice.voiceURI;
-      }
-      speechSynthesis.speak(u);
+      
+      setTimeout(() => {
+        const u=new SpeechSynthesisUtterance(ch.e);
+        u.lang=lang==='yue'?'zh-HK':'zh-CN';
+        u.rate=0.85;
+        u.pitch=1.0;
+        u.volume=1.0;
+        u.range = 0;
+        
+        const voice=getVoice(lang);
+        if(voice){
+          u.voice=voice;
+          u.voiceURI=voice.voiceURI;
+        }
+        
+        u.onend = () => {
+          speechSynthesis.cancel();
+        };
+        
+        u.onerror = (e) => {
+          console.log('Speech error:', e);
+        };
+        
+        speechSynthesis.speak(u);
+      }, 50);
     }catch(e){console.log('Speech error:',e);}
   }
 }
