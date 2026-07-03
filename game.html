@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汉字乐园 - 趣味识字游戏</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #6366F1;
+  --color-primary-light: #EEEDFE;
+  --color-primary-dark: #4F46E5;
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-warning: #F59E0B;
+  --color-warning-light: #FEF3C7;
+  --color-error: #EF4444;
+  --color-error-light: #FEE2E2;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F3F4F6;
+  --color-background-tertiary: #F9FAFB;
+  --color-border-primary: #E5E7EB;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 50%;
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Noto Serif TC', serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #FDF4FF 0%, #EEF2FF 50%, #ECFEFF 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-tab {
+  padding: 8px 20px;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.nav-tab.chinese {
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-tab.chinese:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.nav-tab.game {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.header p {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.game-modes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 2rem;
+}
+
+.mode-card {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  box-shadow: var(--shadow-md);
+}
+
+.mode-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-xl);
+}
+
+.mode-card.active {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, #E0E7FF 100%);
+  border-color: var(--color-primary);
+}
+
+.mode-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.mode-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.mode-desc {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.game-area {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  display: none;
+}
+
+.game-area.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.score-board {
+  display: flex;
+  gap: 16px;
+}
+
+.score-item {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  text-align: center;
+}
+
+.score-label {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.score-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.score-value.correct {
+  color: var(--color-success);
+}
+
+.score-value.wrong {
+  color: var(--color-error);
+}
+
+.btn-restart {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-restart:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-1px);
+}
+
+.question-area {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.q-image {
+  font-size: 120px;
+  margin-bottom: 16px;
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.q-text {
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+.q-emoji {
+  font-size: 64px;
+  margin-bottom: 16px;
+}
+
+.q-char {
+  font-size: 80px;
+  font-family: var(--font-serif);
+  color: var(--color-text-primary);
+  margin-bottom: 16px;
+}
+
+.btn-speak-question {
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-full);
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-speak-question:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  transform: scale(1.1);
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.option-btn {
+  background: var(--color-background-secondary);
+  border: 2px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-serif);
+}
+
+.option-btn:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.option-btn.selected {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.option-btn.correct {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: #FFFFFF;
+  animation: correctPulse 0.5s ease;
+}
+
+.option-btn.wrong {
+  background: var(--color-error);
+  border-color: var(--color-error);
+  color: #FFFFFF;
+  animation: shake 0.5s ease;
+}
+
+@keyframes correctPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.pair-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.pair-card {
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, #E0E7FF 100%);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  font-family: var(--font-serif);
+  position: relative;
+}
+
+.pair-card:hover {
+  transform: translateY(-2px);
+}
+
+.pair-card.selected {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  transform: scale(1.05);
+}
+
+.pair-card.matched {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: #FFFFFF;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.result-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
+}
+
+.result-modal.hidden {
+  display: none;
+}
+
+.result-content {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  padding: 3rem;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.result-emoji {
+  font-size: 80px;
+  margin-bottom: 16px;
+}
+
+.result-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+}
+
+.result-score {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  margin-bottom: 24px;
+}
+
+.result-score b {
+  color: var(--color-primary);
+}
+
+.btn-play-again {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-play-again:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-success));
+  border-radius: var(--radius-sm);
+  transition: width 0.3s ease;
+}
+
+@media (max-width: 600px) {
+  .game-area {
+    padding: 1.5rem 1rem;
+  }
+
+  .q-image {
+    font-size: 80px;
+  }
+
+  .q-char {
+    font-size: 60px;
+  }
+
+  .options-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .option-btn {
+    padding: 16px;
+    font-size: 24px;
+  }
+
+  .pair-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .pair-card {
+    padding: 12px;
+    font-size: 24px;
+  }
+
+  .nav-tab {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .header h1 {
+    font-size: 22px;
+  }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="nav-tabs">
+    <div class="nav-tab chinese" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
+    <div class="nav-tab chinese" onclick="window.location.href='english.html'">🔤 单词学习</div>
+    <div class="nav-tab game">🎮 趣味游戏</div>
+    <div class="nav-tab chinese" onclick="window.location.href='math_addition.html'">➕ 加法思路</div>
+    <div class="nav-tab chinese" onclick="window.location.href='math_subtraction.html'">➖ 减法思路</div>
+  </div>
+  
+  <div class="header">
+    <h1>🎮 趣味识字游戏</h1>
+    <p>选择游戏模式，开始挑战吧！</p>
+  </div>
+
+  <div class="game-modes" id="gameModes">
+    <div class="mode-card" onclick="startGame('picture')">
+      <div class="mode-icon">🖼️</div>
+      <div class="mode-title">看图猜字</div>
+      <div class="mode-desc">根据图片选择正确的汉字</div>
+    </div>
+    <div class="mode-card" onclick="startGame('sound')">
+      <div class="mode-icon">🔊</div>
+      <div class="mode-title">听音辨字</div>
+      <div class="mode-desc">听发音选择正确的汉字</div>
+    </div>
+    <div class="mode-card" onclick="startGame('pair')">
+      <div class="mode-icon">🔗</div>
+      <div class="mode-title">汉字配对</div>
+      <div class="mode-desc">简体字和繁体字配对</div>
+    </div>
+  </div>
+
+  <div class="game-area" id="gameArea">
+    <div class="game-header">
+      <div class="score-board">
+        <div class="score-item">
+          <div class="score-label">得分</div>
+          <div class="score-value" id="score">0</div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">正确</div>
+          <div class="score-value correct" id="correct">0</div>
+        </div>
+        <div class="score-item">
+          <div class="score-label">错误</div>
+          <div class="score-value wrong" id="wrong">0</div>
+        </div>
+      </div>
+      <button class="btn-restart" onclick="restartGame()">🔄 重新开始</button>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    </div>
+
+    <div class="question-area" id="questionArea">
+    </div>
+
+    <div class="options-grid" id="optionsGrid">
+    </div>
+
+    <div class="pair-grid" id="pairGrid">
+    </div>
+  </div>
+</div>
+
+<div class="result-modal hidden" id="resultModal">
+  <div class="result-content">
+    <div class="result-emoji" id="resultEmoji">🎉</div>
+    <div class="result-title" id="resultTitle">太棒了！</div>
+    <div class="result-score" id="resultScore">得分：<b>100</b> 分</div>
+    <button class="btn-play-again" onclick="closeResult()">再玩一次</button>
+  </div>
+</div>
+
+<script src="raw_data.js"></script>
+<script>
+const TC = {1:'#EF4444',2:'#10B981',3:'#F59E0B',4:'#3B82F6',5:'#9CA3AF'};
+const seen = new Set();
+const CHARS = [];
+for(const d of RAW){if(!seen.has(d.s)){seen.add(d.s);CHARS.push(d);}}
+
+let currentMode = '';
+let score = 0;
+let correctCount = 0;
+let wrongCount = 0;
+let currentQuestion = 0;
+const totalQuestions = 10;
+let currentAnswer = '';
+let selectedPairs = [];
+let matchedPairs = new Set();
+
+function getEmoji(meaning, category){
+  const map={
+    '苹果':'🍎','香蕉':'🍌','橙子':'🍊','葡萄':'🍇','梨':'🍐','桃子':'🍑','西瓜':'🍉','草莓':'🍓',
+    '猫':'🐱','狗':'🐶','鸟':'🐦','鱼':'🐟','马':'🐴','牛':'🐮','兔子':'🐰','熊猫':'🐼',
+    '老虎':'🐯','狮子':'🦁','猴子':'🐵','大象':'🐘','熊':'🐻','猪':'🐷','鸡':'🐔','鸭':'🦆',
+    '红色':'🔴','蓝色':'🔵','绿色':'🟢','黄色':'🟡','白色':'⚪','黑色':'⚫','紫色':'🟣','粉色':'🌸',
+    '爸爸':'👨','妈妈':'👩','哥哥':'👦','姐姐':'👧','爷爷':'👴','奶奶':'👵','家庭':'👨‍👩‍👧‍👦','家':'🏠',
+    '书':'📚','笔':'✏️','学校':'🏫','老师':'👩‍🏫','学生':'👨‍🎓','班级':'🏫','书桌':'🪑','椅子':'💺',
+    '一':'1️⃣','二':'2️⃣','三':'3️⃣','四':'4️⃣','五':'5️⃣','六':'6️⃣','七':'7️⃣','八':'8️⃣',
+    '九':'9️⃣','十':'🔟','零':'0️⃣','百':'💯','千':'🔢','万':'🔢',
+    '跑':'🏃','走':'🚶','跳':'🤸','游泳':'🏊','唱':'🎤','读':'📖','写':'✍️','吃':'🍽️',
+    '喝':'🥤','睡':'😴','玩':'🎮','看':'👀','听':'👂','说':'🗣️','学':'📚','教':'👩‍🏫',
+    '开心':'😊','难过':'😢','生气':'😠','害怕':'😨','惊讶':'😮','爱':'❤️','喜欢':'😍','讨厌':'😒',
+    '大':'🐘','小':'🐭','高':'🦒','矮':'🐸','胖':'🐷','瘦':'🦴','长':'📏','短':'📐',
+    '快':'⚡','慢':'🐢','新':'🆕','旧':'🗓️','热':'🔥','冷':'❄️','好':'👍','坏':'👎',
+    '太阳':'☀️','月亮':'🌙','星星':'⭐','云':'☁️','雨':'🌧️','雪':'❄️','风':'💨','山':'⛰️',
+    '水':'💧','树':'🌳','花':'🌸','草':'🌱','森林':'🌲','海洋':'🌊','河流':'🏞️',
+    '汽车':'🚗','公交车':'🚌','自行车':'🚲','飞机':'✈️','火车':'🚄','船':'🚢',
+    '米饭':'🍚','面条':'🍜','面包':'🍞','鸡蛋':'🥚','牛奶':'🥛','果汁':'🧃','蛋糕':'🎂',
+    '今天':'📅','明天':'📆','昨天':'⏪','早上':'🌅','下午':'☀️','晚上':'🌙','时间':'⏰',
+    '衬衫':'👔','裤子':'👖','裙子':'👗','鞋子':'👟','帽子':'🎩','袜子':'🧦',
+    '头':'👤','眼睛':'👀','鼻子':'👃','嘴巴':'👄','耳朵':'👂','手':'✋','脚':'🦶',
+    '桌子':'🪑','床':'🛏️','沙发':'🛋️',
+    '电视':'📺','电话':'📱','电脑':'💻','冰箱':'🧊','灯':'💡',
+    '足球':'⚽','篮球':'🏀',
+    '钢琴':'🎹','吉他':'🎸','小提琴':'🎻','鼓':'🥁',
+    '医生':'👨‍⚕️','工人':'👷','农民':'👨‍🌾','警察':'👮','司机':'🚗',
+    '上':'⬆️','下':'⬇️','左':'⬅️','右':'➡️','前':'⏩','后':'⏪','里':'📦','外':'🚪',
+    '晴天':'☀️','下雨':'🌧️','下雪':'❄️','多云':'⛅','刮风':'💨',
+    '蝴蝶':'🦋','蜜蜂':'🐝','蚂蚁':'🐜','青蛙':'🐸','蛇':'🐍','老鼠':'🐭','龙':'🐉','羊':'🐑',
+    '狐狸':'🦊','狼':'🐺','鹿':'🦌','鸭子':'🦆','鹅':'🦢','老鹰':'🦅','豹子':'🐆',
+    '橘子':'🍊','柠檬':'🍋','芒果':'🥭','菠萝':'🍍','樱桃':'🍒','蓝莓':'🫐','椰子':'🥥',
+    '米饭，主食':'🍚','水，解渴':'💧','鸡蛋，营养好':'🥚','肉，好吃的':'🥩','糖，甜甜的':'🍬',
+    '花朵':'🌸','果实':'🍎','叶子':'🍃','树叶':'🍃','花瓣':'🌸',
+    '桃子':'🍑','梨子':'🍐','柠檬':'🍋',
+    '蔬菜':'🥬','萝卜':'🥕','番茄':'🍅','茄子':'🍆','豆角':'🫛',
+    '空调':'❄️','洗衣机':'🧺',
+    '游泳':'🏊','打球':'⚽','篮球':'🏀',
+    '音乐':'🎵','钢琴':'🎹','小提琴':'🎻','长笛':'🪈',
+    '猫，喵喵叫':'🐱','狗，汪汪叫':'🐶','鸟，会飞的动物':'🐦','鱼，在水里游':'🐟','马，跑得很快':'🐴',
+    '狮子，百兽之王':'🦁','豹子，跑得很快':'🐆','老鹰，天空之王':'🦅','燕子，春天的鸟':'🐦','青蛙，呱呱叫':'🐸','虾，弯弯的':'🦐','螃蟹，横着走':'🦀','蜜蜂，采花蜜':'🐝','蝴蝶，很美丽':'🦋','蚂蚁，很勤劳':'🐜',
+    '红色，像苹果':'🔴','黄色，像太阳':'🟡','蓝色，像天空':'🔵','绿色，像叶子':'🟢','白色，像雪':'⚪',
+    '一千':'🔢','一万':'🔢','单个，单独':'👤','倍数':'🔢',
+    '人，人类':'👥','儿子':'👶','女儿':'👧','孙子':'👶','孩子':'👶','丈夫':'👨','妻子':'👩','兄长':'👦','嫂子':'👩',
+    '头，思考的地方':'🧠','牙齿，咬食物':'🦷','心，感受爱':'❤️','舌头，品尝味道':'👅','脸，面部':'😀','眉毛':'🤨','头发':'💇','脖子':'🧣','肩膀':'💪','背部':'🧍','腰，腰部':'🩲','腿，下肢':'🦵','肚子':'🤰',
+    '羊，白色软毛':'🐑','龙，中国神兽':'🐉','老鼠':'🐭','蛇，长长的':'🐍','鸭子，会游泳':'🦆','鹅，大白鹅':'🦢','狐狸，很狡猾':'🦊','狼，很凶猛':'🐺','鹿，有角':'🦌',
+    '果实，好吃的':'🍎','根，在地下':'🌱','竹子，熊猫爱吃':'🎋','大米，做饭用':'🍚','麦子':'🌾','豆子':'🫘','稻谷':'🌾','棉花，软软的':'☁️','麻，做布料':'🧵','莲花':'🪷','荷花':'🪷','向日葵':'🌻','松树':'🌲','柏树':'🌲',
+    '橙色，像橘子':'🟠','灰色':'⬜','棕色':'🟤','青色':'🟢','金色':'🥇','银色':'🥈','彩色':'🌈',
+    '汤，热热的':'🍲','饺子，过节吃':'🥟','苹果，红红的':'🍎','茶，中国特色':'🍵','饼，扁扁的':'🥮','糕点':'🍰','粥，稀饭':'🍚','酒，饮品':'🍷','油，炒菜用':'🛢️','盐，调味品':'🧂','酱料':'🥫','醋，酸味':'🍶',
+    '雨水，浇花用':'🌧️','大海，很宽广':'🌊','石头，很硬':'🪨','沙子':'🏖️','泥土':'🪴','雾，朦胧':'🌫️','雷声':'⛈️','闪电':'⚡','露水':'💧',
+    '跑步，快快的':'🏃','喝水喝汤':'🥤','画画，用画笔':'🎨','玩耍，很开心':'🎮','睡觉，休息':'😴','爱，喜欢':'❤️','哭泣，伤心时':'😢','读书':'📖','计算':'🧮','做事':'🔧','放下':'📥','打开':'🔓','关闭':'🔒',
+    '后面，后方':'⏪','里面，内部':'📦','外面，外部':'🚪','中间，中央':'⏺️','东方':'🌅','南方':'☀️','西方':'🌇','北方':'❄️','中间':'⏺️','旁边':'➡️','边缘':'〰️','侧面':'👈',
+    '一年，365天':'📅','中午，正午':'☀️','时间，时刻':'⏰','分钟':'⏱️','秒钟':'⏱️','时钟':'🕐','点钟':'🕐','一刻钟':'⏰','一周':'📅','季节':'🍂','春天':'🌸','夏天':'☀️','秋天':'🍂','冬天':'❄️',
+    '宽，宽阔':'↔️','窄，狭窄':'📏','厚，很厚':'📚','薄，很薄':'📄','重，很重':'🏋️','轻，很轻':'🪶',
+    '书，用来读的':'📚','剪刀，剪东西':'✂️','本子':'📒','盒子':'📦','袋子':'👜','夹子':'📎','钉子':'📌','橡皮':'🧽','铅笔':'✏️','钢笔':'🖋️','毛笔':'🖌️',
+    '学习，上学':'📚','课程':'📖','练习':'📝','题目':'📋','回答':'💬','问题':'❓','语言':'💬','语文':'📖','数学':'🔢','英语':'🔤','懂得':'💡','知道':'💡','认识':'👀','练习':'📝','训练':'🏋️','培养':'🌱','教育':'🎓','传授':'👩‍🏫','讲解':'📢','解答':'💡','研究':'🔬','阅读':'📖','查阅':'🔍','寻找':'🔍','作文':'📝','章节':'📖','书籍':'📚','报纸':'📰','杂志':'📰','词语':'📝','句子':'📝','段落':'📝','篇章':'📝','诗歌':'📜','歌曲':'🎵','曲子':'🎵','算术':'🔢','几何':'📐','图形':'🔷','形状':'🔶','度数':'🌡️','衡量':'⚖️','单位':'📏','计算':'🧮','科学':'🔬','技术':'⚙️','实验':'🧪','观察':'👀','分析':'📊','归纳':'📋','总结':'📋','概括':'📋','简单':'✅','困难':'💪','容易':'✅','例子':'📋','案例':'📋','考试':'📝','测试':'📝','作业':'📒','年级':'🎓','小组':'👥','团队':'👥','会议':'💼','讨论':'💬','辩论':'🗣️','演讲':'🎤','报告':'📊','汇报':'📊','展示':'🖼️','表达':'💬','交流':'💬','沟通':'💬','合作':'🤝','协作':'🤝','协调':'🤝','帮助':'🤝','支持':'🤝','鼓励':'💪','赞美':'👏','表扬':'👏','批评':'📝','评价':'⭐','改正':'✅','纠正':'✅','错误':'❌','差错':'❌','失误':'❌','成功':'🏆','失败':'💔','胜利':'🏆','优秀':'⭐','良好':'👍','等级':'📊','及格':'✅','低分':'📉','满分':'💯','加分':'➕','减分':'➖','升级':'⬆️','降级':'⬇️','毕业':'🎓','入学':'🎒','退学':'📤','转学':'🔄','插班':'📥','检查':'🔍','预习':'📖',
+    '汽车':'🚗','轨道':'🛤️','道路':'🛣️','马路':'🛣️','桥梁':'🌉','车站':'🚉','车票':'🎫','窗户':'🪟','车门':'🚪','车灯':'💡',
+    '闷热':'🥵',
+    '伤心':'💔','忧愁':'😔','发愁':'😔','烦恼':'😩','慌张':'😰','安全':'🔒','欢乐':'🎉','愿意':'😊','想念':'💭','思念':'💭','回忆':'💭','记忆':'💭','忘记':'💨',
+    '军人':'🪖','商人':'💼','司机':'🚗','厨师':'👨‍🍳','服务员':'👨‍🍳','售货员':'🛒','职员':'👨‍💼',
+    '柜子':'🗄️','架子':'🗂️','箱子':'📦','瓶子':'🍶','杯子':'🥤','碗':'🥣','盘子':'🍽️','筷子':'🥢',
+    '房子':'🏠','屋子':'🏠','楼房':'🏢','墙壁':'🧱','屋顶':'🏠','地板':'🪑','砖头':'🧱','瓦片':'🏠','房梁':'🏗️','柱子':'🏛️','楼梯':'🪜',
+    '衣服':'👕','靴子':'👢','衣领':'👔','袖子':'👕','扣子':'🔘',
+    '甜瓜':'🍈','荔枝':'🍒',
+    '丝瓜':'🥒','韭菜':'🥬','芹菜':'🥬','大蒜':'🧄','大葱':'🧅','生姜':'🫚','胡椒':'🌶️',
+    '镜子':'🪞','画框':'🖼️','茶几':'🪑','电视柜':'📺',
+    '微波炉':'🔥','电饭煲':'🍚','电水壶':'🫖','台灯':'💡','风扇':'🌀','吹风机':'💨','电熨斗':'👕','充电器':'🔌','手机':'📱',
+    '节日':'🎉','元旦':'🎊','元宵节':'🏮','清明节':'🌿','端午节':'🐉','国庆节':'🇨🇳','劳动节':'👷','儿童节':'🧒','教师节':'👩‍🏫',
+    '运动':'🏃','打球':'⚽','足球':'⚽','羽毛球':'🏸','乒乓球':'🏓','网球':'🎾',
+    '音乐':'🎵','小号':'🎺','锣':'🥁','瑟':'🎻',
+    '生病':'🤒','疼痛':'😣','咳嗽':'🤧','发烧':'🤒','药':'💊','医院':'🏥','诊断':'🩺','治疗':'💊','休息':'😴','养病':'🛌','健康':'💚','康复':'💪',
+    '厚，很厚':'🧱','首':'📜','不及格':'❌','留级':'⏸️'
+  };
+  if(map[meaning])return map[meaning];
+  const keywords=meaning.replace(/[，。、]/g,' ').split(' ').filter(k=>k.length>0);
+  for(const kw of keywords){
+    if(map[kw])return map[kw];
+  }
+  for(const kw of keywords){
+    for(const key of Object.keys(map)){
+      if(key.includes(kw)&&map[key])return map[key];
+    }
+  }
+  const catEmoji={
+    '水果':'🍎','动物':'🐾','颜色':'🎨','家人':'👨‍👩‍👧','学习':'📚','数字':'🔢',
+    '动作':'🏃','情感':'❤️','形容':'✨','自然':'🌿','交通工具':'🚗','食物':'🍔',
+    '时间':'⏰','服装':'👕','身体':'🧍','家具':'🛋️','电器':'💡','运动':'⚽',
+    '乐器':'🎵','职业':'👨‍💼','方位':'🧭','天气':'🌤️','自然类':'🌿','数字类':'🔢',
+    '人称类':'👤','代词类':'👤','动词类':'🔧','形容词':'✨','副词类':'✨',
+    '连词类':'🔗','问候类':'👋','冠词类':'📝','限定词':'📊','问候':'👋'
+  };
+  return catEmoji[category]||'📚';
+}
+
+function shuffle(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startGame(mode) {
+  currentMode = mode;
+  score = 0;
+  correctCount = 0;
+  wrongCount = 0;
+  currentQuestion = 0;
+  selectedPairs = [];
+  matchedPairs = new Set();
+
+  document.querySelectorAll('.mode-card').forEach(card => card.classList.remove('active'));
+  document.querySelector('.game-area').classList.add('active');
+  
+  updateScore();
+  
+  if (mode === 'picture') {
+    nextPictureQuestion();
+  } else if (mode === 'sound') {
+    nextSoundQuestion();
+  } else if (mode === 'pair') {
+    startPairGame();
+  }
+}
+
+function updateScore() {
+  document.getElementById('score').textContent = score;
+  document.getElementById('correct').textContent = correctCount;
+  document.getElementById('wrong').textContent = wrongCount;
+  const progress = (currentQuestion / totalQuestions) * 100;
+  document.getElementById('progressFill').style.width = `${progress}%`;
+}
+
+function nextPictureQuestion() {
+  if (currentQuestion >= totalQuestions) {
+    showResult();
+    return;
+  }
+
+  const availableChars = CHARS.filter(c => getEmoji(c.m, c.c) !== '📚');
+  const randomChar = availableChars[Math.floor(Math.random() * availableChars.length)];
+  currentAnswer = randomChar.s;
+
+  const otherChars = CHARS.filter(c => c.s !== currentAnswer);
+  const wrongOptions = shuffle(otherChars).slice(0, 3);
+  const options = shuffle([randomChar, ...wrongOptions]);
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="q-image">${getEmoji(randomChar.m, randomChar.c)}</div>
+    <div class="q-text">请选择正确的汉字</div>
+  `;
+
+  document.getElementById('optionsGrid').innerHTML = options.map(opt => `
+    <button class="option-btn" onclick="checkAnswer('${opt.s}', this)">${opt.s}</button>
+  `).join('');
+
+  document.getElementById('pairGrid').innerHTML = '';
+  currentQuestion++;
+  updateScore();
+}
+
+function nextSoundQuestion() {
+  if (currentQuestion >= totalQuestions) {
+    showResult();
+    return;
+  }
+
+  const randomChar = CHARS[Math.floor(Math.random() * CHARS.length)];
+  currentAnswer = randomChar.s;
+
+  const otherChars = CHARS.filter(c => c.s !== currentAnswer);
+  const wrongOptions = shuffle(otherChars).slice(0, 3);
+  const options = shuffle([randomChar, ...wrongOptions]);
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="q-text">点击喇叭听发音，选择正确的汉字</div>
+    <button class="btn-speak-question" onclick="speakQuestion('${randomChar.s}')">🔊</button>
+  `;
+
+  document.getElementById('optionsGrid').innerHTML = options.map(opt => `
+    <button class="option-btn" onclick="checkAnswer('${opt.s}', this)">${opt.s}</button>
+  `).join('');
+
+  document.getElementById('pairGrid').innerHTML = '';
+  currentQuestion++;
+  updateScore();
+
+  setTimeout(() => speakQuestion(randomChar.s), 500);
+}
+
+function getVoice(lang) {
+  const voices = speechSynthesis.getVoices();
+  const targetLang = lang === 'yue' ? 'zh-HK' : 'zh-CN';
+  const priorityPatterns = [
+    /Microsoft Yaoyao/,
+    /Google 普通话/,
+    /Google Chinese/,
+    /Microsoft Xiaoxiao/,
+    /Microsoft Huihui/,
+    /Tingting/,
+    /Sinji/,
+    /Liangliang/,
+    /Meimei/
+  ];
+  let voice = voices.find(v => v.lang === targetLang);
+  if (!voice) {
+    for (const pattern of priorityPatterns) {
+      voice = voices.find(v => v.name.match(pattern));
+      if (voice) break;
+    }
+  }
+  if (!voice) voice = voices.find(v => v.lang.includes('zh'));
+  if (!voice && voices.length > 0) voice = voices[0];
+  return voice;
+}
+
+function speakQuestion(char) {
+  if ('speechSynthesis' in window) {
+    try {
+      speechSynthesis.cancel();
+      setTimeout(() => {
+        const u = new SpeechSynthesisUtterance(char);
+        u.lang = 'zh-CN';
+        u.rate = 0.85;
+        u.pitch = 1.0;
+        const voice = getVoice('zh-CN');
+        if (voice) u.voice = voice;
+        speechSynthesis.speak(u);
+      }, 50);
+    } catch (e) {
+      console.log('Speech error:', e);
+    }
+  }
+}
+
+function checkAnswer(selected, btn) {
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+  if (selected === currentAnswer) {
+    btn.classList.add('correct');
+    score += 10;
+    correctCount++;
+  } else {
+    btn.classList.add('wrong');
+    allBtns.forEach(b => {
+      if (b.textContent === currentAnswer) b.classList.add('correct');
+    });
+    wrongCount++;
+  }
+
+  updateScore();
+
+  setTimeout(() => {
+    if (currentMode === 'picture') {
+      nextPictureQuestion();
+    } else if (currentMode === 'sound') {
+      nextSoundQuestion();
+    }
+  }, 1000);
+}
+
+function startPairGame() {
+  const differentChars = CHARS.filter(c => c.s !== c.t);
+  const selectedChars = shuffle(differentChars).slice(0, 6);
+  
+  const cards = [];
+  selectedChars.forEach(c => {
+    cards.push({ char: c.s, type: 'simp', pairId: c.s });
+    cards.push({ char: c.t, type: 'trad', pairId: c.s });
+  });
+  
+  const shuffledCards = shuffle(cards);
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="q-text">点击卡片，将简体字和繁体字配对</div>
+  `;
+
+  document.getElementById('optionsGrid').innerHTML = '';
+
+  document.getElementById('pairGrid').innerHTML = shuffledCards.map((card, index) => `
+    <div class="pair-card" onclick="selectPair(${index}, '${card.pairId}', this)">${card.char}</div>
+  `).join('');
+
+  currentQuestion = 1;
+  updateScore();
+}
+
+function selectPair(index, pairId, card) {
+  if (card.classList.contains('selected') || card.classList.contains('matched')) {
+    return;
+  }
+
+  if (selectedPairs.length >= 2) {
+    selectedPairs.forEach(p => p.card.classList.remove('selected'));
+    selectedPairs = [];
+  }
+
+  card.classList.add('selected');
+  selectedPairs.push({ index, pairId, card });
+
+  if (selectedPairs.length === 2) {
+    const [first, second] = selectedPairs;
+    
+    if (first.pairId === second.pairId) {
+      first.card.classList.add('matched');
+      second.card.classList.add('matched');
+      matchedPairs.add(first.pairId);
+      score += 10;
+      correctCount++;
+      updateScore();
+      
+      if (matchedPairs.size >= 6) {
+        setTimeout(showResult, 500);
+      }
+    } else {
+      wrongCount++;
+      updateScore();
+      
+      setTimeout(() => {
+        first.card.classList.remove('selected');
+        second.card.classList.remove('selected');
+      }, 500);
+    }
+    
+    selectedPairs = [];
+  }
+}
+
+function showResult() {
+  const modal = document.getElementById('resultModal');
+  const emoji = document.getElementById('resultEmoji');
+  const title = document.getElementById('resultTitle');
+  const scoreEl = document.getElementById('resultScore');
+
+  const percentage = (correctCount / (correctCount + wrongCount)) * 100;
+  
+  if (percentage >= 90) {
+    emoji.textContent = '🏆';
+    title.textContent = '太棒了！';
+  } else if (percentage >= 70) {
+    emoji.textContent = '🎉';
+    title.textContent = '做得不错！';
+  } else if (percentage >= 50) {
+    emoji.textContent = '💪';
+    title.textContent = '继续加油！';
+  } else {
+    emoji.textContent = '📚';
+    title.textContent = '多多练习！';
+  }
+
+  scoreEl.innerHTML = `得分：<b>${score}</b> 分<br>正确：${correctCount} 个 | 错误：${wrongCount} 个`;
+  modal.classList.remove('hidden');
+}
+
+function closeResult() {
+  document.getElementById('resultModal').classList.add('hidden');
+  restartGame();
+}
+
+function restartGame() {
+  startGame(currentMode);
+}
+
+if ('speechSynthesis' in window) {
+  const loadVoices = () => speechSynthesis.getVoices();
+  loadVoices();
+  if (speechSynthesis.onvoiceschanged === undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+  setTimeout(loadVoices, 100);
+}
+</script>
+</body>
+</html>
