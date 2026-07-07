@@ -391,12 +391,41 @@ body {
   letter-spacing: 2px;
 }
 
+.modal-phonetic-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
 .modal-phonetic {
-  text-align: center;
   font-size: 30px;
   color: var(--color-text-tertiary);
   font-style: italic;
-  margin-bottom: 16px;
+}
+
+.btn-phonetic-speak {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #FDBA74;
+  background: var(--color-background-primary);
+  color: var(--color-primary-dark);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+
+.btn-phonetic-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: scale(1.1);
 }
 
 .modal-meaning {
@@ -556,6 +585,21 @@ body {
 
 @media (max-width: 480px) {
   #app { padding: 1rem 0.75rem 2rem; }
+  .nav-tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    padding: 7px 14px;
+    font-size: 13px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
   .header h1 { font-size: 18px; }
   .search-box { width: 100%; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -614,7 +658,10 @@ body {
     <div class="modal-cat" id="mCat"></div>
     <div class="modal-emoji" id="mEmoji"></div>
     <div class="modal-word" id="mWord"></div>
-    <div class="modal-phonetic" id="mPhonetic"></div>
+    <div class="modal-phonetic-row">
+      <span class="modal-phonetic" id="mPhonetic"></span>
+      <button class="btn-phonetic-speak" onclick="speakSound()" title="听这个音">🔊</button>
+    </div>
     <div class="modal-meaning" id="mMean"></div>
     <div class="modal-key" id="mKeyBox">
       <div class="modal-key-emoji" id="mKeyEmoji"></div>
@@ -929,6 +976,24 @@ function getEnVoice() {
   if (!voice) voice = voices.find(v => v.lang === 'en-US');
   if (!voice) voice = voices.find(v => v.lang && v.lang.startsWith('en'));
   return voice;
+}
+
+// 听这个音：慢速朗读代表词以示范目标音（浏览器 TTS 无法直接朗读 IPA 符号，
+// 故用代表词做发音示范，这也是自然拼读教学中最可靠的方式）
+function speakSound() {
+  if (selIdx === null) return;
+  const p = PHONICS[selIdx];
+  if ('speechSynthesis' in window) {
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(p.key);
+      u.lang = 'en-US';
+      u.rate = 0.55;
+      const v = getEnVoice();
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch (e) { console.log('Speech error:', e); }
+  }
 }
 
 // 听发音：朗读代表词（真实单词，发音准确，帮助记住该字母/组合的音）
