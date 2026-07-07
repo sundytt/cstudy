@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自然拼读乐园 - Phonics 学习</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #F97316;
+  --color-primary-light: #FFF7ED;
+  --color-primary-dark: #EA580C;
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F3F4F6;
+  --color-background-tertiary: #F9FAFB;
+  --color-border-primary: #E5E7EB;
+  --color-border-secondary: #D1D5DB;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #F8FAFC 0%, #FFF7ED 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-tab {
+  padding: 8px 24px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.nav-tab.other {
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-tab.other:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-tab.active {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-box {
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+  font-size: 14px;
+  width: 180px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-box:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+.search-box::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.spill {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-primary);
+}
+
+.spill b {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.pgbar {
+  flex: 1;
+  min-width: 80px;
+  height: 6px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.pgfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #FDBA74);
+  border-radius: var(--radius-sm);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.cat {
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  padding: 6px 14px;
+  border-radius: var(--radius-lg);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.cat:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.cat.on {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.card {
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 14px 12px 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+}
+
+.card.done {
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, var(--color-success-light) 0%, #ECFDF5 100%);
+}
+
+.card.done:hover {
+  border-color: var(--color-success);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+}
+
+.done-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.card-emoji {
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.card-word {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-align: center;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.card-phonetic {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  text-align: center;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+.card-meaning {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-secondary);
+  width: 840px;
+  max-width: 96vw;
+  padding: 3rem 3.5rem 2.5rem;
+  min-height: 640px;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.btn-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  color: var(--color-text-primary);
+}
+
+.btn-nav:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.btn-nav-prev { left: -24px; }
+.btn-nav-next { right: -24px; }
+
+.modal-counter {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  margin-top: 16px;
+}
+
+.modal-cat {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-cat-badge {
+  display: inline-block;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-md);
+  font-size: 22px;
+  font-weight: 500;
+  padding: 6px 24px;
+}
+
+.modal-emoji {
+  font-size: 72px;
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.modal-word {
+  font-size: 82px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-align: center;
+  margin-bottom: 12px;
+  letter-spacing: 2px;
+}
+
+.modal-phonetic {
+  text-align: center;
+  font-size: 30px;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+
+.modal-meaning {
+  text-align: center;
+  font-size: 26px;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+}
+
+.modal-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: var(--color-primary-light);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  margin-bottom: 16px;
+}
+
+.modal-key-emoji { font-size: 40px; line-height: 1; }
+.modal-key-word { font-size: 30px; font-weight: 700; color: var(--color-primary-dark); }
+.modal-key-word b { color: var(--color-primary); text-decoration: underline; }
+.modal-key-zh { font-size: 18px; color: var(--color-text-secondary); }
+
+.modal-words {
+  text-align: center;
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+.modal-words span { color: var(--color-text-primary); font-weight: 500; margin: 0 4px; }
+
+.modal-example {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+
+.modal-example-en {
+  font-size: 22px;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.modal-example-zh {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  text-align: center;
+}
+
+.ex-btns {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.btn-ex-speak {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--color-background-primary);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ex-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.modal-btns {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-speak {
+  flex: 0 0 auto;
+  border: 2px solid #FDBA74;
+  color: var(--color-primary-dark);
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.btn-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-learn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 18px;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-learn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-learn.done {
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+}
+
+.btn-close {
+  flex: 0 0 auto;
+  border: 2px solid var(--color-border-secondary);
+  color: var(--color-text-secondary);
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  font-size: 22px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+  border-color: var(--color-text-tertiary);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.empty {
+  color: var(--color-text-tertiary);
+  font-size: 15px;
+  padding: 3rem 2rem;
+  text-align: center;
+  grid-column: 1/-1;
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--color-border-primary);
+}
+
+@media (max-width: 480px) {
+  #app { padding: 1rem 0.75rem 2rem; }
+  .header h1 { font-size: 18px; }
+  .search-box { width: 100%; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .modal {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 1rem 0.75rem 1.5rem;
+    min-height: unset;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+  .modal-emoji { font-size: 48px; }
+  .modal-word { font-size: 56px; }
+  .modal-phonetic { font-size: 20px; }
+  .modal-meaning { font-size: 18px; }
+  .modal-key-word { font-size: 22px; }
+  .modal-key-emoji { font-size: 30px; }
+  .btn-nav { width: 40px; height: 40px; font-size: 24px; }
+  .btn-nav-prev { left: 8px; }
+  .btn-nav-next { right: 8px; }
+  .modal-cat-badge { font-size: 16px; padding: 4px 16px; }
+  .modal-btns { gap: 8px; margin-top: 16px; }
+  .btn-speak, .btn-learn, .btn-close { padding: 12px 16px; font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="nav-tabs">
+    <div class="nav-tab other" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
+    <div class="nav-tab other" onclick="window.location.href='english.html'">🔤 单词学习</div>
+    <div class="nav-tab active">🔠 自然拼读</div>
+    <div class="nav-tab other" onclick="window.location.href='game.html'">🎮 趣味游戏</div>
+    <div class="nav-tab other" onclick="window.location.href='math_addition.html'">➕ 加法思路</div>
+    <div class="nav-tab other" onclick="window.location.href='math_subtraction.html'">➖ 减法思路</div>
+  </div>
+  <div class="header">
+    <h1>🔠 自然拼读乐园</h1>
+    <input class="search-box" id="sb" placeholder="🔍 搜索字母 / 例词..." oninput="doFilter()">
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
+  <div class="modal" id="modal">
+    <button class="btn-nav btn-nav-prev" onclick="prevItem()">‹</button>
+    <button class="btn-nav btn-nav-next" onclick="nextItem()">›</button>
+    <div class="modal-cat" id="mCat"></div>
+    <div class="modal-emoji" id="mEmoji"></div>
+    <div class="modal-word" id="mWord"></div>
+    <div class="modal-phonetic" id="mPhonetic"></div>
+    <div class="modal-meaning" id="mMean"></div>
+    <div class="modal-key" id="mKeyBox">
+      <div class="modal-key-emoji" id="mKeyEmoji"></div>
+      <div>
+        <div class="modal-key-word" id="mKeyWord"></div>
+        <div class="modal-key-zh" id="mKeyZh"></div>
+      </div>
+    </div>
+    <div class="modal-words" id="mWords"></div>
+    <div class="modal-example">
+      <div class="modal-example-en" id="mExEn"></div>
+      <div class="ex-btns"><button class="btn-ex-speak" onclick="speakEx()">🔊 读例句</button></div>
+      <div class="modal-example-zh" id="mExZh"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-speak" onclick="speak()">🔊 听发音</button>
+      <button class="btn-learn" id="btnL" onclick="toggleL()">⭐ 学会了</button>
+      <button class="btn-close" onclick="closeOv()">关闭</button>
+    </div>
+    <div class="modal-counter" id="mCounter"></div>
+  </div>
+</div>
+
+<script>
+// 自然拼读数据
+// unit: 字母/字母组合  ipa: 国际音标  type: 分类  zh: 中文说明
+// emoji/key/keyZh: 代表词及其中文  words: 例词  example/exampleZh: 例句
+const PHONICS = [
+  // ===== 字母基本音 =====
+  { unit:'a', ipa:'/æ/', type:'字母发音', zh:'字母 a 的短音', emoji:'🍎', key:'apple', keyZh:'苹果', words:'apple, ant, cat, hat', example:'The apple is red.', exampleZh:'苹果是红色的。' },
+  { unit:'b', ipa:'/b/', type:'字母发音', zh:'字母 b 的音', emoji:'⚽', key:'ball', keyZh:'球', words:'ball, bag, bus, bird', example:'The ball is big.', exampleZh:'球很大。' },
+  { unit:'c', ipa:'/k/', type:'字母发音', zh:'字母 c 的音', emoji:'🐱', key:'cat', keyZh:'猫', words:'cat, cup, car, cake', example:'The cat is cute.', exampleZh:'猫很可爱。' },
+  { unit:'d', ipa:'/d/', type:'字母发音', zh:'字母 d 的音', emoji:'🐶', key:'dog', keyZh:'狗', words:'dog, duck, door, desk', example:'The dog can run.', exampleZh:'狗会跑。' },
+  { unit:'e', ipa:'/e/', type:'字母发音', zh:'字母 e 的短音', emoji:'🥚', key:'egg', keyZh:'鸡蛋', words:'egg, bed, pen, red', example:'I like the egg.', exampleZh:'我喜欢这个鸡蛋。' },
+  { unit:'f', ipa:'/f/', type:'字母发音', zh:'字母 f 的音', emoji:'🐟', key:'fish', keyZh:'鱼', words:'fish, fan, fox, four', example:'The fish can swim.', exampleZh:'鱼会游泳。' },
+  { unit:'g', ipa:'/g/', type:'字母发音', zh:'字母 g 的音', emoji:'🐐', key:'goat', keyZh:'山羊', words:'goat, girl, gift, green', example:'The goat is white.', exampleZh:'山羊是白色的。' },
+  { unit:'h', ipa:'/h/', type:'字母发音', zh:'字母 h 的音', emoji:'🎩', key:'hat', keyZh:'帽子', words:'hat, hand, hen, home', example:'I have a hat.', exampleZh:'我有一顶帽子。' },
+  { unit:'i', ipa:'/ɪ/', type:'字母发音', zh:'字母 i 的短音', emoji:'🛖', key:'igloo', keyZh:'冰屋', words:'igloo, ink, pig, six', example:'I see an igloo.', exampleZh:'我看到一座冰屋。' },
+  { unit:'j', ipa:'/dʒ/', type:'字母发音', zh:'字母 j 的音', emoji:'🍯', key:'jam', keyZh:'果酱', words:'jam, jump, jet, juice', example:'I like jam.', exampleZh:'我喜欢果酱。' },
+  { unit:'k', ipa:'/k/', type:'字母发音', zh:'字母 k 的音', emoji:'🪁', key:'kite', keyZh:'风筝', words:'kite, key, king, kid', example:'The kite can fly.', exampleZh:'风筝会飞。' },
+  { unit:'l', ipa:'/l/', type:'字母发音', zh:'字母 l 的音', emoji:'🦁', key:'lion', keyZh:'狮子', words:'lion, leg, leaf, look', example:'The lion is big.', exampleZh:'狮子很大。' },
+  { unit:'m', ipa:'/m/', type:'字母发音', zh:'字母 m 的音', emoji:'🌙', key:'moon', keyZh:'月亮', words:'moon, man, map, milk', example:'I see the moon.', exampleZh:'我看到月亮。' },
+  { unit:'n', ipa:'/n/', type:'字母发音', zh:'字母 n 的音', emoji:'🪹', key:'nest', keyZh:'鸟巢', words:'nest, net, nose, nine', example:'The bird has a nest.', exampleZh:'鸟儿有一个巢。' },
+  { unit:'o', ipa:'/ɒ/', type:'字母发音', zh:'字母 o 的短音', emoji:'🍊', key:'orange', keyZh:'橙子', words:'orange, ox, dog, box', example:'The orange is sweet.', exampleZh:'橙子很甜。' },
+  { unit:'p', ipa:'/p/', type:'字母发音', zh:'字母 p 的音', emoji:'🐷', key:'pig', keyZh:'猪', words:'pig, pen, pan, park', example:'The pig is pink.', exampleZh:'猪是粉色的。' },
+  { unit:'q', ipa:'/kw/', type:'字母发音', zh:'字母 q 的音', emoji:'👸', key:'queen', keyZh:'女王', words:'queen, quiet, quick, quiz', example:'The queen is kind.', exampleZh:'女王很善良。' },
+  { unit:'r', ipa:'/r/', type:'字母发音', zh:'字母 r 的音', emoji:'🐰', key:'rabbit', keyZh:'兔子', words:'rabbit, red, run, rain', example:'The rabbit can jump.', exampleZh:'兔子会跳。' },
+  { unit:'s', ipa:'/s/', type:'字母发音', zh:'字母 s 的音', emoji:'☀️', key:'sun', keyZh:'太阳', words:'sun, sit, sea, six', example:'The sun is hot.', exampleZh:'太阳很热。' },
+  { unit:'t', ipa:'/t/', type:'字母发音', zh:'字母 t 的音', emoji:'🐯', key:'tiger', keyZh:'老虎', words:'tiger, ten, top, tree', example:'The tiger is strong.', exampleZh:'老虎很强壮。' },
+  { unit:'u', ipa:'/ʌ/', type:'字母发音', zh:'字母 u 的短音', emoji:'☂️', key:'umbrella', keyZh:'雨伞', words:'umbrella, up, cup, bus', example:'I have an umbrella.', exampleZh:'我有一把雨伞。' },
+  { unit:'v', ipa:'/v/', type:'字母发音', zh:'字母 v 的音', emoji:'🚐', key:'van', keyZh:'厢式货车', words:'van, vet, very, voice', example:'The van is blue.', exampleZh:'货车是蓝色的。' },
+  { unit:'w', ipa:'/w/', type:'字母发音', zh:'字母 w 的音', emoji:'💧', key:'water', keyZh:'水', words:'water, win, wind, week', example:'I drink water.', exampleZh:'我喝水。' },
+  { unit:'x', ipa:'/ks/', type:'字母发音', zh:'字母 x 的音', emoji:'📦', key:'box', keyZh:'盒子', words:'box, fox, six, fix', example:'The box is big.', exampleZh:'盒子很大。' },
+  { unit:'y', ipa:'/j/', type:'字母发音', zh:'字母 y 的音', emoji:'🪀', key:'yoyo', keyZh:'悠悠球', words:'yoyo, yes, you, year', example:'I have a yoyo.', exampleZh:'我有一个悠悠球。' },
+  { unit:'z', ipa:'/z/', type:'字母发音', zh:'字母 z 的音', emoji:'🦓', key:'zebra', keyZh:'斑马', words:'zebra, zoo, zip, zero', example:'The zebra is black and white.', exampleZh:'斑马是黑白色的。' },
+
+  // ===== 短元音 =====
+  { unit:'a', ipa:'/æ/', type:'短元音', zh:'短元音 a', emoji:'🐱', key:'cat', keyZh:'猫', words:'cat, hat, map, bag', example:'The cat sat on a mat.', exampleZh:'猫坐在垫子上。' },
+  { unit:'e', ipa:'/e/', type:'短元音', zh:'短元音 e', emoji:'🛏️', key:'bed', keyZh:'床', words:'bed, red, pen, ten', example:'The bed is red.', exampleZh:'床是红色的。' },
+  { unit:'i', ipa:'/ɪ/', type:'短元音', zh:'短元音 i', emoji:'🐷', key:'pig', keyZh:'猪', words:'pig, big, sit, six', example:'The pig is big.', exampleZh:'猪很大。' },
+  { unit:'o', ipa:'/ɒ/', type:'短元音', zh:'短元音 o', emoji:'🐶', key:'dog', keyZh:'狗', words:'dog, box, hot, top', example:'The dog is hot.', exampleZh:'狗很热。' },
+  { unit:'u', ipa:'/ʌ/', type:'短元音', zh:'短元音 u', emoji:'☕', key:'cup', keyZh:'杯子', words:'cup, bus, sun, run', example:'The cup is full.', exampleZh:'杯子满了。' },
+
+  // ===== 长元音（魔法 e）=====
+  { unit:'a_e', ipa:'/eɪ/', type:'长元音', zh:'a-e 组合发字母 a 的名字', emoji:'🎂', key:'cake', keyZh:'蛋糕', words:'cake, name, game, lake', example:'The cake is sweet.', exampleZh:'蛋糕很甜。' },
+  { unit:'i_e', ipa:'/aɪ/', type:'长元音', zh:'i-e 组合发字母 i 的名字', emoji:'🚲', key:'bike', keyZh:'自行车', words:'bike, kite, time, nine', example:'I ride a bike.', exampleZh:'我骑自行车。' },
+  { unit:'o_e', ipa:'/oʊ/', type:'长元音', zh:'o-e 组合发字母 o 的名字', emoji:'🏠', key:'home', keyZh:'家', words:'home, nose, rose, bone', example:'I go home.', exampleZh:'我回家。' },
+  { unit:'u_e', ipa:'/juː/', type:'长元音', zh:'u-e 组合发字母 u 的名字', emoji:'🐹', key:'cute', keyZh:'可爱的', words:'cute, tube, cube, mule', example:'The pet is cute.', exampleZh:'这只宠物很可爱。' },
+
+  // ===== 辅音组合（二合字母）=====
+  { unit:'sh', ipa:'/ʃ/', type:'辅音组合', zh:'sh 发 /ʃ/ 音', emoji:'🚢', key:'ship', keyZh:'轮船', words:'ship, fish, shop, wash', example:'The ship is big.', exampleZh:'轮船很大。' },
+  { unit:'ch', ipa:'/tʃ/', type:'辅音组合', zh:'ch 发 /tʃ/ 音', emoji:'🪑', key:'chair', keyZh:'椅子', words:'chair, chip, lunch, cheese', example:'Sit on the chair.', exampleZh:'坐在椅子上。' },
+  { unit:'th', ipa:'/θ/', type:'辅音组合', zh:'th 的清音 /θ/', emoji:'🤔', key:'think', keyZh:'思考', words:'think, three, thin, math', example:'I think and learn.', exampleZh:'我思考并学习。' },
+  { unit:'th', ipa:'/ð/', type:'辅音组合', zh:'th 的浊音 /ð/', emoji:'👉', key:'this', keyZh:'这个', words:'this, that, they, mother', example:'This is my mother.', exampleZh:'这是我的妈妈。' },
+  { unit:'wh', ipa:'/w/', type:'辅音组合', zh:'wh 发 /w/ 音', emoji:'🐳', key:'whale', keyZh:'鲸鱼', words:'whale, wheel, white, what', example:'The whale is huge.', exampleZh:'鲸鱼很巨大。' },
+  { unit:'ph', ipa:'/f/', type:'辅音组合', zh:'ph 发 /f/ 音', emoji:'📱', key:'phone', keyZh:'电话', words:'phone, photo, graph, dolphin', example:'The phone is new.', exampleZh:'电话是新的。' },
+  { unit:'ng', ipa:'/ŋ/', type:'辅音组合', zh:'ng 发 /ŋ/ 音', emoji:'🤴', key:'king', keyZh:'国王', words:'king, ring, song, long', example:'The king is tall.', exampleZh:'国王很高。' },
+  { unit:'ck', ipa:'/k/', type:'辅音组合', zh:'ck 发 /k/ 音', emoji:'🦆', key:'duck', keyZh:'鸭子', words:'duck, sock, rock, black', example:'The duck can swim.', exampleZh:'鸭子会游泳。' },
+
+  // ===== 元音组合 =====
+  { unit:'ai', ipa:'/eɪ/', type:'元音组合', zh:'ai 发 /eɪ/ 音', emoji:'🌧️', key:'rain', keyZh:'雨', words:'rain, tail, mail, train', example:'The rain is cold.', exampleZh:'雨很冷。' },
+  { unit:'ay', ipa:'/eɪ/', type:'元音组合', zh:'ay 发 /eɪ/ 音', emoji:'☀️', key:'day', keyZh:'白天', words:'day, play, say, way', example:'It is a sunny day.', exampleZh:'今天是晴天。' },
+  { unit:'ee', ipa:'/iː/', type:'元音组合', zh:'ee 发 /iː/ 音', emoji:'🐝', key:'bee', keyZh:'蜜蜂', words:'bee, tree, see, three', example:'The bee is small.', exampleZh:'蜜蜂很小。' },
+  { unit:'ea', ipa:'/iː/', type:'元音组合', zh:'ea 发 /iː/ 音', emoji:'🌊', key:'sea', keyZh:'大海', words:'sea, tea, read, leaf', example:'The sea is blue.', exampleZh:'大海是蓝色的。' },
+  { unit:'oa', ipa:'/oʊ/', type:'元音组合', zh:'oa 发 /oʊ/ 音', emoji:'⛵', key:'boat', keyZh:'小船', words:'boat, coat, goat, road', example:'The boat is on the sea.', exampleZh:'小船在海上。' },
+  { unit:'oo', ipa:'/uː/', type:'元音组合', zh:'oo 发长音 /uː/', emoji:'🌙', key:'moon', keyZh:'月亮', words:'moon, food, zoo, room', example:'The moon is bright.', exampleZh:'月亮很亮。' },
+  { unit:'oo', ipa:'/ʊ/', type:'元音组合', zh:'oo 发短音 /ʊ/', emoji:'📖', key:'book', keyZh:'书', words:'book, look, foot, good', example:'I read a book.', exampleZh:'我读一本书。' },
+  { unit:'ou', ipa:'/aʊ/', type:'元音组合', zh:'ou 发 /aʊ/ 音', emoji:'🏠', key:'house', keyZh:'房子', words:'house, mouse, out, loud', example:'The house is big.', exampleZh:'房子很大。' },
+  { unit:'ow', ipa:'/aʊ/', type:'元音组合', zh:'ow 发 /aʊ/ 音', emoji:'🐮', key:'cow', keyZh:'奶牛', words:'cow, now, how, town', example:'The cow eats grass.', exampleZh:'奶牛吃草。' },
+  { unit:'ow', ipa:'/oʊ/', type:'元音组合', zh:'ow 发 /oʊ/ 音', emoji:'❄️', key:'snow', keyZh:'雪', words:'snow, slow, low, window', example:'The snow is white.', exampleZh:'雪是白色的。' },
+  { unit:'oi', ipa:'/ɔɪ/', type:'元音组合', zh:'oi 发 /ɔɪ/ 音', emoji:'🛢️', key:'oil', keyZh:'油', words:'oil, coin, soil, join', example:'The oil is hot.', exampleZh:'油很烫。' },
+  { unit:'oy', ipa:'/ɔɪ/', type:'元音组合', zh:'oy 发 /ɔɪ/ 音', emoji:'👦', key:'boy', keyZh:'男孩', words:'boy, toy, joy, enjoy', example:'The boy has a toy.', exampleZh:'男孩有一个玩具。' },
+  { unit:'aw', ipa:'/ɔː/', type:'元音组合', zh:'aw 发 /ɔː/ 音', emoji:'🪚', key:'saw', keyZh:'锯子', words:'saw, paw, draw, straw', example:'I saw a big dog.', exampleZh:'我看到一只大狗。' },
+
+  // ===== R 控制元音 =====
+  { unit:'ar', ipa:'/ɑːr/', type:'R控制元音', zh:'ar 发 /ɑːr/ 音', emoji:'🚗', key:'car', keyZh:'汽车', words:'car, star, park, farm', example:'The car is fast.', exampleZh:'汽车很快。' },
+  { unit:'or', ipa:'/ɔːr/', type:'R控制元音', zh:'or 发 /ɔːr/ 音', emoji:'🍴', key:'fork', keyZh:'叉子', words:'fork, corn, born, short', example:'I use a fork.', exampleZh:'我用叉子。' },
+  { unit:'er', ipa:'/ɜːr/', type:'R控制元音', zh:'er 发 /ɜːr/ 音', emoji:'👩', key:'her', keyZh:'她', words:'her, sister, water, tiger', example:'I see her sister.', exampleZh:'我看到她的姐姐。' },
+  { unit:'ir', ipa:'/ɜːr/', type:'R控制元音', zh:'ir 发 /ɜːr/ 音', emoji:'🐦', key:'bird', keyZh:'鸟', words:'bird, girl, first, shirt', example:'The bird can fly.', exampleZh:'鸟会飞。' },
+  { unit:'ur', ipa:'/ɜːr/', type:'R控制元音', zh:'ur 发 /ɜːr/ 音', emoji:'👩‍⚕️', key:'nurse', keyZh:'护士', words:'nurse, turn, burn, purple', example:'The nurse is kind.', exampleZh:'护士很善良。' },
+
+  // ===== 首辅音连缀 =====
+  { unit:'bl', ipa:'/bl/', type:'辅音连缀', zh:'bl 连缀音', emoji:'🔵', key:'blue', keyZh:'蓝色', words:'blue, black, block, blow', example:'The sky is blue.', exampleZh:'天空是蓝色的。' },
+  { unit:'br', ipa:'/br/', type:'辅音连缀', zh:'br 连缀音', emoji:'🍞', key:'bread', keyZh:'面包', words:'bread, brown, bring, brush', example:'I eat bread.', exampleZh:'我吃面包。' },
+  { unit:'cl', ipa:'/kl/', type:'辅音连缀', zh:'cl 连缀音', emoji:'🕐', key:'clock', keyZh:'时钟', words:'clock, clap, clean, close', example:'The clock is round.', exampleZh:'时钟是圆的。' },
+  { unit:'cr', ipa:'/kr/', type:'辅音连缀', zh:'cr 连缀音', emoji:'🦀', key:'crab', keyZh:'螃蟹', words:'crab, cray, cry, cross', example:'The crab is red.', exampleZh:'螃蟹是红色的。' },
+  { unit:'dr', ipa:'/dr/', type:'辅音连缀', zh:'dr 连缀音', emoji:'🥁', key:'drum', keyZh:'鼓', words:'drum, dry, draw, dress', example:'I play the drum.', exampleZh:'我打鼓。' },
+  { unit:'fl', ipa:'/fl/', type:'辅音连缀', zh:'fl 连缀音', emoji:'🚩', key:'flag', keyZh:'旗子', words:'flag, fly, floor, flower', example:'The flag is red.', exampleZh:'旗子是红色的。' },
+  { unit:'fr', ipa:'/fr/', type:'辅音连缀', zh:'fr 连缀音', emoji:'🐸', key:'frog', keyZh:'青蛙', words:'frog, free, from, fresh', example:'The frog can jump.', exampleZh:'青蛙会跳。' },
+  { unit:'gl', ipa:'/gl/', type:'辅音连缀', zh:'gl 连缀音', emoji:'🥛', key:'glass', keyZh:'玻璃杯', words:'glass, glad, glue, glow', example:'The glass is full.', exampleZh:'杯子满了。' },
+  { unit:'gr', ipa:'/gr/', type:'辅音连缀', zh:'gr 连缀音', emoji:'🌱', key:'grass', keyZh:'草', words:'grass, green, grow, great', example:'The grass is green.', exampleZh:'草是绿色的。' },
+  { unit:'pl', ipa:'/pl/', type:'辅音连缀', zh:'pl 连缀音', emoji:'✈️', key:'plane', keyZh:'飞机', words:'plane, play, plant, please', example:'The plane can fly.', exampleZh:'飞机会飞。' },
+  { unit:'pr', ipa:'/pr/', type:'辅音连缀', zh:'pr 连缀音', emoji:'🏆', key:'prize', keyZh:'奖品', words:'prize, print, proud, press', example:'I win a prize.', exampleZh:'我赢得了奖品。' },
+  { unit:'sl', ipa:'/sl/', type:'辅音连缀', zh:'sl 连缀音', emoji:'🛷', key:'sled', keyZh:'雪橇', words:'sled, sleep, slow, slide', example:'I ride a sled.', exampleZh:'我坐雪橇。' },
+  { unit:'sm', ipa:'/sm/', type:'辅音连缀', zh:'sm 连缀音', emoji:'😊', key:'smile', keyZh:'微笑', words:'smile, small, smell, smart', example:'I like your smile.', exampleZh:'我喜欢你的微笑。' },
+  { unit:'sn', ipa:'/sn/', type:'辅音连缀', zh:'sn 连缀音', emoji:'🐍', key:'snake', keyZh:'蛇', words:'snake, snow, snack, snail', example:'The snake is long.', exampleZh:'蛇很长。' },
+  { unit:'sp', ipa:'/sp/', type:'辅音连缀', zh:'sp 连缀音', emoji:'🥄', key:'spoon', keyZh:'勺子', words:'spoon, spin, sport, space', example:'I use a spoon.', exampleZh:'我用勺子。' },
+  { unit:'st', ipa:'/st/', type:'辅音连缀', zh:'st 连缀音', emoji:'⭐', key:'star', keyZh:'星星', words:'star, stop, stand, stone', example:'The star is bright.', exampleZh:'星星很亮。' },
+  { unit:'sw', ipa:'/sw/', type:'辅音连缀', zh:'sw 连缀音', emoji:'🏊', key:'swim', keyZh:'游泳', words:'swim, sweet, swing, swan', example:'I can swim.', exampleZh:'我会游泳。' },
+  { unit:'tr', ipa:'/tr/', type:'辅音连缀', zh:'tr 连缀音', emoji:'🌳', key:'tree', keyZh:'树', words:'tree, train, try, trip', example:'The tree is tall.', exampleZh:'树很高。' }
+];
+
+const CATS = ['全部', ...new Set(PHONICS.map(p => p.type))];
+
+let curCat = '全部', learned = new Set(), selIdx = null, sq = '';
+
+const DB_NAME = 'PhonicsDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'learnedPhonics';
+
+// 每条唯一 key（unit 可能重复，如 a / th / oo / ow，需带 ipa 区分）
+function itemKey(p) { return p.unit + '|' + p.ipa; }
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+  });
+}
+
+async function loadLearned() {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get('learned');
+    return new Promise((resolve, reject) => {
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const data = request.result;
+        if (data && data.items) {
+          resolve(new Set(data.items));
+        } else {
+          const ls = localStorage.getItem('phl1');
+          if (ls) {
+            const lsSet = new Set(JSON.parse(ls));
+            saveLearned(lsSet);
+            resolve(lsSet);
+          } else {
+            resolve(new Set());
+          }
+        }
+      };
+    });
+  } catch (e) {
+    const ls = localStorage.getItem('phl1');
+    return ls ? new Set(JSON.parse(ls)) : new Set();
+  }
+}
+
+async function saveLearned(itemsSet) {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    store.put({ items: [...itemsSet] }, 'learned');
+    transaction.oncomplete = () => { localStorage.setItem('phl1', JSON.stringify([...itemsSet])); };
+    transaction.onerror = () => { localStorage.setItem('phl1', JSON.stringify([...itemsSet])); };
+  } catch (e) {
+    localStorage.setItem('phl1', JSON.stringify([...itemsSet]));
+  }
+}
+
+async function initStorage() {
+  learned = await loadLearned();
+  renderStats();
+  renderCats();
+  renderGrid();
+}
+
+function renderStats() {
+  const list = getList();
+  const tot = list.length;
+  const done = list.filter(p => learned.has(itemKey(p))).length;
+  const pct = tot > 0 ? Math.round(done / tot * 100) : 0;
+  document.getElementById('stats').innerHTML = `
+    <div class="spill">已学 <b>${done}</b> 个</div>
+    <div class="spill">共 <b>${tot}</b> 个</div>
+    <div class="spill">完成 <b>${pct}%</b></div>
+    <div class="pgbar"><div class="pgfill" style="width:${pct}%"></div></div>`;
+}
+
+function matchQuery(p) {
+  if (!sq) return true;
+  const s = sq.toLowerCase();
+  return p.unit.toLowerCase().includes(s) || p.key.toLowerCase().includes(s)
+    || p.words.toLowerCase().includes(s) || p.zh.includes(sq) || p.keyZh.includes(sq);
+}
+
+function getCatCount(cat) {
+  return PHONICS.filter(p => (cat === '全部' || p.type === cat) && matchQuery(p)).length;
+}
+
+function renderCats() {
+  document.getElementById('cats').innerHTML = CATS.map(c =>
+    `<button class="cat${c === curCat ? ' on' : ''}" onclick="setCat('${c}')">${c} <span style="font-size:11px;opacity:0.7">[${getCatCount(c)}]</span></button>`
+  ).join('');
+}
+
+function setCat(c) { curCat = c; renderCats(); renderGrid(); }
+function doFilter() { sq = document.getElementById('sb').value.trim(); renderCats(); renderGrid(); }
+
+function getList() {
+  return PHONICS.filter(p => (curCat === '全部' || p.type === curCat) && matchQuery(p));
+}
+
+function renderGrid() {
+  const list = getList();
+  if (!list.length) { document.getElementById('grid').innerHTML = `<div class="empty">没有找到「${sq}」相关内容</div>`; return; }
+  document.getElementById('grid').innerHTML = list.map(p => {
+    const isL = learned.has(itemKey(p));
+    return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${PHONICS.indexOf(p)})">
+      ${isL ? '<span class="done-badge">✓ 学会</span>' : ''}
+      <div class="card-emoji">${p.emoji}</div>
+      <div class="card-word">${p.unit}</div>
+      <div class="card-phonetic">${p.ipa}</div>
+      <div class="card-meaning">${p.zh}</div>
+    </div>`;
+  }).join('');
+}
+
+// 例词里高亮代表词中含目标字母组合（简单展示）
+function highlightKey(word, unit) {
+  const u = unit.replace('_', '');
+  const idx = word.toLowerCase().indexOf(u.toLowerCase());
+  if (idx < 0 || unit.includes('_')) return word;
+  return word.slice(0, idx) + '<b>' + word.slice(idx, idx + u.length) + '</b>' + word.slice(idx + u.length);
+}
+
+function openModal(idx) {
+  selIdx = idx;
+  const p = PHONICS[idx];
+  document.getElementById('mCat').innerHTML = `<span class="modal-cat-badge">${p.type}</span>`;
+  document.getElementById('mEmoji').textContent = p.emoji;
+  document.getElementById('mWord').textContent = p.unit;
+  document.getElementById('mPhonetic').textContent = p.ipa;
+  document.getElementById('mMean').textContent = p.zh;
+  document.getElementById('mKeyEmoji').textContent = p.emoji;
+  document.getElementById('mKeyWord').innerHTML = highlightKey(p.key, p.unit);
+  document.getElementById('mKeyZh').textContent = p.keyZh;
+  document.getElementById('mWords').innerHTML = '例词：' + p.words.split(',').map(w => `<span>${w.trim()}</span>`).join('');
+  document.getElementById('mExEn').textContent = p.example || '';
+  document.getElementById('mExZh').textContent = p.exampleZh || '';
+  const isL = learned.has(itemKey(p));
+  const btn = document.getElementById('btnL');
+  btn.textContent = isL ? '✅ 已学会' : '⭐ 学会了';
+  btn.className = 'btn-learn' + (isL ? ' done' : '');
+  document.getElementById('mCounter').textContent = `${idx + 1} / ${PHONICS.length}`;
+  document.querySelector('.btn-nav-prev').style.opacity = idx === 0 ? '0.3' : '1';
+  document.querySelector('.btn-nav-next').style.opacity = idx === PHONICS.length - 1 ? '0.3' : '1';
+  document.getElementById('ov').style.display = 'flex';
+}
+
+function prevItem() { if (selIdx > 0) openModal(selIdx - 1); }
+function nextItem() { if (selIdx < PHONICS.length - 1) openModal(selIdx + 1); }
+
+document.addEventListener('keydown', function (e) {
+  if (document.getElementById('ov').style.display !== 'none') {
+    if (e.key === 'ArrowLeft') prevItem();
+    if (e.key === 'ArrowRight') nextItem();
+    if (e.key === 'Escape') closeOv();
+  }
+});
+
+function closeOv(e) { if (!e || e.target.id === 'ov') { document.getElementById('ov').style.display = 'none'; selIdx = null; } }
+
+async function toggleL() {
+  if (selIdx === null) return;
+  const p = PHONICS[selIdx];
+  const k = itemKey(p);
+  if (learned.has(k)) learned.delete(k); else learned.add(k);
+  await saveLearned(learned);
+  renderStats();
+  renderGrid();
+  const isL = learned.has(k);
+  const btn = document.getElementById('btnL');
+  btn.textContent = isL ? '✅ 已学会' : '⭐ 学会了';
+  btn.className = 'btn-learn' + (isL ? ' done' : '');
+}
+
+function getEnVoice() {
+  const voices = speechSynthesis.getVoices();
+  let voice = voices.find(v => v.lang === 'en-US' && v.name.includes('Premium'));
+  if (!voice) voice = voices.find(v => v.lang === 'en-US' && (v.name.includes('Samantha') || v.name.includes('Alex')));
+  if (!voice) voice = voices.find(v => v.lang === 'en-US');
+  if (!voice) voice = voices.find(v => v.lang && v.lang.startsWith('en'));
+  return voice;
+}
+
+// 听发音：朗读代表词（真实单词，发音准确，帮助记住该字母/组合的音）
+function speak() {
+  if (selIdx === null) return;
+  const p = PHONICS[selIdx];
+  if ('speechSynthesis' in window) {
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(p.key);
+      u.lang = 'en-US';
+      u.rate = 0.75;
+      const v = getEnVoice();
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch (e) { console.log('Speech error:', e); }
+  }
+}
+
+function speakEx() {
+  if (selIdx === null) return;
+  const p = PHONICS[selIdx];
+  if ('speechSynthesis' in window) {
+    try {
+      speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(p.example);
+      u.lang = 'en-US';
+      u.rate = 0.8;
+      const v = getEnVoice();
+      if (v) u.voice = v;
+      speechSynthesis.speak(u);
+    } catch (e) { console.log('Speech error:', e); }
+  }
+}
+
+if ('speechSynthesis' in window) {
+  const loadVoices = () => speechSynthesis.getVoices();
+  loadVoices();
+  if (speechSynthesis.onvoiceschanged === undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+  setTimeout(loadVoices, 100);
+}
+
+initStorage();
+</script>
+</body>
+</html>
