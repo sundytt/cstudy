@@ -429,28 +429,6 @@ body {
   color: var(--color-text-primary);
 }
 
-.btn-key-speak {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  border: 2px solid #F9A8D4;
-  background: var(--color-background-primary);
-  color: var(--color-primary-dark);
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  flex: 0 0 auto;
-}
-
-.btn-key-speak:hover {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
-  transform: scale(1.1);
-}
-
 .modal-words {
   text-align: center;
   font-size: 17px;
@@ -1071,7 +1049,6 @@ function openModal(idx) {
       <div class="modal-key">
         <div class="modal-key-example">${p.example}</div>
         <div class="modal-key-pinyin">${p.examplePy}</div>
-        <button class="btn-key-speak" onclick="speakExample()" title="听发音">🔊</button>
       </div>
       <div class="modal-words">常用词：${p.words.split(' ').map(w => `<span onclick="speakText('${w.replace(/\(.*\)/, '')}')">${w}</span>`).join(' ')}</div>
       <div class="modal-example">

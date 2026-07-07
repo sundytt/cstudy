@@ -413,29 +413,6 @@ body {
   font-style: italic;
 }
 
-.btn-phonetic-speak {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid #FDBA74;
-  background: var(--color-background-primary);
-  color: var(--color-primary-dark);
-  font-size: 18px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  flex: 0 0 auto;
-  line-height: 1;
-}
-
-.btn-phonetic-speak:hover {
-  background: var(--color-primary-light);
-  border-color: var(--color-primary);
-  transform: scale(1.1);
-}
-
 .modal-meaning {
   text-align: center;
   font-size: 26px;
@@ -669,7 +646,6 @@ body {
     <div class="modal-word" id="mWord"></div>
     <div class="modal-phonetic-row">
       <span class="modal-phonetic" id="mPhonetic"></span>
-      <button class="btn-phonetic-speak" onclick="speakSound()" title="听这个音">🔊</button>
     </div>
     <div class="modal-meaning" id="mMean"></div>
     <div class="modal-key" id="mKeyBox">
