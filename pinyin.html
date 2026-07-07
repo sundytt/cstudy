@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拼音乐园 - 汉语拼音学习</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #EC4899;
+  --color-primary-light: #FCE7F3;
+  --color-primary-dark: #DB2777;
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F3F4F6;
+  --color-background-tertiary: #F9FAFB;
+  --color-border-primary: #E5E7EB;
+  --color-border-secondary: #D1D5DB;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #F8FAFC 0%, #FDF2F8 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.nav-tab {
+  padding: 8px 24px;
+  border-radius: var(--radius-lg);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.nav-tab.other {
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-tab.other:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-tab.active {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.search-box {
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+  font-size: 14px;
+  width: 180px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.search-box:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+  transform: translateY(-1px);
+}
+
+.search-box::placeholder {
+  color: var(--color-text-tertiary);
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.spill {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border-primary);
+}
+
+.spill b {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.pgbar {
+  flex: 1;
+  min-width: 80px;
+  height: 6px;
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.pgfill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary), #F9A8D4);
+  border-radius: var(--radius-sm);
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.cat {
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  padding: 6px 14px;
+  border-radius: var(--radius-lg);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.cat:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.cat.on {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.card {
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  padding: 14px 12px 12px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.card:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: var(--shadow-xl);
+}
+
+.card.done {
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, var(--color-success-light) 0%, #ECFDF5 100%);
+}
+
+.card.done:hover {
+  border-color: var(--color-success);
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.2);
+}
+
+.done-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-md);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+}
+
+.card-emoji {
+  font-size: 32px;
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+.card-unit {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.card-example {
+  font-size: 22px;
+  color: var(--color-text-primary);
+  margin-bottom: 4px;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.card-meaning {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-secondary);
+  width: 840px;
+  max-width: 96vw;
+  padding: 3rem 3.5rem 2.5rem;
+  min-height: 640px;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.btn-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  font-size: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  color: var(--color-text-primary);
+}
+
+.btn-nav:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.btn-nav-prev { left: -24px; }
+.btn-nav-next { right: -24px; }
+
+.modal-counter {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-tertiary);
+  margin-top: 16px;
+}
+
+.modal-cat {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.modal-cat-badge {
+  display: inline-block;
+  background: var(--color-primary-light);
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-md);
+  font-size: 22px;
+  font-weight: 500;
+  padding: 6px 24px;
+}
+
+.modal-emoji {
+  font-size: 64px;
+  text-align: center;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.modal-unit {
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+}
+
+.modal-desc {
+  text-align: center;
+  font-size: 18px;
+  color: var(--color-text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.modal-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--color-primary-light);
+  border-radius: var(--radius-md);
+  padding: 16px 24px;
+  margin-bottom: 18px;
+}
+
+.modal-key-example {
+  font-size: 48px;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--color-primary-dark);
+}
+
+.modal-key-pinyin {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.btn-key-speak {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #F9A8D4;
+  background: var(--color-background-primary);
+  color: var(--color-primary-dark);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  flex: 0 0 auto;
+}
+
+.btn-key-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: scale(1.1);
+}
+
+.modal-words {
+  text-align: center;
+  font-size: 17px;
+  color: var(--color-text-secondary);
+  margin-bottom: 16px;
+  line-height: 2;
+}
+.modal-words span { color: var(--color-text-primary); font-weight: 500; margin: 0 6px; cursor: pointer; }
+.modal-words span:hover { color: var(--color-primary); text-decoration: underline; }
+
+.modal-example {
+  background: var(--color-background-secondary);
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  margin-bottom: 24px;
+}
+
+.modal-example-py {
+  font-size: 20px;
+  color: var(--color-primary-dark);
+  text-align: center;
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.modal-example-zh {
+  font-size: 24px;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: 8px;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.ex-btns {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0 0;
+}
+
+.btn-ex-speak {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: var(--radius-sm);
+  background: var(--color-background-primary);
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-ex-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.tone-table {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.tone-cell {
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  padding: 14px 8px;
+  text-align: center;
+  background: var(--color-background-tertiary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tone-cell:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  transform: translateY(-2px);
+}
+
+.tone-mark {
+  display: inline-block;
+  font-size: 11px;
+  color: #fff;
+  border-radius: 6px;
+  padding: 1px 6px;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.tone-mark.t1 { background: #EF4444; }
+.tone-mark.t2 { background: #10B981; }
+.tone-mark.t3 { background: #F59E0B; }
+.tone-mark.t4 { background: #3B82F6; }
+
+.tone-char {
+  font-size: 36px;
+  font-family: 'Noto Sans SC', sans-serif;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.tone-py {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  margin: 2px 0;
+}
+
+.tone-mean {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
+}
+
+.modal-btns {
+  display: flex;
+  gap: 16px;
+}
+
+.btn-speak {
+  flex: 0 0 auto;
+  border: 2px solid #F9A8D4;
+  color: var(--color-primary-dark);
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  font-size: 22px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.btn-speak:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-learn {
+  flex: 1;
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 18px;
+  font-size: 24px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-learn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-learn.done {
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+}
+
+.btn-close {
+  flex: 0 0 auto;
+  border: 2px solid var(--color-border-secondary);
+  color: var(--color-text-secondary);
+  background: var(--color-background-primary);
+  border-radius: var(--radius-md);
+  padding: 18px 24px;
+  font-size: 22px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-close:hover {
+  border-color: var(--color-text-tertiary);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.empty {
+  color: var(--color-text-tertiary);
+  font-size: 15px;
+  padding: 3rem 2rem;
+  text-align: center;
+  grid-column: 1/-1;
+  background: var(--color-background-primary);
+  border-radius: var(--radius-xl);
+  border: 1px dashed var(--color-border-primary);
+}
+
+.btn-backtop {
+  position: fixed;
+  bottom: 20px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  background: var(--color-background-primary);
+  color: var(--color-primary);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-backtop:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+@media (max-width: 480px) {
+  #app { padding: 1rem 0.75rem 2rem; }
+  .nav-tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tab {
+    padding: 7px 14px;
+    font-size: 13px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+  .header h1 { font-size: 18px; }
+  .search-box { width: 100%; }
+  .grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .card { padding: 10px 6px 8px; }
+  .card-unit { font-size: 20px; }
+  .card-example { font-size: 18px; }
+  .modal {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    padding: 1rem 0.75rem 1.5rem;
+    min-height: unset;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+  .modal-emoji { font-size: 44px; }
+  .modal-unit { font-size: 52px; }
+  .modal-desc { font-size: 15px; }
+  .modal-key { padding: 10px 14px; gap: 10px; }
+  .modal-key-example { font-size: 34px; }
+  .modal-key-pinyin { font-size: 20px; }
+  .modal-words { font-size: 14px; }
+  .modal-example-zh { font-size: 18px; }
+  .modal-example-py { font-size: 16px; }
+  .tone-table { gap: 6px; }
+  .tone-cell { padding: 8px 4px; }
+  .tone-char { font-size: 26px; }
+  .tone-py { font-size: 14px; }
+  .btn-nav { width: 40px; height: 40px; font-size: 24px; }
+  .btn-nav-prev { left: 8px; }
+  .btn-nav-next { right: 8px; }
+  .modal-cat-badge { font-size: 16px; padding: 4px 16px; }
+  .modal-btns { gap: 8px; margin-top: 16px; }
+  .btn-speak, .btn-learn, .btn-close { padding: 12px 16px; font-size: 15px; }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="nav-tabs">
+    <div class="nav-tab other" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
+    <div class="nav-tab other" onclick="window.location.href='english.html'">🔤 单词学习</div>
+    <div class="nav-tab active">🈶 拼音学习</div>
+    <div class="nav-tab other" onclick="window.location.href='phonics.html'">🔠 自然拼读</div>
+    <div class="nav-tab other" onclick="window.location.href='game.html'">🎮 趣味游戏</div>
+    <div class="nav-tab other" onclick="window.location.href='math_addition.html'">➕ 加法思路</div>
+    <div class="nav-tab other" onclick="window.location.href='math_subtraction.html'">➖ 减法思路</div>
+  </div>
+  <div class="header">
+    <h1>🈶 拼音乐园</h1>
+    <input class="search-box" id="sb" placeholder="🔍 搜索拼音 / 汉字..." oninput="doFilter()">
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
+  <div class="modal" id="modal">
+    <button class="btn-nav btn-nav-prev" onclick="prevItem()">‹</button>
+    <button class="btn-nav btn-nav-next" onclick="nextItem()">›</button>
+    <div class="modal-cat" id="mCat"></div>
+    <div id="mBody"></div>
+    <div class="modal-btns">
+      <button class="btn-speak" id="btnSpeak" onclick="speak()">🔊 听发音</button>
+      <button class="btn-learn" id="btnL" onclick="toggleL()">⭐ 学会了</button>
+      <button class="btn-close" onclick="closeOv()">关闭</button>
+    </div>
+    <div class="modal-counter" id="mCounter"></div>
+  </div>
+</div>
+
+<script>
+// 汉语拼音学习数据
+// 学习路径：单韵母 → 声母 → 复韵母/鼻韵母 → 整体认读音节 → 声调拼读练习 → 词语应用
+// unit: 拼音符号  type: 分类  desc: 发音要领  emoji: 图标
+// example/examplePy: 代表汉字及拼音  words: 常用词语（汉字+拼音）  sentence/sentencePy: 例句
+const PINYIN = [
+  // ===== 1. 单韵母（6个）=====
+  { unit:'a', type:'单韵母', desc:'嘴巴张大，声音洪亮，像哭"啊"一样', emoji:'😲', example:'啊', examplePy:'à', words:'妈妈(māma) 大(dà) 花(huā)', sentence:'妈妈爱我。', sentencePy:'Māma ài wǒ.' },
+  { unit:'o', type:'单韵母', desc:'嘴唇收圆并向前突出，像"哦"一样', emoji:'😮', example:'哦', examplePy:'ó', words:'波浪(bōlàng) 摸(mō) 我(wǒ)', sentence:'我摸摸小狗。', sentencePy:'Wǒ mōmō xiǎogǒu.' },
+  { unit:'e', type:'单韵母', desc:'嘴巴半张，嘴角向两边微咧', emoji:'🦢', example:'鹅', examplePy:'é', words:'河水(héshuǐ) 车子(chēzi) 也(yě)', sentence:'河里有只鹅。', sentencePy:'Hé lǐ yǒu zhī é.' },
+  { unit:'i', type:'单韵母', desc:'嘴角向后咧开，牙齿露出一点点', emoji:'👕', example:'衣', examplePy:'yī', words:'大米(dàmǐ) 你好(nǐhǎo) 力气(lìqi)', sentence:'我穿新衣。', sentencePy:'Wǒ chuān xīn yī.' },
+  { unit:'u', type:'单韵母', desc:'嘴唇收圆并向前突出，比 o 更小', emoji:'🏠', example:'屋', examplePy:'wū', words:'布(bù) 地图(dìtú) 马路(mǎlù)', sentence:'屋子很大。', sentencePy:'Wūzi hěn dà.' },
+  { unit:'ü', type:'单韵母', desc:'嘴唇收得更圆更小，像吹口哨', emoji:'🐟', example:'鱼', examplePy:'yú', words:'绿色(lǜsè) 下雨(xiàyǔ) 女孩(nǚhái)', sentence:'小鱼游得快。', sentencePy:'Xiǎoyú yóu de kuài.' },
+
+  // ===== 2. 声母（23个）=====
+  { unit:'b', type:'声母', desc:'上下嘴唇紧闭，然后突然张开发音，声母示范音节：bo', emoji:'👨‍🦳', example:'玻', examplePy:'bō', words:'爸爸(bàba) 白色(báisè) 本子(běnzi)', sentence:'爸爸买本子。', sentencePy:'Bàba mǎi běnzi.' },
+  { unit:'p', type:'声母', desc:'双唇紧闭后送气弹开，声母示范音节：po', emoji:'⛰️', example:'坡', examplePy:'pō', words:'苹果(píngguǒ) 爬山(páshān) 皮球(píqiú)', sentence:'苹果在坡上。', sentencePy:'Píngguǒ zài pō shàng.' },
+  { unit:'m', type:'声母', desc:'双唇闭合，声音从鼻腔出来，声母示范音节：mo', emoji:'🤚', example:'摸', examplePy:'mō', words:'妈妈(māma) 米饭(mǐfàn) 猫咪(māomī)', sentence:'妈妈摸摸我。', sentencePy:'Māma mōmō wǒ.' },
+  { unit:'f', type:'声母', desc:'上齿轻碰下唇，气流摩擦而出，声母示范音节：fo', emoji:'🙏', example:'佛', examplePy:'fó', words:'飞机(fēijī) 房子(fángzi) 大风(dàfēng)', sentence:'飞机飞得高。', sentencePy:'Fēijī fēi de gāo.' },
+  { unit:'d', type:'声母', desc:'舌尖顶住上齿龈，然后放开弹出，声母示范音节：de', emoji:'🎯', example:'德', examplePy:'dé', words:'大象(dàxiàng) 弟弟(dìdi) 蛋糕(dàngāo)', sentence:'弟弟吃蛋糕。', sentencePy:'Dìdi chī dàngāo.' },
+  { unit:'t', type:'声母', desc:'舌尖顶住上齿龈，送气弹出，声母示范音节：te', emoji:'🐰', example:'特', examplePy:'tè', words:'天空(tiānkōng) 兔子(tùzi) 糖果(tángguǒ)', sentence:'兔子爱糖果。', sentencePy:'Tùzi ài tángguǒ.' },
+  { unit:'n', type:'声母', desc:'舌尖抵住上齒龈，声音从鼻腔出来，声母示范音节：ne', emoji:'🐮', example:'呢', examplePy:'ne', words:'你好(nǐhǎo) 小牛(xiǎoniú) 鸟儿(niǎor)', sentence:'小牛在吃草。', sentencePy:'Xiǎoniú zài chī cǎo.' },
+  { unit:'l', type:'声母', desc:'舌尖轻抵上齒龈，气流从舌边流出，声母示范音节：le', emoji:'👩‍🏫', example:'了', examplePy:'le', words:'老师(lǎoshī) 篮球(lánqiú) 绿叶(lǜyè)', sentence:'老师打篮球。', sentencePy:'Lǎoshī dǎ lánqiú.' },
+  { unit:'g', type:'声母', desc:'舌根抵住软颚，然后放开弹出，声母示范音节：ge', emoji:'🐶', example:'哥', examplePy:'gē', words:'小狗(xiǎogǒu) 高山(gāoshān) 哥哥(gēge)', sentence:'哥哥有小狗。', sentencePy:'Gēge yǒu xiǎogǒu.' },
+  { unit:'k', type:'声母', desc:'舌根抵住软颚，送气弹出，声母示范音节：ke', emoji:'👖', example:'可', examplePy:'kě', words:'快乐(kuàilè) 裤子(kùzi) 苦瓜(kǔguā)', sentence:'裤子很快乐。', sentencePy:'Kuàilè de chuān kùzi.' },
+  { unit:'h', type:'声母', desc:'舌根接近软颚，气流摩擦而出，声母示范音节：he', emoji:'🌸', example:'河', examplePy:'hé', words:'花朵(huāduǒ) 红色(hóngsè) 你好(nǐhǎo)', sentence:'河边有花朵。', sentencePy:'Hébiān yǒu huāduǒ.' },
+  { unit:'j', type:'声母', desc:'舌面前部抵住硬颚，然后放开，声母示范音节：ji', emoji:'🐔', example:'鸡', examplePy:'jī', words:'家人(jiārén) 橘子(júzi) 教室(jiàoshì)', sentence:'小鸡回家了。', sentencePy:'Xiǎojī huí jiā le.' },
+  { unit:'q', type:'声母', desc:'舌面前部抵住硬颚，送气而出，声母示范音节：qi', emoji:'🔢', example:'七', examplePy:'qī', words:'汽车(qìchē) 铅笔(qiānbǐ) 秋天(qiūtiān)', sentence:'秋天开汽车。', sentencePy:'Qiūtiān kāi qìchē.' },
+  { unit:'x', type:'声母', desc:'舌面前部接近硬颚，气流摩擦而出，声母示范音节：xi', emoji:'🍉', example:'西', examplePy:'xī', words:'西瓜(xīguā) 小猫(xiǎomāo) 学校(xuéxiào)', sentence:'西瓜在学校。', sentencePy:'Xīguā zài xuéxiào.' },
+  { unit:'zh', type:'声母', desc:'舌尖翘起抵住硬颚前部，然后放开，声母示范音节：zhi', emoji:'🇨🇳', example:'知', examplePy:'zhī', words:'中国(zhōngguó) 小猪(xiǎozhū) 桌子(zhuōzi)', sentence:'我知道中国。', sentencePy:'Wǒ zhīdào zhōngguó.' },
+  { unit:'ch', type:'声母', desc:'舌尖翘起抵住硬颚前部，送气而出，声母示范音节：chi', emoji:'🚗', example:'吃', examplePy:'chī', words:'汽车(qìchē) 唱歌(chànggē) 春天(chūntiān)', sentence:'春天来吃饭。', sentencePy:'Chūntiān lái chīfàn.' },
+  { unit:'sh', type:'声母', desc:'舌尖翘起接近硬颚前部，气流摩擦而出，声母示范音节：shi', emoji:'📖', example:'是', examplePy:'shì', words:'书本(shūběn) 水果(shuǐguǒ) 手(shǒu)', sentence:'这是我的书。', sentencePy:'Zhè shì wǒ de shū.' },
+  { unit:'r', type:'声母', desc:'舌尖翘起接近硬颚前部，声带振动摩擦而出，声母示范音节：ri', emoji:'👦', example:'日', examplePy:'rì', words:'人们(rénmen) 热闹(rènao) 肉(ròu)', sentence:'今天日子热。', sentencePy:'Jīntiān rìzi rè.' },
+  { unit:'z', type:'声母', desc:'舌尖抵住上齒背，然后放开，声母示范音节：zi', emoji:'✍️', example:'字', examplePy:'zì', words:'早上(zǎoshang) 桌子(zhuōzi) 自己(zìjǐ)', sentence:'早上写字。', sentencePy:'Zǎoshang xiězì.' },
+  { unit:'c', type:'声母', desc:'舌尖抵住上齒背，送气而出，声母示范音节：ci', emoji:'🌿', example:'词', examplePy:'cí', words:'草地(cǎodì) 彩虹(cǎihóng) 菜(cài)', sentence:'草地有彩虹。', sentencePy:'Cǎodì yǒu cǎihóng.' },
+  { unit:'s', type:'声母', desc:'舌尖接近上齒背，气流摩擦而出，声母示范音节：si', emoji:'☂️', example:'四', examplePy:'sì', words:'三个(sāngè) 雨伞(yǔsǎn) 送(sòng)', sentence:'我有四把伞。', sentencePy:'Wǒ yǒu sì bǎ sǎn.' },
+  { unit:'y', type:'声母', desc:'舌面前部隆起接近硬颚，发音短促，声母示范音节：yi', emoji:'🦆', example:'衣', examplePy:'yī', words:'鸭子(yāzi) 月亮(yuèliang) 小羊(xiǎoyáng)', sentence:'鸭子穿新衣。', sentencePy:'Yāzi chuān xīn yī.' },
+  { unit:'w', type:'声母', desc:'嘴唇收圆突出，发音短促，声母示范音节：wu', emoji:'🧸', example:'屋', examplePy:'wū', words:'娃娃(wáwa) 玩具(wánjù) 我们(wǒmen)', sentence:'娃娃在屋里。', sentencePy:'Wáwa zài wū lǐ.' },
+
+  // ===== 3. 复韵母（9个）=====
+  { unit:'ai', type:'复韵母', desc:'由 a 快速滑向 i，声音先响后轻', emoji:'🌊', example:'海', examplePy:'hǎi', words:'白色(báisè) 太阳(tàiyáng) 奶奶(nǎinai)', sentence:'大海真美。', sentencePy:'Dàhǎi zhēn měi.' },
+  { unit:'ei', type:'复韵母', desc:'由 e 快速滑向 i，声音先响后轻', emoji:'☕', example:'杯', examplePy:'bēi', words:'黑色(hēisè) 眉毛(méimao) 飞机(fēijī)', sentence:'黑杯子真好。', sentencePy:'Hēi bēizi zhēn hǎo.' },
+  { unit:'ui', type:'复韵母', desc:'由 u 快速滑向 i，声音先响后轻', emoji:'💧', example:'水', examplePy:'shuǐ', words:'鬼脸(guǐliǎn) 开会(kāihuì) 贵(guì)', sentence:'我喝一杯水。', sentencePy:'Wǒ hē yì bēi shuǐ.' },
+  { unit:'ao', type:'复韵母', desc:'由 a 快速滑向 o，声音先响后轻', emoji:'🐱', example:'猫', examplePy:'māo', words:'好看(hǎokàn) 高山(gāoshān) 草地(cǎodì)', sentence:'小猫真可爱。', sentencePy:'Xiǎomāo zhēn kě\'ài.' },
+  { unit:'ou', type:'复韵母', desc:'由 o 快速滑向 u，声音先响后轻', emoji:'🐕', example:'狗', examplePy:'gǒu', words:'头发(tóufa) 双手(shuāngshǒu) 走路(zǒulù)', sentence:'小狗爱走路。', sentencePy:'Xiǎogǒu ài zǒulù.' },
+  { unit:'iu', type:'复韵母', desc:'由 i 快速滑向 ou，声音先轻后响再轻', emoji:'🐮', example:'牛', examplePy:'niú', words:'秋天(qiūtiān) 数字六(liù) 篮球(qiú)', sentence:'秋天有小牛。', sentencePy:'Qiūtiān yǒu xiǎoniú.' },
+  { unit:'ie', type:'复韵母', desc:'由 i 快速滑向 e，声音先轻后响', emoji:'🦋', example:'蝶', examplePy:'dié', words:'姐姐(jiějie) 铁皮(tiěpí) 鞋子(xiézi)', sentence:'蝴蝶飞过去。', sentencePy:'Húdié fēi guòqù.' },
+  { unit:'üe', type:'复韵母', desc:'由 ü 快速滑向 e，声音先轻后响', emoji:'🌙', example:'月', examplePy:'yuè', words:'雪花(xuěhuā) 学校(xuéxiào) 音乐(yīnyuè)', sentence:'月亮真明亮。', sentencePy:'Yuèliang zhēn míngliàng.' },
+  { unit:'er', type:'复韵母', desc:'卷起舌头，声音带一点卷舌儿化音', emoji:'👂', example:'耳', examplePy:'ěr', words:'儿子(érzi) 数字二(èr) 花儿(huār)', sentence:'耳朵听声音。', sentencePy:'Ěrduo tīng shēngyīn.' },
+
+  // ===== 4. 鼻韵母（前鼻韵母5个 + 后鼻韵母4个）=====
+  { unit:'an', type:'鼻韵母', desc:'发 a 音后舌尖抵上齒龈，声音从鼻腔出来', emoji:'🏔️', example:'山', examplePy:'shān', words:'蓝色(lánsè) 雨伞(yǔsǎn) 安静(ānjìng)', sentence:'山很蓝很静。', sentencePy:'Shān hěn lán hěn jìng.' },
+  { unit:'en', type:'鼻韵母', desc:'发 e 音后舌尖抵上齒龈，声音从鼻腔出来', emoji:'🚪', example:'门', examplePy:'mén', words:'很好(hěnhǎo) 森林(sēnlín) 恩情(ēnqíng)', sentence:'门很好看。', sentencePy:'Mén hěn hǎokàn.' },
+  { unit:'in', type:'鼻韵母', desc:'发 i 音后舌尖抵上齒龈，声音从鼻腔出来', emoji:'💚', example:'心', examplePy:'xīn', words:'树林(shùlín) 人民(rénmín) 因为(yīnwèi)', sentence:'我心里高兴。', sentencePy:'Wǒ xīn lǐ gāoxìng.' },
+  { unit:'un', type:'鼻韵母', desc:'发 u 音后舌尖抵上齒龈，声音从鼻腔出来', emoji:'🌸', example:'春', examplePy:'chūn', words:'滚动(gǔndòng) 温暖(wēnnuǎn) 昆虫(kūnchóng)', sentence:'春天真温暖。', sentencePy:'Chūntiān zhēn wēnnuǎn.' },
+  { unit:'ün', type:'鼻韵母', desc:'发 ü 音后舌尖抵上齒龈，声音从鼻腔出来', emoji:'👗', example:'裙', examplePy:'qún', words:'云朵(yúnduǒ) 军人(jūnrén) 一群(yìqún)', sentence:'她穿新裙子。', sentencePy:'Tā chuān xīn qúnzi.' },
+  { unit:'ang', type:'鼻韵母', desc:'发 a 音后舌根抵软颚，声音从鼻腔响亮出来', emoji:'🐑', example:'羊', examplePy:'yáng', words:'忙碌(mánglù) 白糖(báitáng) 帮忙(bāngmáng)', sentence:'小羊很忙碌。', sentencePy:'Xiǎoyáng hěn mánglù.' },
+  { unit:'eng', type:'鼻韵母', desc:'发 e 音后舌根抵软颚，声音从鼻腔响亮出来', emoji:'💡', example:'灯', examplePy:'dēng', words:'大风(dàfēng) 寒冷(hánlěng) 蜂蜜(fēngmì)', sentence:'灯光真明亮。', sentencePy:'Dēngguāng zhēn míngliàng.' },
+  { unit:'ing', type:'鼻韵母', desc:'发 i 音后舌根抵软颚，声音从鼻腔响亮出来', emoji:'⭐', example:'星', examplePy:'xīng', words:'听歌(tīnggē) 名字(míngzi) 铃声(língshēng)', sentence:'星星在听歌。', sentencePy:'Xīngxīng zài tīnggē.' },
+  { unit:'ong', type:'鼻韵母', desc:'发 o 音后舌根抵软颚，声音从鼻腔响亮出来', emoji:'🐉', example:'龙', examplePy:'lóng', words:'红色(hóngsè) 熊猫(xióngmāo) 冬天(dōngtiān)', sentence:'冬天有红龙。', sentencePy:'Dōngtiān yǒu hónglóng.' },
+
+  // ===== 5. 整体认读音节（16个）=====
+  { unit:'zhi', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'📚', example:'知', examplePy:'zhī', words:'知识(zhīshi) 知道(zhīdào)', sentence:'我知道了。', sentencePy:'Wǒ zhīdào le.' },
+  { unit:'chi', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'🍚', example:'吃', examplePy:'chī', words:'吃饭(chīfàn) 好吃(hǎochī)', sentence:'我要吃饭。', sentencePy:'Wǒ yào chīfàn.' },
+  { unit:'shi', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'✅', example:'是', examplePy:'shì', words:'是的(shìde) 事情(shìqing)', sentence:'这是对的。', sentencePy:'Zhè shì duì de.' },
+  { unit:'ri', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'☀️', example:'日', examplePy:'rì', words:'日出(rìchū) 生日(shēngrì)', sentence:'太阳日出了。', sentencePy:'Tàiyáng rìchū le.' },
+  { unit:'zi', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'🈷️', example:'字', examplePy:'zì', words:'字典(zìdiǎn) 名字(míngzi)', sentence:'我会写字。', sentencePy:'Wǒ huì xiězì.' },
+  { unit:'ci', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'📝', example:'词', examplePy:'cí', words:'词语(cíyǔ) 词典(cídiǎn)', sentence:'词语很有趣。', sentencePy:'Cíyǔ hěn yǒuqù.' },
+  { unit:'si', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'4️⃣', example:'四', examplePy:'sì', words:'四季(sìjì) 四十(sìshí)', sentence:'一年有四季。', sentencePy:'Yìnián yǒu sìjì.' },
+  { unit:'yi', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'1️⃣', example:'一', examplePy:'yī', words:'一个(yígè) 一起(yìqǐ)', sentence:'我们一起走。', sentencePy:'Wǒmen yìqǐ zǒu.' },
+  { unit:'wu', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'5️⃣', example:'五', examplePy:'wǔ', words:'五个(wǔgè) 五月(wǔyuè)', sentence:'五月开花了。', sentencePy:'Wǔyuè kāihuā le.' },
+  { unit:'yu', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'🐟', example:'鱼', examplePy:'yú', words:'下雨(xiàyǔ) 鱼儿(yúér)', sentence:'鱼儿爱下雨。', sentencePy:'Yúér ài xiàyǔ.' },
+  { unit:'ye', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'🍃', example:'叶', examplePy:'yè', words:'叶子(yèzi) 也是(yěshì)', sentence:'叶子落下了。', sentencePy:'Yèzi luòxià le.' },
+  { unit:'yue', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'🎵', example:'乐', examplePy:'yuè', words:'音乐(yīnyuè) 月亮(yuèliang)', sentence:'我爱听音乐。', sentencePy:'Wǒ ài tīng yīnyuè.' },
+  { unit:'yuan', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'🎡', example:'园', examplePy:'yuán', words:'公园(gōngyuán) 圆形(yuánxíng)', sentence:'公园真好玩。', sentencePy:'Gōngyuán zhēn hǎowán.' },
+  { unit:'yin', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'🔊', example:'音', examplePy:'yīn', words:'声音(shēngyīn) 银色(yínsè)', sentence:'声音真好听。', sentencePy:'Shēngyīn zhēn hǎotīng.' },
+  { unit:'yun', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'☁️', example:'云', examplePy:'yún', words:'云朵(yúnduǒ) 运动(yùndòng)', sentence:'云朵飘啊飘。', sentencePy:'Yúnduǒ piāo a piāo.' },
+  { unit:'ying', type:'整体认读音节', desc:'整体认读，不能拆开拼读，直接读出', emoji:'🎬', example:'影', examplePy:'yǐng', words:'影子(yǐngzi) 英语(yīngyǔ)', sentence:'我有个影子。', sentencePy:'Wǒ yǒu gè yǐngzi.' },
+
+  // ===== 6. 声调拼读练习（四声练习，8组）=====
+  { unit:'ma', type:'声调拼读', tones:[
+      { tone:1, py:'mā', char:'妈', mean:'妈妈', emoji:'👩' },
+      { tone:2, py:'má', char:'麻', mean:'麻烦', emoji:'😖' },
+      { tone:3, py:'mǎ', char:'马', mean:'骏马', emoji:'🐴' },
+      { tone:4, py:'mà', char:'骂', mean:'骂人', emoji:'😠' }
+    ] },
+  { unit:'ba', type:'声调拼读', tones:[
+      { tone:1, py:'bā', char:'八', mean:'数字八', emoji:'8️⃣' },
+      { tone:2, py:'bá', char:'拔', mean:'拔萝卜', emoji:'🥕' },
+      { tone:3, py:'bǎ', char:'把', mean:'一把伞', emoji:'☂️' },
+      { tone:4, py:'bà', char:'爸', mean:'爸爸', emoji:'👨' }
+    ] },
+  { unit:'tang', type:'声调拼读', tones:[
+      { tone:1, py:'tāng', char:'汤', mean:'喝汤', emoji:'🍲' },
+      { tone:2, py:'táng', char:'糖', mean:'糖果', emoji:'🍬' },
+      { tone:3, py:'tǎng', char:'躺', mean:'躺下', emoji:'🛏️' },
+      { tone:4, py:'tàng', char:'烫', mean:'很烫', emoji:'🔥' }
+    ] },
+  { unit:'qi', type:'声调拼读', tones:[
+      { tone:1, py:'qī', char:'七', mean:'数字七', emoji:'7️⃣' },
+      { tone:2, py:'qí', char:'齐', mean:'整齐', emoji:'📏' },
+      { tone:3, py:'qǐ', char:'起', mean:'起床', emoji:'⏰' },
+      { tone:4, py:'qì', char:'气', mean:'空气', emoji:'💨' }
+    ] },
+  { unit:'shu', type:'声调拼读', tones:[
+      { tone:1, py:'shū', char:'书', mean:'看书', emoji:'📖' },
+      { tone:2, py:'shú', char:'熟', mean:'熟了', emoji:'🍎' },
+      { tone:3, py:'shǔ', char:'属', mean:'属于', emoji:'🐭' },
+      { tone:4, py:'shù', char:'树', mean:'大树', emoji:'🌳' }
+    ] },
+  { unit:'wu', type:'声调拼读', tones:[
+      { tone:1, py:'wū', char:'屋', mean:'屋子', emoji:'🏠' },
+      { tone:2, py:'wú', char:'无', mean:'没有', emoji:'🚫' },
+      { tone:3, py:'wǔ', char:'五', mean:'数字五', emoji:'5️⃣' },
+      { tone:4, py:'wù', char:'雾', mean:'大雾', emoji:'🌫️' }
+    ] },
+  { unit:'yi', type:'声调拼读', tones:[
+      { tone:1, py:'yī', char:'衣', mean:'衣服', emoji:'👕' },
+      { tone:2, py:'yí', char:'移', mean:'移动', emoji:'🚶' },
+      { tone:3, py:'yǐ', char:'椅', mean:'椅子', emoji:'🪑' },
+      { tone:4, py:'yì', char:'意', mean:'意思', emoji:'💡' }
+    ] },
+  { unit:'xi', type:'声调拼读', tones:[
+      { tone:1, py:'xī', char:'西', mean:'西瓜', emoji:'🍉' },
+      { tone:2, py:'xí', char:'习', mean:'学习', emoji:'📚' },
+      { tone:3, py:'xǐ', char:'洗', mean:'洗手', emoji:'🧼' },
+      { tone:4, py:'xì', char:'系', mean:'关系', emoji:'🔗' }
+    ] },
+
+  // ===== 7. 词语应用（12个）=====
+  { unit:'nǐhǎo', type:'词语应用', desc:'见面打招呼时说的话', emoji:'👋', example:'你好', examplePy:'nǐ hǎo', words:'早上好(zǎoshang hǎo) 大家好(dàjiā hǎo)', sentence:'你好，我是小明。', sentencePy:'Nǐ hǎo, wǒ shì Xiǎomíng.' },
+  { unit:'xièxie', type:'词语应用', desc:'感谢别人时说的话', emoji:'🙏', example:'谢谢', examplePy:'xiè xie', words:'谢谢你(xièxie nǐ) 不客气(bú kèqi)', sentence:'谢谢你的帮助。', sentencePy:'Xièxie nǐ de bāngzhù.' },
+  { unit:'zàijiàn', type:'词语应用', desc:'分别时说的话', emoji:'👋', example:'再见', examplePy:'zài jiàn', words:'明天见(míngtiān jiàn) 拜拜(bàibai)', sentence:'老师，再见！', sentencePy:'Lǎoshī, zàijiàn!' },
+  { unit:'māma', type:'词语应用', desc:'对母亲的称呼', emoji:'👩', example:'妈妈', examplePy:'mā ma', words:'爸爸(bàba) 家人(jiārén)', sentence:'妈妈爱我们。', sentencePy:'Māma ài wǒmen.' },
+  { unit:'lǎoshī', type:'词语应用', desc:'教我们知识的人', emoji:'👩‍🏫', example:'老师', examplePy:'lǎo shī', words:'学生(xuéshēng) 学校(xuéxiào)', sentence:'老师教我们读书。', sentencePy:'Lǎoshī jiāo wǒmen dúshū.' },
+  { unit:'xuéxiào', type:'词语应用', desc:'我们学习的地方', emoji:'🏫', example:'学校', examplePy:'xué xiào', words:'教室(jiàoshì) 同学(tóngxué)', sentence:'我在学校学习。', sentencePy:'Wǒ zài xuéxiào xuéxí.' },
+  { unit:'píngguǒ', type:'词语应用', desc:'一种红色或绿色的水果', emoji:'🍎', example:'苹果', examplePy:'píng guǒ', words:'水果(shuǐguǒ) 香蕉(xiāngjiāo)', sentence:'苹果又甜又脆。', sentencePy:'Píngguǒ yòu tián yòu cuì.' },
+  { unit:'tàiyáng', type:'词语应用', desc:'白天挂在天上发光发热的星球', emoji:'☀️', example:'太阳', examplePy:'tài yáng', words:'月亮(yuèliang) 星星(xīngxing)', sentence:'太阳照大地。', sentencePy:'Tàiyáng zhào dàdì.' },
+  { unit:'yuèliang', type:'词语应用', desc:'晚上挂在天上的星球', emoji:'🌙', example:'月亮', examplePy:'yuè liang', words:'星空(xīngkōng) 夜晚(yèwǎn)', sentence:'月亮又圆又亮。', sentencePy:'Yuèliang yòu yuán yòu liàng.' },
+  { unit:'xiǎomāo', type:'词语应用', desc:'一种可爱的小动物，会喵喵叫', emoji:'🐱', example:'小猫', examplePy:'xiǎo māo', words:'小狗(xiǎogǒu) 小鸟(xiǎoniǎo)', sentence:'小猫喜欢睡觉。', sentencePy:'Xiǎomāo xǐhuan shuìjiào.' },
+  { unit:'huíjiā', type:'词语应用', desc:'回到自己的家', emoji:'🏠', example:'回家', examplePy:'huí jiā', words:'上学(shàngxué) 放学(fàngxué)', sentence:'放学后我回家。', sentencePy:'Fàngxué hòu wǒ huíjiā.' },
+  { unit:'gāoxìng', type:'词语应用', desc:'心里很开心、很快乐', emoji:'😄', example:'高兴', examplePy:'gāo xìng', words:'开心(kāixīn) 快乐(kuàilè)', sentence:'我今天很高兴。', sentencePy:'Wǒ jīntiān hěn gāoxìng.' }
+];
+
+const CATS = ['全部', '单韵母', '声母', '复韵母', '鼻韵母', '整体认读音节', '声调拼读', '词语应用'];
+
+let curCat = '全部', learned = new Set(), selIdx = null, sq = '';
+
+const DB_NAME = 'PinyinDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'learnedPinyin';
+
+function itemKey(p) { return p.type + '|' + p.unit; }
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => resolve(request.result);
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+  });
+}
+
+async function loadLearned() {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.get('learned');
+    return new Promise((resolve, reject) => {
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        const data = request.result;
+        if (data && data.items) {
+          resolve(new Set(data.items));
+        } else {
+          const ls = localStorage.getItem('pyl1');
+          if (ls) {
+            const lsSet = new Set(JSON.parse(ls));
+            saveLearned(lsSet);
+            resolve(lsSet);
+          } else {
+            resolve(new Set());
+          }
+        }
+      };
+    });
+  } catch (e) {
+    const ls = localStorage.getItem('pyl1');
+    return ls ? new Set(JSON.parse(ls)) : new Set();
+  }
+}
+
+async function saveLearned(itemsSet) {
+  try {
+    const db = await openDB();
+    const transaction = db.transaction([STORE_NAME], 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+    store.put({ items: [...itemsSet] }, 'learned');
+    transaction.oncomplete = () => { localStorage.setItem('pyl1', JSON.stringify([...itemsSet])); };
+    transaction.onerror = () => { localStorage.setItem('pyl1', JSON.stringify([...itemsSet])); };
+  } catch (e) {
+    localStorage.setItem('pyl1', JSON.stringify([...itemsSet]));
+  }
+}
+
+async function initStorage() {
+  learned = await loadLearned();
+  renderStats();
+  renderCats();
+  renderGrid();
+}
+
+function renderStats() {
+  const list = getList();
+  const tot = list.length;
+  const done = list.filter(p => learned.has(itemKey(p))).length;
+  const pct = tot > 0 ? Math.round(done / tot * 100) : 0;
+  document.getElementById('stats').innerHTML = `
+    <div class="spill">已学 <b>${done}</b> 个</div>
+    <div class="spill">共 <b>${tot}</b> 个</div>
+    <div class="spill">完成 <b>${pct}%</b></div>
+    <div class="pgbar"><div class="pgfill" style="width:${pct}%"></div></div>`;
+}
+
+function matchQuery(p) {
+  if (!sq) return true;
+  const s = sq.toLowerCase();
+  if (p.unit.toLowerCase().includes(s)) return true;
+  if (p.example && p.example.includes(sq)) return true;
+  if (p.desc && p.desc.includes(sq)) return true;
+  if (p.tones && p.tones.some(t => t.char.includes(sq) || t.py.toLowerCase().includes(s))) return true;
+  return false;
+}
+
+function getCatCount(cat) {
+  return PINYIN.filter(p => (cat === '全部' || p.type === cat) && matchQuery(p)).length;
+}
+
+function renderCats() {
+  document.getElementById('cats').innerHTML = CATS.map(c =>
+    `<button class="cat${c === curCat ? ' on' : ''}" onclick="setCat('${c}')">${c} <span style="font-size:11px;opacity:0.7">[${getCatCount(c)}]</span></button>`
+  ).join('');
+}
+
+function setCat(c) { curCat = c; renderCats(); renderGrid(); }
+function doFilter() { sq = document.getElementById('sb').value.trim(); renderCats(); renderGrid(); }
+
+function getList() {
+  return PINYIN.filter(p => (curCat === '全部' || p.type === curCat) && matchQuery(p));
+}
+
+function renderGrid() {
+  const list = getList();
+  if (!list.length) { document.getElementById('grid').innerHTML = `<div class="empty">没有找到「${sq}」相关内容</div>`; return; }
+  document.getElementById('grid').innerHTML = list.map(p => {
+    const isL = learned.has(itemKey(p));
+    if (p.tones) {
+      return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${PINYIN.indexOf(p)})">
+        ${isL ? '<span class="done-badge">✓ 学会</span>' : ''}
+        <div class="card-emoji">🎵</div>
+        <div class="card-unit">${p.unit}</div>
+        <div class="card-example">${p.tones.map(t => t.char).join('')}</div>
+        <div class="card-meaning">四声练习</div>
+      </div>`;
+    }
+    return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${PINYIN.indexOf(p)})">
+      ${isL ? '<span class="done-badge">✓ 学会</span>' : ''}
+      <div class="card-emoji">${p.emoji}</div>
+      <div class="card-unit">${p.unit}</div>
+      <div class="card-example">${p.example}</div>
+      <div class="card-meaning">${p.type}</div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(idx) {
+  selIdx = idx;
+  const p = PINYIN[idx];
+  document.getElementById('mCat').innerHTML = `<span class="modal-cat-badge">${p.type}</span>`;
+  const btnSpeak = document.getElementById('btnSpeak');
+
+  if (p.tones) {
+    document.getElementById('mBody').innerHTML = `
+      <div class="modal-unit">${p.unit}</div>
+      <div class="modal-desc">跟着声调符号，读出四个声调的不同</div>
+      <div class="tone-table">
+        ${p.tones.map((t, i) => `
+          <div class="tone-cell" onclick="speakTone(${i})">
+            <span class="tone-mark t${t.tone}">${'一二三四'[t.tone - 1]}声</span>
+            <div class="tone-char">${t.char}</div>
+            <div class="tone-py">${t.py}</div>
+            <div class="tone-mean">${t.mean}</div>
+          </div>`).join('')}
+      </div>`;
+    btnSpeak.style.display = 'none';
+  } else {
+    document.getElementById('mBody').innerHTML = `
+      <div class="modal-unit">${p.unit}</div>
+      <div class="modal-desc">${p.desc}</div>
+      <div class="modal-key">
+        <div class="modal-key-example">${p.example}</div>
+        <div class="modal-key-pinyin">${p.examplePy}</div>
+        <button class="btn-key-speak" onclick="speakExample()" title="听发音">🔊</button>
+      </div>
+      <div class="modal-words">常用词：${p.words.split(' ').map(w => `<span onclick="speakText('${w.replace(/\(.*\)/, '')}')">${w}</span>`).join(' ')}</div>
+      <div class="modal-example">
+        <div class="modal-example-zh">${p.sentence}</div>
+        <div class="modal-example-py">${p.sentencePy}</div>
+        <div class="ex-btns"><button class="btn-ex-speak" onclick="speakSentence()">🔊 读例句</button></div>
+      </div>`;
+    btnSpeak.style.display = '';
+  }
+
+  const isL = learned.has(itemKey(p));
+  const btn = document.getElementById('btnL');
+  btn.textContent = isL ? '✅ 已学会' : '⭐ 学会了';
+  btn.className = 'btn-learn' + (isL ? ' done' : '');
+  document.getElementById('mCounter').textContent = `${idx + 1} / ${PINYIN.length}`;
+  document.querySelector('.btn-nav-prev').style.opacity = idx === 0 ? '0.3' : '1';
+  document.querySelector('.btn-nav-next').style.opacity = idx === PINYIN.length - 1 ? '0.3' : '1';
+  document.getElementById('ov').style.display = 'flex';
+  document.getElementById('modal').scrollTop = 0;
+}
+
+function prevItem() { if (selIdx > 0) openModal(selIdx - 1); }
+function nextItem() { if (selIdx < PINYIN.length - 1) openModal(selIdx + 1); }
+
+document.addEventListener('keydown', function (e) {
+  if (document.getElementById('ov').style.display !== 'none') {
+    if (e.key === 'ArrowLeft') prevItem();
+    if (e.key === 'ArrowRight') nextItem();
+    if (e.key === 'Escape') closeOv();
+  }
+});
+
+function closeOv(e) { if (!e || e.target.id === 'ov') { document.getElementById('ov').style.display = 'none'; selIdx = null; } }
+
+async function toggleL() {
+  if (selIdx === null) return;
+  const p = PINYIN[selIdx];
+  const k = itemKey(p);
+  if (learned.has(k)) learned.delete(k); else learned.add(k);
+  await saveLearned(learned);
+  renderStats();
+  renderGrid();
+  const isL = learned.has(k);
+  const btn = document.getElementById('btnL');
+  btn.textContent = isL ? '✅ 已学会' : '⭐ 学会了';
+  btn.className = 'btn-learn' + (isL ? ' done' : '');
+}
+
+function getZhVoice() {
+  const voices = speechSynthesis.getVoices();
+  const priorityPatterns = [/Microsoft Yaoyao/, /Google 普通话/, /Google Chinese/, /Microsoft Xiaoxiao/, /Microsoft Huihui/, /Tingting/];
+  let voice = voices.find(v => v.lang === 'zh-CN');
+  if (!voice) {
+    for (const pattern of priorityPatterns) {
+      voice = voices.find(v => v.name.match(pattern));
+      if (voice) break;
+    }
+  }
+  if (!voice) voice = voices.find(v => v.lang && v.lang.includes('zh'));
+  if (!voice && voices.length > 0) voice = voices[0];
+  return voice;
+}
+
+function speakZh(text, rate) {
+  if (!text || !('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    setTimeout(() => {
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN';
+      u.rate = rate || 0.8;
+      u.pitch = 1.0;
+      u.volume = 1.0;
+      const v = getZhVoice();
+      if (v) { u.voice = v; u.voiceURI = v.voiceURI; }
+      speechSynthesis.speak(u);
+    }, 50);
+  } catch (e) { console.log('Speech error:', e); }
+}
+
+// 听发音：朗读代表汉字（真实汉字读音准确，帮助记住该拼音的正确发音）
+function speak() {
+  if (selIdx === null) return;
+  const p = PINYIN[selIdx];
+  speakZh(p.example, 0.75);
+}
+
+function speakExample() {
+  if (selIdx === null) return;
+  const p = PINYIN[selIdx];
+  speakZh(p.example, 0.7);
+}
+
+function speakSentence() {
+  if (selIdx === null) return;
+  const p = PINYIN[selIdx];
+  speakZh(p.sentence, 0.8);
+}
+
+function speakText(text) {
+  speakZh(text, 0.8);
+}
+
+function speakTone(i) {
+  if (selIdx === null) return;
+  const p = PINYIN[selIdx];
+  if (!p.tones) return;
+  speakZh(p.tones[i].char, 0.7);
+}
+
+if ('speechSynthesis' in window) {
+  const loadVoices = () => speechSynthesis.getVoices();
+  loadVoices();
+  if (speechSynthesis.onvoiceschanged === undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+  setTimeout(loadVoices, 100);
+}
+
+initStorage();
+
+window.addEventListener('scroll', function() {
+  const btn = document.getElementById('btnBackTop');
+  if (btn) {
+    btn.style.display = window.scrollY > 300 ? 'block' : 'none';
+  }
+});
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+<button id="btnBackTop" class="btn-backtop" onclick="scrollToTop()" style="display:none">↑</button>
+</body>
+</html>
