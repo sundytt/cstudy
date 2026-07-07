@@ -948,7 +948,7 @@ body {
 <script src="raw_data.js"></script>
 <script>
 const TC={1:'#EF4444',2:'#10B981',3:'#F59E0B',4:'#3B82F6',5:'#9CA3AF'};
-const CATS=['全部','数字','家人','身体','动物','植物','颜色','食物','自然','动作','方位','时间','形容','文具','学习','交通工具','天气','情感','职业','物品','建筑','服装','水果','蔬菜','家具','电器','节日','运动','乐器','疾病','常用字'];
+const CATS=['全部','需复习','数字','家人','身体','动物','植物','颜色','食物','自然','动作','方位','时间','形容','文具','学习','交通工具','天气','情感','职业','物品','建筑','服装','水果','蔬菜','家具','电器','节日','运动','乐器','疾病','常用字'];
 
 const seen=new Set(), CHARS=[];
 for(const d of RAW){if(!seen.has(d.s)){seen.add(d.s);CHARS.push(d);}}
@@ -1257,7 +1257,7 @@ function renderStats(){
 
 function getCatCount(cat) {
   return CHARS.filter(ch => {
-    const co = cat === '全部' || ch.c === cat;
+    const co = cat === '全部' ? true : (cat === '需复习' ? !!ch.r : ch.c === cat);
     const qo = !sq || ch.s.includes(sq) || ch.t.includes(sq) || ch.p.toLowerCase().includes(sq.toLowerCase()) || ch.m.includes(sq);
     const dof = !showDiffOnly || ch.s !== ch.t;
     return co && qo && dof;
@@ -1284,7 +1284,7 @@ function toggleDiffOnly(){
 
 function getList(){
   return CHARS.filter(ch=>{
-    const co=curCat==='全部'||ch.c===curCat;
+    const co=curCat==='全部'?true:(curCat==='需复习'?!!ch.r:ch.c===curCat);
     const qo=!sq||ch.s.includes(sq)||ch.t.includes(sq)||ch.p.toLowerCase().includes(sq.toLowerCase())||ch.m.includes(sq);
     const dof=!showDiffOnly||ch.s!==ch.t;
     return co&&qo&&dof;
@@ -1462,6 +1462,7 @@ function renderGrid(){
     const emoji=getEmoji(ch.m,ch.c);
     return `<div class="card${isL?' done':''}" onclick="openModal(${CHARS.indexOf(ch)})">
       ${isL?'<span class="done-badge">✓ 学会</span>':''}
+      ${ch.r?'<span style="position:absolute;top:6px;left:6px;background:#F59E0B;color:#fff;font-size:11px;padding:2px 6px;border-radius:8px;font-weight:bold;">🔁 需复习</span>':''}
       <div class="card-emoji">${emoji}</div>
       <div class="biling">
         <div class="biling-half">
