@@ -793,6 +793,28 @@ const PHONICS = [
   { unit:'tr', ipa:'/tr/', type:'辅音连缀', zh:'tr 连缀音', emoji:'🌳', key:'tree', keyZh:'树', words:'tree, train, try, trip', example:'The tree is tall.', exampleZh:'树很高。' }
 ];
 
+// IPA → TTS 字母音素发音映射（用于小喇叭按钮，直接读字母本身的音而非单词）
+const SOUND_MAP = {
+  '/æ/':'ahhh', '/b/':'buh',  '/k/':'kuh',  '/d/':'duh',
+  '/e/':'ehhh', '/f/':'fff',  '/g/':'guh',  '/h/':'huh',
+  '/ɪ/':'ihhh', '/dʒ/':'juh', '/l/':'lll',  '/m/':'mmm',
+  '/n/':'nnn',  '/ɒ/':'awhh', '/p/':'puh',  '/kw/':'kwuh',
+  '/r/':'rrr',  '/s/':'sss',  '/t/':'tuh',  '/ʌ/':'uhhh',
+  '/v/':'vvv',  '/w/':'wuh',  '/ks/':'ksss', '/j/':'yuh',
+  '/z/':'zzz',
+  '/eɪ/':'ayyy','/aɪ/':'eye',  '/oʊ/':'ohhh', '/juː/':'yooo',
+  '/ʃ/':'shhh', '/tʃ/':'chuh', '/θ/':'thhh',  '/ð/':'thhh',
+  '/ŋ/':'nggg',
+  '/iː/':'eeee','/uː/':'oohh', '/ʊ/':'oooh',  '/aʊ/':'owww',
+  '/ɔɪ/':'oyyy','/ɔː/':'awww',
+  '/ɑːr/':'arrr','/ɔːr/':'orrr','/ɜːr/':'urrr',
+  '/bl/':'bluh','/br/':'bruh','/kl/':'kluh','/kr/':'kruh',
+  '/dr/':'druh','/fl/':'fluh','/fr/':'fruh','/gl/':'gluh',
+  '/gr/':'gruh','/pl/':'pluh','/pr/':'pruh','/sl/':'sluh',
+  '/sm/':'smuh','/sn/':'snuh','/sp/':'spuh','/st/':'stuh',
+  '/sw/':'swuh','/tr/':'truh'
+};
+
 const CATS = ['全部', ...new Set(PHONICS.map(p => p.type))];
 
 let curCat = '全部', learned = new Set(), selIdx = null, sq = '';
@@ -987,15 +1009,15 @@ function getEnVoice() {
   return voice;
 }
 
-// 听这个音：慢速朗读代表词以示范目标音（浏览器 TTS 无法直接朗读 IPA 符号，
-// 故用代表词做发音示范，这也是自然拼读教学中最可靠的方式）
+// 听这个音：根据 IPA 映射表播放字母/音素本身的发音（而非代表词）
 function speakSound() {
   if (selIdx === null) return;
   const p = PHONICS[selIdx];
   if ('speechSynthesis' in window) {
     try {
       speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(p.key);
+      const sound = SOUND_MAP[p.ipa] || p.key;
+      const u = new SpeechSynthesisUtterance(sound);
       u.lang = 'en-US';
       u.rate = 0.55;
       const v = getEnVoice();

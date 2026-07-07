@@ -771,7 +771,7 @@ body {
 const PINYIN = [
   // ===== 1. 单韵母（6个）=====
   { unit:'a', type:'单韵母', desc:'嘴巴张大，声音洪亮，像哭"啊"一样', emoji:'😲', example:'啊', examplePy:'à', words:'妈妈(māma) 大(dà) 花(huā)', sentence:'妈妈爱我。', sentencePy:'Māma ài wǒ.' },
-  { unit:'o', type:'单韵母', desc:'嘴唇收圆并向前突出，像"哦"一样', emoji:'😮', example:'哦', examplePy:'ó', words:'波浪(bōlàng) 摸(mō) 我(wǒ)', sentence:'我摸摸小狗。', sentencePy:'Wǒ mōmō xiǎogǒu.' },
+  { unit:'o', type:'单韵母', desc:'嘴唇收圆并向前突出，发音似"奥"', emoji:'😮', example:'噢', examplePy:'ō', words:'波浪(bōlàng) 噢(ō) 我(wǒ)', sentence:'噢，原来如此！', sentencePy:'Ō, yuánlái rúcǐ!' },
   { unit:'e', type:'单韵母', desc:'嘴巴半张，嘴角向两边微咧', emoji:'🦢', example:'鹅', examplePy:'é', words:'河水(héshuǐ) 车子(chēzi) 也(yě)', sentence:'河里有只鹅。', sentencePy:'Hé lǐ yǒu zhī é.' },
   { unit:'i', type:'单韵母', desc:'嘴角向后咧开，牙齿露出一点点', emoji:'👕', example:'衣', examplePy:'yī', words:'大米(dàmǐ) 你好(nǐhǎo) 力气(lìqi)', sentence:'我穿新衣。', sentencePy:'Wǒ chuān xīn yī.' },
   { unit:'u', type:'单韵母', desc:'嘴唇收圆并向前突出，比 o 更小', emoji:'🏠', example:'屋', examplePy:'wū', words:'布(bù) 地图(dìtú) 马路(mǎlù)', sentence:'屋子很大。', sentencePy:'Wūzi hěn dà.' },
@@ -787,15 +787,15 @@ const PINYIN = [
   { unit:'n', type:'声母', desc:'舌尖抵住上齒龈，声音从鼻腔出来，声母示范音节：ne', emoji:'🐮', example:'呢', examplePy:'ne', words:'你好(nǐhǎo) 小牛(xiǎoniú) 鸟儿(niǎor)', sentence:'小牛在吃草。', sentencePy:'Xiǎoniú zài chī cǎo.' },
   { unit:'l', type:'声母', desc:'舌尖轻抵上齒龈，气流从舌边流出，声母示范音节：le', emoji:'👩‍🏫', example:'了', examplePy:'le', words:'老师(lǎoshī) 篮球(lánqiú) 绿叶(lǜyè)', sentence:'老师打篮球。', sentencePy:'Lǎoshī dǎ lánqiú.' },
   { unit:'g', type:'声母', desc:'舌根抵住软颚，然后放开弹出，声母示范音节：ge', emoji:'🐶', example:'哥', examplePy:'gē', words:'小狗(xiǎogǒu) 高山(gāoshān) 哥哥(gēge)', sentence:'哥哥有小狗。', sentencePy:'Gēge yǒu xiǎogǒu.' },
-  { unit:'k', type:'声母', desc:'舌根抵住软颚，送气弹出，声母示范音节：ke', emoji:'👖', example:'可', examplePy:'kě', words:'快乐(kuàilè) 裤子(kùzi) 苦瓜(kǔguā)', sentence:'裤子很快乐。', sentencePy:'Kuàilè de chuān kùzi.' },
-  { unit:'h', type:'声母', desc:'舌根接近软颚，气流摩擦而出，声母示范音节：he', emoji:'🌸', example:'河', examplePy:'hé', words:'花朵(huāduǒ) 红色(hóngsè) 你好(nǐhǎo)', sentence:'河边有花朵。', sentencePy:'Hébiān yǒu huāduǒ.' },
+  { unit:'k', type:'声母', desc:'舌根抵住软颚，送气弹出，声母示范音节：ke', emoji:'👖', example:'可', examplePy:'kě', words:'快乐(kuàilè) 裤子(kùzi) 苦瓜(kǔguā)', sentence:'我可以很快乐。', sentencePy:'Wǒ kěyǐ hěn kuàilè.' },
+  { unit:'h', type:'声母', desc:'舌根接近软颚，气流摩擦而出，声母示范音节：he', emoji:'🌸', example:'河', examplePy:'hé', words:'花朵(huāduǒ) 红色(hóngsè) 你好(nǐhǎo)', sentence:'河边开满红花。', sentencePy:'Hébiān kāi mǎn hónghuā.' },
   { unit:'j', type:'声母', desc:'舌面前部抵住硬颚，然后放开，声母示范音节：ji', emoji:'🐔', example:'鸡', examplePy:'jī', words:'家人(jiārén) 橘子(júzi) 教室(jiàoshì)', sentence:'小鸡回家了。', sentencePy:'Xiǎojī huí jiā le.' },
   { unit:'q', type:'声母', desc:'舌面前部抵住硬颚，送气而出，声母示范音节：qi', emoji:'🔢', example:'七', examplePy:'qī', words:'汽车(qìchē) 铅笔(qiānbǐ) 秋天(qiūtiān)', sentence:'秋天开汽车。', sentencePy:'Qiūtiān kāi qìchē.' },
-  { unit:'x', type:'声母', desc:'舌面前部接近硬颚，气流摩擦而出，声母示范音节：xi', emoji:'🍉', example:'西', examplePy:'xī', words:'西瓜(xīguā) 小猫(xiǎomāo) 学校(xuéxiào)', sentence:'西瓜在学校。', sentencePy:'Xīguā zài xuéxiào.' },
+  { unit:'x', type:'声母', desc:'舌面前部接近硬颚，气流摩擦而出，声母示范音节：xi', emoji:'🍉', example:'西', examplePy:'xī', words:'西瓜(xīguā) 小猫(xiǎomāo) 学校(xuéxiào)', sentence:'小猫喜欢吃西瓜。', sentencePy:'Xiǎomāo xǐhuan chī xīguā.' },
   { unit:'zh', type:'声母', desc:'舌尖翘起抵住硬颚前部，然后放开，声母示范音节：zhi', emoji:'🇨🇳', example:'知', examplePy:'zhī', words:'中国(zhōngguó) 小猪(xiǎozhū) 桌子(zhuōzi)', sentence:'我知道中国。', sentencePy:'Wǒ zhīdào zhōngguó.' },
   { unit:'ch', type:'声母', desc:'舌尖翘起抵住硬颚前部，送气而出，声母示范音节：chi', emoji:'🚗', example:'吃', examplePy:'chī', words:'汽车(qìchē) 唱歌(chànggē) 春天(chūntiān)', sentence:'春天来吃饭。', sentencePy:'Chūntiān lái chīfàn.' },
   { unit:'sh', type:'声母', desc:'舌尖翘起接近硬颚前部，气流摩擦而出，声母示范音节：shi', emoji:'📖', example:'是', examplePy:'shì', words:'书本(shūběn) 水果(shuǐguǒ) 手(shǒu)', sentence:'这是我的书。', sentencePy:'Zhè shì wǒ de shū.' },
-  { unit:'r', type:'声母', desc:'舌尖翘起接近硬颚前部，声带振动摩擦而出，声母示范音节：ri', emoji:'👦', example:'日', examplePy:'rì', words:'人们(rénmen) 热闹(rènao) 肉(ròu)', sentence:'今天日子热。', sentencePy:'Jīntiān rìzi rè.' },
+  { unit:'r', type:'声母', desc:'舌尖翘起接近硬颚前部，声带振动摩擦而出，声母示范音节：ri', emoji:'👦', example:'日', examplePy:'rì', words:'人们(rénmen) 热闹(rènao) 肉(ròu)', sentence:'今天真热闹。', sentencePy:'Jīntiān zhēn rènao.' },
   { unit:'z', type:'声母', desc:'舌尖抵住上齒背，然后放开，声母示范音节：zi', emoji:'✍️', example:'字', examplePy:'zì', words:'早上(zǎoshang) 桌子(zhuōzi) 自己(zìjǐ)', sentence:'早上写字。', sentencePy:'Zǎoshang xiězì.' },
   { unit:'c', type:'声母', desc:'舌尖抵住上齒背，送气而出，声母示范音节：ci', emoji:'🌿', example:'词', examplePy:'cí', words:'草地(cǎodì) 彩虹(cǎihóng) 菜(cài)', sentence:'草地有彩虹。', sentencePy:'Cǎodì yǒu cǎihóng.' },
   { unit:'s', type:'声母', desc:'舌尖接近上齒背，气流摩擦而出，声母示范音节：si', emoji:'☂️', example:'四', examplePy:'sì', words:'三个(sāngè) 雨伞(yǔsǎn) 送(sòng)', sentence:'我有四把伞。', sentencePy:'Wǒ yǒu sì bǎ sǎn.' },
@@ -1152,17 +1152,27 @@ function speakZh(text, rate) {
   } catch (e) { console.log('Speech error:', e); }
 }
 
-// 听发音：朗读代表汉字（真实汉字读音准确，帮助记住该拼音的正确发音）
+// 获取 unit 的发音文本：声母取 desc 中的示范音节，其余取 unit 本身（轻声/不加音调）
+function getUnitSound(p) {
+  if (p.type === '声母') {
+    const m = p.desc.match(/声母示范音节：(\w+)/);
+    if (m) return m[1]; // 如 bo、po、zhi 等
+    return p.unit;
+  }
+  return p.unit;
+}
+
+// 听发音：按 desc 描述的音素轻声朗读（不加音调），而非代表汉字
 function speak() {
   if (selIdx === null) return;
   const p = PINYIN[selIdx];
-  speakZh(p.example, 0.75);
+  speakZh(getUnitSound(p), 0.7);
 }
 
 function speakExample() {
   if (selIdx === null) return;
   const p = PINYIN[selIdx];
-  speakZh(p.example, 0.7);
+  speakZh(getUnitSound(p), 0.65);
 }
 
 function speakSentence() {
