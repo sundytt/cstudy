@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数学乐园 - 数字英语词汇</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #0891B2;
+  --color-primary-light: #CFFAFE;
+  --color-primary-dark: #0E7490;
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-info: #3B82F6;
+  --color-info-light: #DBEAFE;
+  --color-purple: #8B5CF6;
+  --color-purple-light: #EDE9FE;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F3F4F6;
+  --color-background-tertiary: #F9FAFB;
+  --color-border-primary: #E5E7EB;
+  --color-border-secondary: #D1D5DB;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #ECFEFF 0%, #CFFAFE 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#app {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 1rem;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.nav-tabs::-webkit-scrollbar { display: none; }
+
+.nav-tab {
+  padding: 8px 16px;
+  border-radius: var(--radius-lg);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 2px solid transparent;
+}
+
+.nav-tab.other {
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  border-color: var(--color-border-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-tab.other:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-tab.vocab {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.header h1 {
+  font-size: 30px;
+  color: var(--color-text-primary);
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: var(--color-text-secondary);
+  font-size: 15px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.search-box {
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-background-primary);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px;
+  font-size: 14px;
+  width: 220px;
+  outline: none;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+  font-family: var(--font-sans);
+}
+
+.search-box:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.count-badge {
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.count-badge b {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.cats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.cat {
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-text-secondary);
+  padding: 7px 16px;
+  border-radius: var(--radius-lg);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.cat:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.cat.on {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 14px;
+}
+
+.vcard {
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-primary);
+  border-radius: var(--radius-xl);
+  padding: 18px 18px 16px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vcard:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.vhead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.vword {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.vphonetic {
+  font-size: 13px;
+  color: var(--color-text-tertiary);
+  font-style: italic;
+}
+
+.vcat-badge {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.vmeaning {
+  font-size: 15px;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+}
+
+.btn-speak-mini {
+  border: 1px solid var(--color-border-secondary);
+  background: var(--color-background-primary);
+  color: var(--color-primary);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btn-speak-mini:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-color: var(--color-primary);
+  transform: scale(1.08);
+}
+
+.vexample {
+  background: var(--color-background-tertiary);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vexample-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vex-en {
+  font-size: 14px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  flex: 1;
+}
+
+.vex-zh {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+.btn-backtop {
+  position: fixed;
+  bottom: 20px;
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary);
+  background: var(--color-background-primary);
+  color: var(--color-primary);
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
+}
+
+.btn-backtop:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.empty-tip {
+  text-align: center;
+  color: var(--color-text-tertiary);
+  padding: 40px 0;
+  font-size: 15px;
+}
+
+@media (max-width: 600px) {
+  .nav-tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .vword {
+    font-size: 20px;
+  }
+
+  .search-box {
+    width: 160px;
+  }
+}
+
+@media (max-width: 420px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <div class="nav-tabs">
+    <div class="nav-tab other" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
+    <div class="nav-tab other" onclick="window.location.href='english.html'">🔤 单词学习</div>
+    <div class="nav-tab other" onclick="window.location.href='pinyin.html'">🈶 拼音学习</div>
+    <div class="nav-tab other" onclick="window.location.href='phonics.html'">🔠 自然拼读</div>
+    <div class="nav-tab other" onclick="window.location.href='game.html'">🎮 趣味游戏</div>
+    <div class="nav-tab other" onclick="window.location.href='math_addition.html'">➕ 加法思路</div>
+    <div class="nav-tab other" onclick="window.location.href='math_subtraction.html'">➖ 减法思路</div>
+    <div class="nav-tab vocab">🔢 数字词汇</div>
+  </div>
+
+  <div class="header">
+    <h1>🔢 数字英语词汇乐园</h1>
+    <p>基数词、序数词、运算与比较用语，点击 🔊 听发音，例句也能听哦！</p>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" class="search-box" id="searchInput" placeholder="🔍 搜索单词或含义..." oninput="onSearch()">
+    <div class="count-badge">共 <b id="totalCount">0</b> 个词汇</div>
+  </div>
+
+  <div class="cats" id="cats"></div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<button id="btnBackTop" class="btn-backtop" onclick="scrollToTop()" style="display:none">↑</button>
+
+<script>
+const VOCAB = [
+  { word:'zero', phonetic:'/ˈzɪroʊ/', meaning:'零', category:'基数词', exampleEn:'There are zero apples left.', exampleZh:'一个苹果都没剩下了。' },
+  { word:'one', phonetic:'/wʌn/', meaning:'一', category:'基数词', exampleEn:'I have one book.', exampleZh:'我有一本书。' },
+  { word:'two', phonetic:'/tuː/', meaning:'二', category:'基数词', exampleEn:'I have two eyes.', exampleZh:'我有两只眼睛。' },
+  { word:'three', phonetic:'/θriː/', meaning:'三', category:'基数词', exampleEn:'Three cats are playing.', exampleZh:'三只猫在玩耍。' },
+  { word:'four', phonetic:'/fɔːr/', meaning:'四', category:'基数词', exampleEn:'A car has four wheels.', exampleZh:'汽车有四个轮子。' },
+  { word:'five', phonetic:'/faɪv/', meaning:'五', category:'基数词', exampleEn:'I have five fingers.', exampleZh:'我有五个手指。' },
+  { word:'six', phonetic:'/sɪks/', meaning:'六', category:'基数词', exampleEn:'Six eggs are in the box.', exampleZh:'盒子里有六个鸡蛋。' },
+  { word:'seven', phonetic:'/ˈsevn/', meaning:'七', category:'基数词', exampleEn:'There are seven days in a week.', exampleZh:'一周有七天。' },
+  { word:'eight', phonetic:'/eɪt/', meaning:'八', category:'基数词', exampleEn:'An octopus has eight legs.', exampleZh:'章鱼有八条腿。' },
+  { word:'nine', phonetic:'/naɪn/', meaning:'九', category:'基数词', exampleEn:'Nine birds are singing.', exampleZh:'九只鸟在唱歌。' },
+  { word:'ten', phonetic:'/ten/', meaning:'十', category:'基数词', exampleEn:'I can count to ten.', exampleZh:'我能数到十。' },
+  { word:'eleven', phonetic:'/ɪˈlevən/', meaning:'十一', category:'基数词', exampleEn:'There are eleven players on a team.', exampleZh:'一队有十一名队员。' },
+  { word:'twelve', phonetic:'/twelv/', meaning:'十二', category:'基数词', exampleEn:'There are twelve months in a year.', exampleZh:'一年有十二个月。' },
+  { word:'twenty', phonetic:'/ˈtwenti/', meaning:'二十', category:'基数词', exampleEn:'I am twenty years old.', exampleZh:'我二十岁了。' },
+  { word:'hundred', phonetic:'/ˈhʌndrəd/', meaning:'一百', category:'基数词', exampleEn:'There are one hundred cents in a dollar.', exampleZh:'一美元有一百美分。' },
+  { word:'thousand', phonetic:'/ˈθaʊzənd/', meaning:'一千', category:'基数词', exampleEn:'A thousand stars shine at night.', exampleZh:'一千颗星星在夜空闪耀。' },
+
+  { word:'first', phonetic:'/fɜːrst/', meaning:'第一', category:'序数词', exampleEn:'I am the first in line.', exampleZh:'我排在第一个。' },
+  { word:'second', phonetic:'/ˈsekənd/', meaning:'第二', category:'序数词', exampleEn:'She won second place.', exampleZh:'她获得第二名。' },
+  { word:'third', phonetic:'/θɜːrd/', meaning:'第三', category:'序数词', exampleEn:'This is my third try.', exampleZh:'这是我第三次尝试。' },
+  { word:'fourth', phonetic:'/fɔːrθ/', meaning:'第四', category:'序数词', exampleEn:'Today is the fourth of July.', exampleZh:'今天是七月四日。' },
+  { word:'fifth', phonetic:'/fɪfθ/', meaning:'第五', category:'序数词', exampleEn:'He lives on the fifth floor.', exampleZh:'他住在五楼。' },
+  { word:'sixth', phonetic:'/sɪksθ/', meaning:'第六', category:'序数词', exampleEn:'It is my sixth birthday today.', exampleZh:'今天是我第六个生日。' },
+  { word:'seventh', phonetic:'/ˈsevənθ/', meaning:'第七', category:'序数词', exampleEn:'This is the seventh chapter.', exampleZh:'这是第七章。' },
+  { word:'eighth', phonetic:'/eɪtθ/', meaning:'第八', category:'序数词', exampleEn:'She is in the eighth grade.', exampleZh:'她在八年级。' },
+  { word:'ninth', phonetic:'/naɪnθ/', meaning:'第九', category:'序数词', exampleEn:'September is the ninth month.', exampleZh:'九月是第九个月。' },
+  { word:'tenth', phonetic:'/tenθ/', meaning:'第十', category:'序数词', exampleEn:'This is our tenth lesson.', exampleZh:'这是我们的第十课。' },
+  { word:'last', phonetic:'/læst/', meaning:'最后一个', category:'序数词', exampleEn:'She is the last one in line.', exampleZh:'她是排在最后一个的人。' },
+  { word:'in order', phonetic:'/ɪn ˈɔːrdər/', meaning:'按顺序', category:'序数词', exampleEn:'Please put the numbers in order.', exampleZh:'请把数字按顺序排列。' },
+
+  { word:'plus', phonetic:'/plʌs/', meaning:'加', category:'运算', exampleEn:'Two plus two equals four.', exampleZh:'二加二等于四。' },
+  { word:'minus', phonetic:'/ˈmaɪnəs/', meaning:'减', category:'运算', exampleEn:'Five minus two equals three.', exampleZh:'五减二等于三。' },
+  { word:'times', phonetic:'/taɪmz/', meaning:'乘', category:'运算', exampleEn:'Three times four equals twelve.', exampleZh:'三乘四等于十二。' },
+  { word:'divided by', phonetic:'/dɪˈvaɪdɪd baɪ/', meaning:'除以', category:'运算', exampleEn:'Ten divided by two equals five.', exampleZh:'十除以二等于五。' },
+  { word:'equals', phonetic:'/ˈiːkwəlz/', meaning:'等于', category:'运算', exampleEn:'One plus one equals two.', exampleZh:'一加一等于二。' },
+  { word:'add', phonetic:'/æd/', meaning:'加，添加', category:'运算', exampleEn:'Please add these numbers.', exampleZh:'请把这些数字加起来。' },
+  { word:'subtract', phonetic:'/səbˈtrækt/', meaning:'减，减去', category:'运算', exampleEn:'Subtract three from ten.', exampleZh:'从十中减去三。' },
+  { word:'multiply', phonetic:'/ˈmʌltɪplaɪ/', meaning:'乘', category:'运算', exampleEn:'Multiply six by seven.', exampleZh:'用六乘以七。' },
+  { word:'divide', phonetic:'/dɪˈvaɪd/', meaning:'除，划分', category:'运算', exampleEn:'Divide the cake into four pieces.', exampleZh:'把蛋糕分成四份。' },
+  { word:'sum', phonetic:'/sʌm/', meaning:'总和', category:'运算', exampleEn:'The sum of two and three is five.', exampleZh:'二加三的和是五。' },
+  { word:'total', phonetic:'/ˈtoʊtl/', meaning:'总数，总计', category:'运算', exampleEn:'What is the total number of students?', exampleZh:'学生总数是多少？' },
+
+  { word:'more', phonetic:'/mɔːr/', meaning:'更多', category:'比较', exampleEn:'I want more candy.', exampleZh:'我想要更多的糖。' },
+  { word:'less', phonetic:'/les/', meaning:'更少', category:'比较', exampleEn:'I have less money than you.', exampleZh:'我的钱比你少。' },
+  { word:'equal', phonetic:'/ˈiːkwəl/', meaning:'相等的', category:'比较', exampleEn:'These two boxes are equal in size.', exampleZh:'这两个盒子大小相等。' },
+  { word:'most', phonetic:'/moʊst/', meaning:'最多', category:'比较', exampleEn:'She has the most books.', exampleZh:'她的书最多。' },
+  { word:'least', phonetic:'/liːst/', meaning:'最少', category:'比较', exampleEn:'This one costs the least.', exampleZh:'这个花费最少。' },
+  { word:'bigger', phonetic:'/ˈbɪɡər/', meaning:'更大', category:'比较', exampleEn:'This apple is bigger than that one.', exampleZh:'这个苹果比那个大。' },
+  { word:'smaller', phonetic:'/ˈsmɔːlər/', meaning:'更小', category:'比较', exampleEn:'The mouse is smaller than the cat.', exampleZh:'老鼠比猫小。' },
+  { word:'half', phonetic:'/hæf/', meaning:'一半', category:'比较', exampleEn:'Give me half of the cake.', exampleZh:'给我一半蛋糕。' },
+  { word:'double', phonetic:'/ˈdʌbl/', meaning:'两倍，双份', category:'比较', exampleEn:'Double the amount, please.', exampleZh:'请把数量加倍。' },
+  { word:'pair', phonetic:'/per/', meaning:'一对', category:'比较', exampleEn:'I have a pair of shoes.', exampleZh:'我有一对鞋子。' },
+  { word:'dozen', phonetic:'/ˈdʌzn/', meaning:'一打（十二个）', category:'比较', exampleEn:'I bought a dozen eggs.', exampleZh:'我买了一打鸡蛋。' },
+  { word:'group', phonetic:'/ɡruːp/', meaning:'一组，一群', category:'比较', exampleEn:'Put the apples into a group of five.', exampleZh:'把苹果分成一组五个。' },
+
+  { word:'number', phonetic:'/ˈnʌmbər/', meaning:'数字', category:'数字概念', exampleEn:'What is your favorite number?', exampleZh:'你最喜欢的数字是什么？' },
+  { word:'digit', phonetic:'/ˈdɪdʒɪt/', meaning:'个位数，数字', category:'数字概念', exampleEn:'The number 25 has two digits.', exampleZh:'数字25有两个数字（个位数）。' },
+  { word:'count', phonetic:'/kaʊnt/', meaning:'数，计数', category:'数字概念', exampleEn:'Let us count the stars.', exampleZh:'让我们数星星吧。' },
+  { word:'count up', phonetic:'/kaʊnt ʌp/', meaning:'顺着数', category:'数字概念', exampleEn:'Let us count up from one to ten.', exampleZh:'让我们从一顺着数到十。' },
+  { word:'count down', phonetic:'/kaʊnt daʊn/', meaning:'倒数', category:'数字概念', exampleEn:'We count down from ten to zero.', exampleZh:'我们从十倒数到零。' },
+  { word:'even', phonetic:'/ˈiːvn/', meaning:'偶数的', category:'数字概念', exampleEn:'Four is an even number.', exampleZh:'四是偶数。' },
+  { word:'odd', phonetic:'/ɑːd/', meaning:'奇数的', category:'数字概念', exampleEn:'Three is an odd number.', exampleZh:'三是奇数。' },
+  { word:'even number', phonetic:'/ˈiːvn ˈnʌmbər/', meaning:'双数', category:'数字概念', exampleEn:'Eight is an even number.', exampleZh:'八是双数。' },
+  { word:'odd number', phonetic:'/ɑːd ˈnʌmbər/', meaning:'单数', category:'数字概念', exampleEn:'Seven is an odd number.', exampleZh:'七是单数。' },
+
+  { word:'circle', phonetic:'/ˈsɜːrkl/', meaning:'圆形', category:'图形', exampleEn:'The clock is shaped like a circle.', exampleZh:'钟是圆形的。' },
+  { word:'square', phonetic:'/skwer/', meaning:'正方形', category:'图形', exampleEn:'A square has four equal sides.', exampleZh:'正方形有四条相等的边。' },
+  { word:'rectangle', phonetic:'/ˈrektæŋɡl/', meaning:'长方形', category:'图形', exampleEn:'The door is shaped like a rectangle.', exampleZh:'门是长方形的。' },
+  { word:'triangle', phonetic:'/ˈtraɪæŋɡl/', meaning:'三角形', category:'图形', exampleEn:'A triangle has three sides.', exampleZh:'三角形有三条边。' },
+  { word:'star', phonetic:'/stɑːr/', meaning:'星形', category:'图形', exampleEn:'I drew a yellow star.', exampleZh:'我画了一个黄色的星星。' },
+];
+
+const CATS = ['全部', '基数词', '序数词', '运算', '比较', '数字概念', '图形'];
+let curCat = '全部';
+let sq = '';
+
+function getList() {
+  return VOCAB.filter(v => {
+    const co = curCat === '全部' ? true : v.category === curCat;
+    const q = sq.toLowerCase();
+    const qo = !q || v.word.toLowerCase().includes(q) || v.meaning.includes(sq) || v.exampleZh.includes(sq);
+    return co && qo;
+  });
+}
+
+function getCatCount(cat) {
+  return VOCAB.filter(v => cat === '全部' ? true : v.category === cat).length;
+}
+
+function renderCats() {
+  document.getElementById('cats').innerHTML = CATS.map(c =>
+    `<button class="cat${c===curCat?' on':''}" onclick="setCat('${c}')">${c} <span style="opacity:0.75">[${getCatCount(c)}]</span></button>`
+  ).join('');
+}
+
+function setCat(c) {
+  curCat = c;
+  renderCats();
+  renderGrid();
+}
+
+function onSearch() {
+  sq = document.getElementById('searchInput').value.trim();
+  renderGrid();
+}
+
+function esc(s) {
+  return String(s).replace(/'/g, "\\'");
+}
+
+function renderGrid() {
+  const list = getList();
+  document.getElementById('totalCount').textContent = list.length;
+  if (list.length === 0) {
+    document.getElementById('grid').innerHTML = `<div class="empty-tip">没有找到相关词汇，换个关键词试试吧～</div>`;
+    return;
+  }
+  document.getElementById('grid').innerHTML = list.map(v => `
+    <div class="vcard">
+      <div class="vhead">
+        <span class="vword">${v.word}</span>
+        <span class="vphonetic">${v.phonetic}</span>
+        <button class="btn-speak-mini" onclick="speakText('${esc(v.word)}', 0.9)" title="听发音">🔊</button>
+        <span class="vcat-badge">${v.category}</span>
+      </div>
+      <div class="vmeaning">${v.meaning}</div>
+      <div class="vexample">
+        <div class="vexample-row">
+          <span class="vex-en">${v.exampleEn}</span>
+          <button class="btn-speak-mini" onclick="speakText('${esc(v.exampleEn)}', 0.85)" title="听例句">🔊</button>
+        </div>
+        <div class="vex-zh">${v.exampleZh}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+let cachedVoice = null;
+function getEnVoice() {
+  const voices = speechSynthesis.getVoices();
+  let voice = voices.find(v => v.lang === 'en-US' && v.name.includes('Premium'));
+  if (!voice) voice = voices.find(v => v.lang === 'en-US');
+  if (!voice) voice = voices.find(v => v.lang && v.lang.startsWith('en'));
+  return voice;
+}
+
+function speakText(text, rate) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'en-US';
+    u.rate = rate || 0.9;
+    u.pitch = 1.0;
+    const voice = cachedVoice || getEnVoice();
+    if (voice) u.voice = voice;
+    speechSynthesis.speak(u);
+  } catch (e) { console.log('Speech error:', e); }
+}
+
+if ('speechSynthesis' in window) {
+  const loadVoices = () => { cachedVoice = getEnVoice(); };
+  loadVoices();
+  if (speechSynthesis.onvoiceschanged === undefined) {
+    speechSynthesis.onvoiceschanged = loadVoices;
+  }
+  setTimeout(loadVoices, 100);
+}
+
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('scroll', function() {
+  const btn = document.getElementById('btnBackTop');
+  if (btn) {
+    btn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+  }
+});
+
+renderCats();
+renderGrid();
+</script>
+
+</body>
+</html>
