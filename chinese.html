@@ -977,7 +977,7 @@ body {
 <script src="raw_data.js"></script>
 <script>
 const TC={1:'#EF4444',2:'#10B981',3:'#F59E0B',4:'#3B82F6',5:'#9CA3AF'};
-const CATS=['全部','需复习','数字','家人','身体','动物','植物','颜色','食物','自然','动作','方位','时间','形容','文具','学习','交通工具','天气','情感','职业','物品','建筑','服装','水果','蔬菜','家具','电器','节日','运动','乐器','疾病','常用字'];
+const CATS=['全部','已学','需复习','数字','家人','身体','动物','植物','颜色','食物','自然','动作','方位','时间','形容','文具','学习','交通工具','天气','情感','职业','物品','建筑','服装','水果','蔬菜','家具','电器','节日','运动','乐器','疾病','常用字'];
 
 const seen=new Set(), CHARS=[];
 for(const d of RAW){if(!seen.has(d.s)){seen.add(d.s);CHARS.push(d);}}
@@ -1286,7 +1286,7 @@ function renderStats(){
 
 function getCatCount(cat) {
   return CHARS.filter(ch => {
-    const co = cat === '全部' ? true : (cat === '需复习' ? !!ch.r : ch.c === cat);
+    const co = cat === '全部' ? true : (cat === '需复习' ? !!ch.r : (cat === '已学' ? learned.has(ch.s) : ch.c === cat));
     const qo = !sq || ch.s.includes(sq) || ch.t.includes(sq) || ch.p.toLowerCase().includes(sq.toLowerCase()) || ch.m.includes(sq);
     const dof = !showDiffOnly || ch.s !== ch.t;
     return co && qo && dof;
@@ -1294,9 +1294,11 @@ function getCatCount(cat) {
 }
 
 function renderCats(){
-  document.getElementById('cats').innerHTML=CATS.map(c=>
-    `<button class="cat${c===curCat?' on':''}" onclick="setCat('${c}')">${c} <span style="font-size:11px;opacity:0.7">[${getCatCount(c)}]</span></button>`
-  ).join('');
+  document.getElementById('cats').innerHTML=CATS.map(c=>{
+    const cnt=getCatCount(c);
+    const label = c==='已学' ? `✅ 已学${cnt}字` : `${c} <span style="font-size:11px;opacity:0.7">[${cnt}]</span>`;
+    return `<button class="cat${c===curCat?' on':''}" onclick="setCat('${c}')">${label}</button>`;
+  }).join('');
 }
 
 function setCat(c){curCat=c;renderCats();renderGrid();}
@@ -1313,7 +1315,7 @@ function toggleDiffOnly(){
 
 function getList(){
   return CHARS.filter(ch=>{
-    const co=curCat==='全部'?true:(curCat==='需复习'?!!ch.r:ch.c===curCat);
+    const co=curCat==='全部'?true:(curCat==='需复习'?!!ch.r:(curCat==='已学'?learned.has(ch.s):ch.c===curCat));
     const qo=!sq||ch.s.includes(sq)||ch.t.includes(sq)||ch.p.toLowerCase().includes(sq.toLowerCase())||ch.m.includes(sq);
     const dof=!showDiffOnly||ch.s!==ch.t;
     return co&&qo&&dof;
@@ -1579,6 +1581,7 @@ async function toggleL(){
   if(gistToken) await syncToGist();
   renderStats();
   renderDailyGoal();
+  renderCats();
   renderGrid();
   const isL=learned.has(ch.s);
   const isDefault=DEFAULT_LEARNED.has(ch.s);
