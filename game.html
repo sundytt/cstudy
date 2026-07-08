@@ -390,6 +390,149 @@ body {
   pointer-events: none;
 }
 
+.story-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.q-lang-badge {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-primary);
+  background: var(--color-primary-light);
+  padding: 4px 14px;
+  border-radius: var(--radius-md);
+  margin-bottom: 10px;
+}
+
+.story-instruction {
+  text-align: center;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.story-panels {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.story-panel {
+  position: relative;
+  background: var(--color-background-secondary);
+  border: 3px solid var(--color-border-primary);
+  border-radius: var(--radius-lg);
+  padding: 22px 14px 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.story-panel:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-2px);
+}
+
+.story-panel.done {
+  background: var(--color-success-light);
+  border-color: var(--color-success);
+  cursor: default;
+  transform: none;
+}
+
+.story-panel.wrong {
+  animation: shake 0.5s ease;
+  border-color: var(--color-error);
+}
+
+.story-badge {
+  position: absolute;
+  top: -14px;
+  left: -14px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-background-primary);
+  border: 2px solid var(--color-border-primary);
+  color: var(--color-text-tertiary);
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-panel.done .story-badge {
+  background: var(--color-success);
+  border-color: var(--color-success);
+  color: #FFFFFF;
+}
+
+.story-panel-emoji {
+  font-size: 56px;
+  margin-bottom: 8px;
+}
+
+.story-panel-sentence {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  min-height: 20px;
+}
+
+.story-panel-sentence .zh {
+  color: var(--color-text-primary);
+  font-weight: 600;
+  display: block;
+}
+
+.story-panel-sentence .en {
+  display: block;
+  font-style: italic;
+}
+
+.story-lang-toggle {
+  display: block;
+  margin: 10px auto 0;
+  background: var(--color-background-secondary);
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+  border-radius: 999px;
+  padding: 6px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.story-lang-toggle:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
+.btn-story-replay {
+  display: block;
+  margin: 16px auto 0;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  padding: 10px 22px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-story-replay:hover {
+  background: var(--color-primary);
+  color: #FFFFFF;
+}
+
 .result-modal {
   position: fixed;
   inset: 0;
@@ -527,6 +670,22 @@ body {
     font-size: 24px;
   }
 
+  .story-panels {
+    gap: 10px;
+  }
+
+  .story-panel {
+    padding: 16px 8px 12px;
+  }
+
+  .story-panel-emoji {
+    font-size: 40px;
+  }
+
+  .story-panel-sentence {
+    font-size: 12px;
+  }
+
   .nav-tab {
     padding: 6px 14px;
     font-size: 12px;
@@ -572,6 +731,11 @@ body {
       <div class="mode-title">汉字配对</div>
       <div class="mode-desc">简体字和繁体字配对</div>
     </div>
+    <div class="mode-card" onclick="startGame('picture-story')">
+      <div class="mode-icon">🖼️💬</div>
+      <div class="mode-title">看图说话</div>
+      <div class="mode-desc">4张图片连成故事，按顺序点击讲述</div>
+    </div>
   </div>
 
   <div class="game-area" id="gameArea">
@@ -605,6 +769,9 @@ body {
 
     <div class="pair-grid" id="pairGrid">
     </div>
+
+    <div class="story-grid" id="storyGrid">
+    </div>
   </div>
 </div>
 
@@ -631,8 +798,74 @@ let wrongCount = 0;
 let currentQuestion = 0;
 const totalQuestions = 10;
 let currentAnswer = '';
+let currentStory = null;
+let storyProgress = [];
+let storyLangMode = 'zh';
 let selectedPairs = [];
 let matchedPairs = new Set();
+
+const STORIES = [
+  { title:'饿肚子的小猫', scenes: [
+    { emoji:'😿', en:'The little cat is very hungry and has nothing to eat.', zh:'小猫肚子很饿，什么都没有吃。' },
+    { emoji:'🎣', en:'It goes to the river and tries to catch a fish.', zh:'它跑到河边，想抓一条鱼。' },
+    { emoji:'🐟', en:'After waiting quietly, it finally catches a big fish.', zh:'安静地等了很久，它终于抓到了一条大鱼。' },
+    { emoji:'😋', en:'The little cat eats the fish happily and feels full.', zh:'小猫开心地吃了鱼，肚子饱饱的。' },
+  ]},
+  { title:'一颗种子的旅行', scenes: [
+    { emoji:'🌱', en:'Xiaohong plants a tiny seed in the soil.', zh:'小红把一颗小小的种子种进土里。' },
+    { emoji:'💧', en:'She waters it carefully every morning.', zh:'她每天早上都认真地给它浇水。' },
+    { emoji:'🌦️', en:'With sunshine and rain, a green sprout grows.', zh:'在阳光和雨水的照顾下，长出了绿色的小芽。' },
+    { emoji:'🌻', en:'At last, it blooms into a big beautiful sunflower.', zh:'最后，它开出了一朵又大又美的向日葵。' },
+  ]},
+  { title:'差点迟到的小明', scenes: [
+    { emoji:'😴', en:'Xiaoming oversleeps and wakes up very late.', zh:'小明睡过头了，很晚才醒来。' },
+    { emoji:'🏃', en:'He grabs his bag and runs to catch the school bus.', zh:'他抓起书包，跑去赶校车。' },
+    { emoji:'😮\u200d💨', en:'He rushes into the classroom just before the bell rings.', zh:'他在打铃前一秒冲进了教室。' },
+    { emoji:'😊', en:'He sits down, catches his breath, and starts the lesson happily.', zh:'他坐下来喘了口气，开心地开始上课。' },
+  ]},
+  { title:'给莉莉的惊喜派对', scenes: [
+    { emoji:'🤫', en:'Her friends secretly plan a surprise party for Lily.', zh:'朋友们悄悄为莉莉准备了一个惊喜派对。' },
+    { emoji:'🎈', en:'They quietly decorate the room with colorful balloons.', zh:'他们安静地用彩色气球装饰房间。' },
+    { emoji:'🚪', en:'Lily opens the door and is completely surprised.', zh:'莉莉打开门，完全被惊呆了。' },
+    { emoji:'🎂', en:'Everyone laughs and sings together around the cake.', zh:'大家围着蛋糕一起唱歌大笑。' },
+  ]},
+  { title:'突然下起的大雨', scenes: [
+    { emoji:'☀️', en:'It is sunny when Mimi leaves for school in the morning.', zh:'早上米米出门时，天气还是晴朗的。' },
+    { emoji:'🌧️', en:'Suddenly, dark clouds bring a heavy rain.', zh:'突然，乌云飘来，下起了大雨。' },
+    { emoji:'😢', en:'Mimi has no umbrella with her and gets all wet.', zh:'米米没有带雨伞，全身都被淋湿了。' },
+    { emoji:'🌈', en:'Mom brings her an umbrella, and a rainbow appears.', zh:'妈妈给她送来了雨伞，天边还出现了一道彩虹。' },
+  ]},
+  { title:'勇敢学飞的小鸟', scenes: [
+    { emoji:'🥚', en:'A little bird hatches out of its egg.', zh:'一只小鸟从蛋壳里出生了。' },
+    { emoji:'🍽️', en:'Its mother feeds it worms every single day.', zh:'鸟妈妈每天都喂它虫子吃。' },
+    { emoji:'😨', en:'One day, the little bird feels scared to leave the nest.', zh:'有一天，小鸟害怕离开鸟窝。' },
+    { emoji:'🕊️', en:'With courage, it spreads its wings and flies into the sky.', zh:'它勇敢地张开翅膀，飞向了天空。' },
+  ]},
+  { title:'沙滩上丢失的贝壳', scenes: [
+    { emoji:'🚗', en:'The family drives excitedly to the beach for a trip.', zh:'一家人开心地开车去海边玩。' },
+    { emoji:'🐚', en:'Tom loses his favorite seashell while playing in the sand.', zh:'汤姆在沙子里玩耍时，弄丢了他最喜欢的贝壳。' },
+    { emoji:'🔍', en:'He searches everywhere and finally finds it under a rock.', zh:'他到处寻找，终于在一块石头下找到了它。' },
+    { emoji:'🌅', en:'Relieved and happy, they watch the sunset together.', zh:'大家松了一口气，一起开心地看日落。' },
+  ]},
+  { title:'一块蛋糕的诞生', scenes: [
+    { emoji:'🥄', en:'Mom mixes the flour, sugar and eggs together.', zh:'妈妈把面粉、糖和鸡蛋搅拌在一起。' },
+    { emoji:'🔥', en:'She puts the batter in the oven and bakes it for thirty minutes.', zh:'她把面糊放进烤箱，烤了三十分钟。' },
+    { emoji:'🍰', en:'A sweet smell fills the whole kitchen.', zh:'甜甜的香味飘满了整个厨房。' },
+    { emoji:'👩\u200d👧', en:'The whole family shares the delicious cake together.', zh:'全家人一起分享这块美味的蛋糕。' },
+  ]},
+  { title:'孩子们的雪人朋友', scenes: [
+    { emoji:'❄️', en:'Soft snow falls and covers the whole yard.', zh:'柔软的雪花飘落，盖满了整个院子。' },
+    { emoji:'⛄', en:'The children roll the snow into a big round ball.', zh:'孩子们把雪滚成了一个大大的雪球。' },
+    { emoji:'🥕', en:'They give the snowman a carrot nose and a warm scarf.', zh:'他们给雪人装上胡萝卜鼻子，围上暖暖的围巾。' },
+    { emoji:'📸', en:'They take a happy photo with their new snowman friend.', zh:'他们和新朋友雪人开心地拍了一张照片。' },
+  ]},
+  { title:'蝴蝶的秘密', scenes: [
+    { emoji:'🥚', en:'A tiny egg rests quietly on a green leaf.', zh:'一颗小小的卵安静地躺在绿叶上。' },
+    { emoji:'🐛', en:'It hatches into a hungry little caterpillar.', zh:'它孵化成了一只饥饿的小毛毛虫。' },
+    { emoji:'🛡️', en:'After eating a lot, it wraps itself into a quiet chrysalis.', zh:'吃饱之后，它把自己包进了安静的蛹里。' },
+    { emoji:'🦋', en:'Days later, a beautiful butterfly breaks free and flies away.', zh:'几天后，一只美丽的蝴蝶破壳而出，飞走了。' },
+  ]},
+];
 
 function getEmoji(meaning, category){
   const map={
@@ -757,6 +990,8 @@ function startGame(mode) {
     nextSoundQuestion();
   } else if (mode === 'pair') {
     startPairGame();
+  } else if (mode === 'picture-story') {
+    nextStoryQuestion();
   }
 }
 
@@ -792,6 +1027,7 @@ function nextPictureQuestion() {
   `).join('');
 
   document.getElementById('pairGrid').innerHTML = '';
+  document.getElementById('storyGrid').innerHTML = '';
   currentQuestion++;
   updateScore();
 }
@@ -819,6 +1055,7 @@ function nextSoundQuestion() {
   `).join('');
 
   document.getElementById('pairGrid').innerHTML = '';
+  document.getElementById('storyGrid').innerHTML = '';
   currentQuestion++;
   updateScore();
 
@@ -827,6 +1064,12 @@ function nextSoundQuestion() {
 
 function getVoice(lang) {
   const voices = speechSynthesis.getVoices();
+  if (lang === 'en') {
+    let voice = voices.find(v => v.lang === 'en-US' && v.name.includes('Premium'));
+    if (!voice) voice = voices.find(v => v.lang === 'en-US');
+    if (!voice) voice = voices.find(v => v.lang && v.lang.startsWith('en'));
+    return voice;
+  }
   const targetLang = lang === 'yue' ? 'zh-HK' : 'zh-CN';
   const priorityPatterns = [
     /Microsoft Yaoyao/,
@@ -914,6 +1157,7 @@ function startPairGame() {
   `;
 
   document.getElementById('optionsGrid').innerHTML = '';
+  document.getElementById('storyGrid').innerHTML = '';
 
   document.getElementById('pairGrid').innerHTML = shuffledCards.map((card, index) => `
     <div class="pair-card" onclick="selectPair(${index}, '${card.pairId}', this)">${card.char}</div>
@@ -921,6 +1165,150 @@ function startPairGame() {
 
   currentQuestion = 1;
   updateScore();
+}
+
+function nextStoryQuestion() {
+  if (currentQuestion >= totalQuestions) {
+    showResult();
+    return;
+  }
+
+  const oldBtn = document.getElementById('storyReplayBtn');
+  if (oldBtn) oldBtn.remove();
+
+  currentStory = STORIES[Math.floor(Math.random() * STORIES.length)];
+  storyProgress = [];
+
+  const displayOrder = shuffle(currentStory.scenes.map((s, i) => i));
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="q-lang-badge">🖼️💬 ${currentStory.title}</div>
+    <div class="story-instruction" id="storyInstruction">请按故事发生的顺序，依次点击图片<br>Click the pictures in the correct story order</div>
+    <button class="story-lang-toggle" id="storyLangToggle" onclick="toggleStoryLang()">${storyLangMode === 'zh' ? '🇬🇧 切换英文' : '🇨🇳 切换中文'}</button>
+  `;
+
+  document.getElementById('optionsGrid').innerHTML = '';
+  document.getElementById('pairGrid').innerHTML = '';
+  document.getElementById('storyGrid').innerHTML = `
+    <div class="story-panels">
+      ${displayOrder.map(sceneIndex => `
+        <div class="story-panel" id="storyPanel-${sceneIndex}" onclick="checkStoryOrder(${sceneIndex}, this)">
+          <div class="story-badge"></div>
+          <div class="story-panel-emoji">${currentStory.scenes[sceneIndex].emoji}</div>
+          <div class="story-panel-sentence"></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  currentQuestion++;
+  updateScore();
+}
+
+function renderStorySentence(panelEl, scene) {
+  const text = storyLangMode === 'zh' ? scene.zh : scene.en;
+  const cls = storyLangMode === 'zh' ? 'zh' : 'en';
+  panelEl.querySelector('.story-panel-sentence').innerHTML = `<span class="${cls}">${text}</span>`;
+}
+
+function toggleStoryLang() {
+  storyLangMode = storyLangMode === 'zh' ? 'en' : 'zh';
+  const btn = document.getElementById('storyLangToggle');
+  if (btn) btn.innerHTML = storyLangMode === 'zh' ? '🇬🇧 切换英文' : '🇨🇳 切换中文';
+  if (!currentStory) return;
+  document.querySelectorAll('.story-panel.done').forEach(panelEl => {
+    const sceneIndex = Number(panelEl.id.replace('storyPanel-', ''));
+    const scene = currentStory.scenes[sceneIndex];
+    if (scene) renderStorySentence(panelEl, scene);
+  });
+}
+
+function checkStoryOrder(sceneIndex, panelEl) {
+  if (panelEl.classList.contains('done')) return;
+
+  const expected = storyProgress.length;
+
+  if (sceneIndex === expected) {
+    const scene = currentStory.scenes[sceneIndex];
+    panelEl.classList.add('done');
+    panelEl.querySelector('.story-badge').textContent = expected + 1;
+    renderStorySentence(panelEl, scene);
+    speakStorySentence(scene);
+    storyProgress.push(sceneIndex);
+
+    const instruction = document.getElementById('storyInstruction');
+
+    if (storyProgress.length === currentStory.scenes.length) {
+      score += 10;
+      correctCount++;
+      updateScore();
+      if (instruction) instruction.innerHTML = '🎉 故事讲完啦！Great job telling the story!';
+      document.getElementById('storyGrid').insertAdjacentHTML('beforeend', `
+        <button class="btn-story-replay" id="storyReplayBtn" onclick="replayStory()">🔊 完整播放故事</button>
+      `);
+      setTimeout(() => {
+        nextStoryQuestion();
+      }, 3200);
+    } else {
+      if (instruction) instruction.innerHTML = `真棒！接着找第 ${expected + 2} 张图片吧～ (${storyProgress.length}/${currentStory.scenes.length})`;
+    }
+  } else {
+    panelEl.classList.add('wrong');
+    wrongCount++;
+    updateScore();
+    setTimeout(() => panelEl.classList.remove('wrong'), 500);
+  }
+}
+
+function speakBilingual(zhText, enText, onDone) {
+  if (!('speechSynthesis' in window)) {
+    if (onDone) onDone();
+    return;
+  }
+  const uZh = new SpeechSynthesisUtterance(zhText);
+  uZh.lang = 'zh-CN';
+  uZh.rate = 0.85;
+  const vZh = getVoice('zh-CN');
+  if (vZh) uZh.voice = vZh;
+
+  const uEn = new SpeechSynthesisUtterance(enText);
+  uEn.lang = 'en-US';
+  uEn.rate = 0.85;
+  const vEn = getVoice('en');
+  if (vEn) uEn.voice = vEn;
+
+  uZh.onend = () => speechSynthesis.speak(uEn);
+  uEn.onend = () => { if (onDone) onDone(); };
+
+  speechSynthesis.speak(uZh);
+}
+
+function speakStorySentence(scene) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    setTimeout(() => speakBilingual(scene.zh, scene.en), 50);
+  } catch (e) {
+    console.log('Speech error:', e);
+  }
+}
+
+function replayStory() {
+  if (!currentStory || !('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const scenes = currentStory.scenes;
+    let i = 0;
+    const playNext = () => {
+      if (i >= scenes.length) return;
+      const scene = scenes[i];
+      i++;
+      speakBilingual(scene.zh, scene.en, playNext);
+    };
+    setTimeout(playNext, 50);
+  } catch (e) {
+    console.log('Speech error:', e);
+  }
 }
 
 function selectPair(index, pairId, card) {
