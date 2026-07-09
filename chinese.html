@@ -428,8 +428,8 @@ body {
   border: 1px solid var(--color-border-secondary);
   width: 840px;
   max-width: 96vw;
-  padding: 3.5rem 3.5rem 3rem;
-  min-height: 700px;
+  padding: 1.8rem 2.5rem 1.5rem;
+  min-height: auto;
   box-shadow: var(--shadow-xl);
   animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -492,7 +492,7 @@ body {
 
 .modal-cat {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .modal-cat-badge {
@@ -500,22 +500,22 @@ body {
   background: var(--color-primary-light);
   color: var(--color-primary);
   border-radius: var(--radius-md);
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 500;
-  padding: 6px 24px;
+  padding: 4px 20px;
 }
 
 .modal-biling {
   display: flex;
-  gap: 24px;
+  gap: 16px;
   justify-content: center;
-  margin-bottom: 32px;
+  margin-bottom: 14px;
 }
 
 .modal-half {
   text-align: center;
   flex: 1;
-  padding: 36px 20px 28px;
+  padding: 16px 12px 12px;
   border: 1px solid var(--color-border-tertiary);
   border-radius: var(--radius-lg);
   background: var(--color-background-tertiary);
@@ -532,22 +532,22 @@ body {
 }
 
 .modal-half-label {
-  font-size: 22px;
+  font-size: 14px;
   color: var(--color-text-tertiary);
-  margin-bottom: 12px;
+  margin-bottom: 6px;
   letter-spacing: 0.5px;
   font-weight: 500;
 }
 
 .modal-emoji {
-  font-size: 64px;
+  font-size: 48px;
   text-align: center;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   line-height: 1;
 }
 
 .modal-simp {
-  font-size: 144px;
+  font-size: 100px;
   line-height: 1;
   font-family: 'Noto Sans SC', sans-serif;
   color: var(--color-text-primary);
@@ -559,7 +559,7 @@ body {
 }
 
 .modal-trad {
-  font-size: 144px;
+  font-size: 100px;
   line-height: 1;
   font-family: 'Noto Serif TC', serif;
   color: var(--color-primary);
@@ -571,17 +571,41 @@ body {
 }
 
 .modal-trad-same {
-  font-size: 28px;
+  font-size: 22px;
   color: var(--color-text-tertiary);
-  padding-top: 48px;
+  padding-top: 28px;
   line-height: 1.6;
 }
 
 .modal-pinyin {
-  text-align: center;
-  font-size: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  font-size: 24px;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
+}
+
+.modal-pinyin .pin-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-pinyin .pin-label {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  min-width: 18px;
+}
+
+.modal-pinyin .pin-value {
+  font-size: 24px;
+}
+
+.modal-pinyin .pin-tone {
+  font-size: 11px;
+  color: var(--color-text-tertiary);
 }
 
 .pinyin-row {
@@ -604,33 +628,86 @@ body {
 
 .modal-meaning {
   text-align: center;
-  font-size: 32px;
+  font-size: 24px;
   color: var(--color-text-secondary);
-  margin-bottom: 24px;
+  margin-bottom: 12px;
+}
+
+.modal-radical {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.radical-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 18px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.radical-info.simp {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
+}
+
+.radical-info.trad {
+  background: #EEF2FF;
+  border: 1px solid #C7D2FE;
+  color: #3730A3;
+}
+
+.radical-tag {
+  font-size: 22px;
+  font-weight: 700;
+  font-family: 'Noto Sans SC', sans-serif;
+}
+
+.radical-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  line-height: 1.3;
+}
+
+.radical-name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.radical-struct {
+  font-size: 11px;
+  opacity: 0.7;
 }
 
 .modal-example {
   background: var(--color-background-secondary);
   border-radius: var(--radius-md);
-  padding: 20px 28px;
-  font-size: 28px;
+  padding: 12px 20px;
+  font-size: 22px;
   color: var(--color-text-secondary);
   text-align: center;
   font-family: 'Noto Sans SC', sans-serif;
-  margin-bottom: 36px;
+  margin-bottom: 16px;
 }
 
 .ex-label {
-  font-size: 14px;
+  font-size: 12px;
   color: var(--color-text-tertiary);
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .ex-text {
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 500;
-  line-height: 1.6;
-  margin-bottom: 12px;
+  line-height: 1.5;
+  margin-bottom: 6px;
 }
 
 .ex-btns {
@@ -667,7 +744,7 @@ body {
 
 .modal-btns {
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 
 .btn-speak {
@@ -676,8 +753,8 @@ body {
   color: var(--color-primary);
   background: var(--color-background-primary);
   border-radius: var(--radius-md);
-  padding: 20px 28px;
-  font-size: 32px;
+  padding: 10px 18px;
+  font-size: 18px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-weight: 500;
@@ -706,8 +783,8 @@ body {
   color: #FFFFFF;
   border: none;
   border-radius: var(--radius-md);
-  padding: 20px;
-  font-size: 28px;
+  padding: 10px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -756,8 +833,8 @@ body {
   color: var(--color-text-secondary);
   background: var(--color-background-primary);
   border-radius: var(--radius-md);
-  padding: 20px 28px;
-  font-size: 28px;
+  padding: 10px 18px;
+  font-size: 16px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -839,51 +916,73 @@ body {
   }
 
   .modal-biling {
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 10px;
   }
 
   .modal-half {
-    padding: 20px 12px 16px;
+    padding: 10px 8px 8px;
   }
 
   .modal-half-label {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .modal-pinyin {
-    font-size: 20px;
+    font-size: 16px;
+    gap: 14px;
   }
 
-  .pinyin-row {
-    margin: 2px 0;
+  .modal-pinyin .pin-label {
+    font-size: 10px;
   }
 
-  .pinyin-label {
-    font-size: 12px;
-    min-width: 20px;
+  .modal-pinyin .pin-value {
+    font-size: 18px;
   }
 
-  .pinyin-value {
-    font-size: 24px;
+  .modal-pinyin .pin-tone {
+    font-size: 10px;
   }
 
   .modal-meaning {
-    font-size: 22px;
+    font-size: 16px;
+  }
+
+  .modal-radical {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .radical-info {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .radical-tag {
+    font-size: 18px;
+  }
+
+  .radical-name {
+    font-size: 11px;
+  }
+
+  .radical-struct {
+    font-size: 10px;
   }
 
   .modal-example {
     font-size: 14px;
-    margin-top: 12px;
-    padding: 12px 16px;
+    margin-top: 10px;
+    padding: 10px 14px;
   }
 
   .ex-label {
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .ex-text {
-    font-size: 24px;
+    font-size: 16px;
   }
 
   .btn-ex-speak {
@@ -962,6 +1061,7 @@ body {
     <div class="modal-cat" id="mCat"></div>
     <div class="modal-emoji" id="mEmoji"></div>
     <div class="modal-biling" id="mBiling"></div>
+    <div class="modal-radical" id="mRadical"></div>
     <div class="modal-example" id="mEx"></div>
     <div class="modal-pinyin" id="mPin"></div>
     <div class="modal-meaning" id="mMean"></div>
@@ -976,6 +1076,7 @@ body {
 </div>
 
 <script src="raw_data.js"></script>
+<script src="radical_data.js"></script>
 <script>
 const TC={1:'#EF4444',2:'#10B981',3:'#F59E0B',4:'#3B82F6',5:'#9CA3AF'};
 const CATS=['全部','已学','需复习','数字','家人','身体','动物','植物','颜色','食物','自然','动作','方位','时间','形容','文具','学习','交通工具','天气','情感','职业','物品','建筑','服装','水果','蔬菜','家具','电器','节日','运动','乐器','疾病','常用字'];
@@ -1513,6 +1614,21 @@ function renderGrid(){
   }).join('');
 }
 
+function renderRadicalInfo(chars, clazz) {
+  return Array.from(chars).map(c => {
+    const d = (typeof RADICAL_DATA !== 'undefined' && RADICAL_DATA[c]) || null;
+    if (!d) return '';
+    const structLabel = { '象形':'🖼️','指事':'☝️','会意':'🧩','形声':'🔊','独体':'🔲' }[d.s] || '';
+    return `<div class="radical-info ${clazz}">
+      <span class="radical-tag">${d.r}</span>
+      <div class="radical-detail">
+        <span class="radical-name">${d.rn}${d.rm ? '（'+d.rm+'）' : ''}</span>
+        <span class="radical-struct">${structLabel} ${d.s}字${d.p ? ' · 声旁：'+d.p : ''}</span>
+      </div>
+    </div>`;
+  }).filter(Boolean).join('');
+}
+
 function openModal(idx){
   selIdx=idx;
   const ch=CHARS[idx];
@@ -1528,9 +1644,12 @@ function openModal(idx){
       <div class="modal-half-label">繁體字</div>
       ${same?`<div class="modal-trad-same">与简体<br>相同</div>`:`<div class="modal-trad">${ch.t}</div>`}
     </div>`;
-  const yueHtml = ch.y ? `<div class="pinyin-row"><span class="pinyin-label">粤</span><span class="pinyin-value">${ch.y}</span></div>` : '';
+  document.getElementById('mRadical').innerHTML =
+    renderRadicalInfo(ch.s, 'simp') +
+    (same ? '' : renderRadicalInfo(ch.t, 'trad'));
+  const yueHtml = ch.y ? `<span class="pin-item"><span class="pin-label">粤</span><span class="pin-value">${ch.y}</span></span>` : '';
   document.getElementById('mPin').innerHTML=`
-    <div class="pinyin-row"><span class="pinyin-label">普</span><span style="color:${TC[ch.tn]}">${ch.p}</span> <span style="font-size:14px;color:var(--color-text-tertiary)">${toneLabel(ch.tn)}</span></div>
+    <span class="pin-item"><span class="pin-label">普</span><span class="pin-value" style="color:${TC[ch.tn]}">${ch.p}</span><span class="pin-tone">${toneLabel(ch.tn)}</span></span>
     ${yueHtml}
   `;
   document.getElementById('mMean').textContent=ch.m;
