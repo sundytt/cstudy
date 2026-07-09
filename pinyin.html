@@ -271,32 +271,6 @@ body {
   color: var(--color-primary-dark);
   margin-bottom: 4px;
   letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-.btn-speak-sm {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border: none;
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.btn-speak-sm:hover {
-  background: var(--color-primary);
-  color: #FFFFFF;
-  transform: scale(1.2);
 }
 
 .card-example {
@@ -422,32 +396,6 @@ body {
   text-align: center;
   margin-bottom: 8px;
   letter-spacing: 2px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-}
-
-.btn-speak-lg {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--color-primary);
-  background: var(--color-background-primary);
-  color: var(--color-primary);
-  border-radius: 50%;
-  cursor: pointer;
-  font-size: 20px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.btn-speak-lg:hover {
-  background: var(--color-primary);
-  color: #FFFFFF;
-  transform: scale(1.1);
 }
 
 .modal-desc {
@@ -692,10 +640,8 @@ body {
     overflow-y: auto;
   }
   .modal-emoji { font-size: 44px; }
-  .modal-unit { font-size: 42px; gap: 8px; }
-  .btn-speak-lg { width: 32px; height: 32px; font-size: 16px; }
-  .btn-speak-sm { width: 18px; height: 18px; font-size: 10px; }
-  .card-unit { font-size: 20px; gap: 2px; }
+  .modal-unit { font-size: 42px; }
+  .card-unit { font-size: 20px; }
   .modal-desc { font-size: 15px; }
   .modal-key { padding: 10px 14px; gap: 10px; }
   .modal-key-example { font-size: 34px; }
@@ -1026,7 +972,7 @@ function renderGrid() {
     return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${PINYIN.indexOf(p)})">
       ${isL ? '<span class="done-badge">✓ 学会</span>' : ''}
       <div class="card-emoji">${p.emoji}</div>
-      <div class="card-unit">${p.unit}<button class="btn-speak-sm" onclick="event.stopPropagation();speakPinyin('${p.unit}')" title="听发音">🔊</button></div>
+      <div class="card-unit">${p.unit}</div>
       <div class="card-example">${p.example}</div>
       <div class="card-meaning">${p.type}</div>
     </div>`;
@@ -1040,7 +986,7 @@ function openModal(idx) {
 
   if (p.tones) {
     document.getElementById('mBody').innerHTML = `
-      <div class="modal-unit">${p.unit} <button class="btn-speak-lg" onclick="speakPinyin('${p.unit}')" title="听发音">🔊</button></div>
+      <div class="modal-unit">${p.unit}</div>
       <div class="modal-desc">跟着声调符号，读出四个声调的不同</div>
       <div class="tone-table">
         ${p.tones.map((t, i) => `
@@ -1053,7 +999,7 @@ function openModal(idx) {
       </div>`;
   } else {
     document.getElementById('mBody').innerHTML = `
-      <div class="modal-unit">${p.unit} <button class="btn-speak-lg" onclick="speakPinyin('${p.unit}')" title="听发音">🔊</button></div>
+      <div class="modal-unit">${p.unit}</div>
       <div class="modal-desc">${p.desc}</div>
       <div class="modal-key">
         <div class="modal-key-example">${p.example}</div>
