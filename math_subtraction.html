@@ -58,80 +58,6 @@ body {
   padding: 1.5rem 1rem 3rem;
 }
 
-.nav-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 1rem;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 4px;
-}
-
-.nav-tabs::-webkit-scrollbar { display: none; }
-
-.nav-tab {
-  padding: 8px 16px;
-  border-radius: var(--radius-lg);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-  border: 2px solid transparent;
-}
-
-.nav-tab.chinese {
-  background: var(--color-background-primary);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border-secondary);
-  box-shadow: var(--shadow-sm);
-}
-
-.nav-tab.chinese:hover {
-  border-color: #6366F1;
-  color: #6366F1;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.nav-tab.english {
-  background: var(--color-background-primary);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border-secondary);
-  box-shadow: var(--shadow-sm);
-}
-
-.nav-tab.english:hover {
-  border-color: #8B5CF6;
-  color: #8B5CF6;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.nav-tab.math-add {
-  background: var(--color-background-primary);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border-secondary);
-  box-shadow: var(--shadow-sm);
-}
-
-.nav-tab.math-add:hover {
-  border-color: #F59E0B;
-  color: #F59E0B;
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.nav-tab.math-sub {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: #FFFFFF;
-  box-shadow: var(--shadow-md);
-}
-
 .header {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -637,23 +563,6 @@ body {
 }
 
 @media (max-width: 600px) {
-  .nav-tabs {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-  }
-
-  .nav-tabs::-webkit-scrollbar { display: none; }
-
-  .nav-tab {
-    padding: 7px 14px;
-    font-size: 13px;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
 
   .header h1 {
     font-size: 26px;
@@ -678,17 +587,9 @@ body {
 <body>
 
 <div id="app">
-  <div class="nav-tabs">
-    <div class="nav-tab english" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
-    <div class="nav-tab english" onclick="window.location.href='pinyin.html'">🈶 拼音学习</div>
-    <div class="nav-tab english" onclick="window.location.href='idiom.html'">🏮 成语学习</div>
-    <div class="nav-tab english" onclick="window.location.href='english.html'">🔤 单词学习</div>
-    <div class="nav-tab english" onclick="window.location.href='phonics.html'">🔠 自然拼读</div>
-    <div class="nav-tab english" onclick="window.location.href='math_vocab.html'">🔢 数字词汇</div>
-    <div class="nav-tab math-add" onclick="window.location.href='math_addition.html'">➕ 加法思路</div>
-    <div class="nav-tab math-sub">➖ 减法思路</div>
-    <div class="nav-tab english" onclick="window.location.href='game.html'">🎮 趣味游戏</div>
-  </div>
+  <div id="qnav"></div>
+  <script src="nav.js"></script>
+  <script>QNav.init('math_subtraction');</script>
 
   <div class="header">
     <h1>➖ 20以内减法解法思路</h1>

@@ -56,50 +56,6 @@ body {
   padding: 1.5rem 1rem 3rem;
 }
 
-.nav-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 1rem;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 4px;
-}
-
-.nav-tabs::-webkit-scrollbar { display: none; }
-
-.nav-tab {
-  padding: 8px 16px;
-  border-radius: var(--radius-lg);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-  border: 2px solid transparent;
-}
-
-.nav-tab.chinese {
-  background: var(--color-background-primary);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border-primary);
-  box-shadow: var(--shadow-sm);
-}
-
-.nav-tab.chinese:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-}
-
-.nav-tab.game {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: #FFFFFF;
-  box-shadow: var(--shadow-md);
-}
-
 .header {
   text-align: center;
   margin-bottom: 2rem;
@@ -620,24 +576,6 @@ body {
 }
 
 @media (max-width: 600px) {
-  .nav-tabs {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 4px;
-  }
-
-  .nav-tabs::-webkit-scrollbar { display: none; }
-
-  .nav-tab {
-    padding: 7px 14px;
-    font-size: 13px;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-
   .game-area {
     padding: 1.5rem 1rem;
   }
@@ -686,11 +624,6 @@ body {
     font-size: 12px;
   }
 
-  .nav-tab {
-    padding: 6px 14px;
-    font-size: 12px;
-  }
-
   .header h1 {
     font-size: 22px;
   }
@@ -699,17 +632,9 @@ body {
 </head>
 <body>
 <div id="app">
-  <div class="nav-tabs">
-    <div class="nav-tab chinese" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
-    <div class="nav-tab chinese" onclick="window.location.href='pinyin.html'">🈶 拼音学习</div>
-    <div class="nav-tab chinese" onclick="window.location.href='idiom.html'">🏮 成语学习</div>
-    <div class="nav-tab chinese" onclick="window.location.href='english.html'">🔤 单词学习</div>
-    <div class="nav-tab chinese" onclick="window.location.href='phonics.html'">🔠 自然拼读</div>
-    <div class="nav-tab chinese" onclick="window.location.href='math_vocab.html'">🔢 数字词汇</div>
-    <div class="nav-tab chinese" onclick="window.location.href='math_addition.html'">➕ 加法思路</div>
-    <div class="nav-tab chinese" onclick="window.location.href='math_subtraction.html'">➖ 减法思路</div>
-    <div class="nav-tab game">🎮 趣味游戏</div>
-  </div>
+  <div id="qnav"></div>
+  <script src="nav.js"></script>
+  <script>QNav.init('game');</script>
   
   <div class="header">
     <h1>🎮 趣味识字游戏</h1>

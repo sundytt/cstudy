@@ -54,52 +54,6 @@ body {
   padding: 1.5rem 1rem 3rem;
 }
 
-.nav-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 1rem;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding-bottom: 4px;
-}
-
-.nav-tabs::-webkit-scrollbar { display: none; }
-
-.nav-tab {
-  padding: 8px 16px;
-  border-radius: var(--radius-lg);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
-  border: 2px solid transparent;
-}
-
-.nav-tab.other {
-  background: var(--color-background-primary);
-  color: var(--color-text-secondary);
-  border-color: var(--color-border-secondary);
-  box-shadow: var(--shadow-sm);
-}
-
-.nav-tab.other:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-
-.nav-tab.vocab {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-  color: #FFFFFF;
-  box-shadow: var(--shadow-md);
-}
-
 .header {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -336,17 +290,6 @@ body {
 }
 
 @media (max-width: 600px) {
-  .nav-tabs {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    overflow-x: auto;
-  }
-
-  .nav-tab {
-    padding: 7px 14px;
-    font-size: 13px;
-  }
-
   .header h1 {
     font-size: 24px;
   }
@@ -375,17 +318,9 @@ body {
 <body>
 
 <div id="app">
-  <div class="nav-tabs">
-    <div class="nav-tab other" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
-    <div class="nav-tab other" onclick="window.location.href='pinyin.html'">🈶 拼音学习</div>
-    <div class="nav-tab other" onclick="window.location.href='idiom.html'">🏮 成语学习</div>
-    <div class="nav-tab other" onclick="window.location.href='english.html'">🔤 单词学习</div>
-    <div class="nav-tab other" onclick="window.location.href='phonics.html'">🔠 自然拼读</div>
-    <div class="nav-tab vocab">🔢 数字词汇</div>
-    <div class="nav-tab other" onclick="window.location.href='math_addition.html'">➕ 加法思路</div>
-    <div class="nav-tab other" onclick="window.location.href='math_subtraction.html'">➖ 减法思路</div>
-    <div class="nav-tab other" onclick="window.location.href='game.html'">🎮 趣味游戏</div>
-  </div>
+  <div id="qnav"></div>
+  <script src="nav.js"></script>
+  <script>QNav.init('math_vocab');</script>
 
   <div class="header">
     <h1>🔢 数字英语词汇乐园</h1>
