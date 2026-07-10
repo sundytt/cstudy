@@ -434,7 +434,14 @@ body {
 .modal-key-emoji { font-size: 40px; line-height: 1; }
 .modal-key-word { font-size: 30px; font-weight: 700; color: var(--color-primary-dark); }
 .modal-key-word b { color: var(--color-primary); text-decoration: underline; }
-.modal-key-zh { font-size: 18px; color: var(--color-text-secondary); }
+.modal-key-zh {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 2px;
+}
+.modal-key-zh-text { font-size: 18px; color: var(--color-text-secondary); font-weight: 500; }
+.modal-key-ipa { font-size: 14px; color: var(--color-text-tertiary); font-style: italic; }
 
 .modal-words {
   text-align: center;
@@ -607,6 +614,8 @@ body {
   .modal-meaning { font-size: 18px; }
   .modal-key-word { font-size: 22px; }
   .modal-key-emoji { font-size: 30px; }
+  .modal-key-zh-text { font-size: 14px; }
+  .modal-key-ipa { font-size: 12px; }
   .btn-nav { width: 40px; height: 40px; font-size: 24px; }
   .btn-nav-prev { left: 8px; }
   .btn-nav-next { right: 8px; }
@@ -943,7 +952,7 @@ function openModal(idx) {
   document.getElementById('mMean').textContent = p.zh + (p.hint ? ' · ' + p.hint : '');
   document.getElementById('mKeyEmoji').textContent = p.emoji;
   document.getElementById('mKeyWord').innerHTML = highlightKey(p.key, p.unit);
-  document.getElementById('mKeyZh').textContent = p.keyZh + (p.keyIpa ? ' ' + p.keyIpa : '');
+  document.getElementById('mKeyZh').innerHTML = `<span class="modal-key-zh-text">${p.keyZh}</span>` + (p.keyIpa ? `<span class="modal-key-ipa">${p.keyIpa}</span>` : '');
   document.getElementById('mWords').innerHTML = '例词：' + p.words.split(',').map(w => `<span>${w.trim()}</span>`).join('');
   document.getElementById('mExEn').textContent = p.example || '';
   document.getElementById('mExZh').textContent = p.exampleZh || '';
