@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>成语乐园 - 成语学习</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Noto+Serif+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-primary: #F59E0B;
+  --color-primary-light: #FEF3C7;
+  --color-primary-dark: #D97706;
+  --color-success: #10B981;
+  --color-success-light: #D1FAE5;
+  --color-text-primary: #1F2937;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9CA3AF;
+  --color-background-primary: #FFFFFF;
+  --color-background-secondary: #F3F4F6;
+  --color-background-tertiary: #F9FAFB;
+  --color-border-primary: #E5E7EB;
+  --color-border-secondary: #D1D5DB;
+  --color-border-tertiary: #E5E7EB;
+  --shadow-sm: 0 1px 2px 0 rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-sans: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Noto Serif TC', serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: linear-gradient(135deg, #FFF7ED 0%, #FFFBEB 50%, #FEF3C7 100%);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+#app { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+.nav-tabs {
+  display: flex; gap: 8px; margin-bottom: 1rem; justify-content: flex-start;
+  flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; padding-bottom: 4px;
+}
+.nav-tabs::-webkit-scrollbar { display: none; }
+.nav-tab {
+  padding: 8px 16px; border-radius: var(--radius-lg); font-size: 14px;
+  font-weight: 600; cursor: pointer; transition: all 0.2s ease;
+  white-space: nowrap; flex-shrink: 0; border: 2px solid transparent;
+}
+.nav-tab.idiom {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF; box-shadow: var(--shadow-md);
+}
+.nav-tab.other {
+  background: var(--color-background-primary); color: var(--color-text-secondary);
+  border-color: var(--color-border-secondary); box-shadow: var(--shadow-sm);
+}
+.nav-tab.other:hover { border-color: #F59E0B; color: #F59E0B; transform: translateY(-1px); }
+
+.header { display: flex; align-items: center; gap: 16px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.header h1 { font-size: 22px; font-weight: 600; color: var(--color-text-primary); flex: 1; }
+
+.search-box {
+  border: 1px solid var(--color-border-primary); background: var(--color-background-primary);
+  color: var(--color-text-primary); border-radius: var(--radius-lg); padding: 10px 16px;
+  font-size: 14px; width: 200px; outline: none; transition: all 0.2s ease; box-shadow: var(--shadow-sm);
+}
+.search-box:focus {
+  border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-light);
+  transform: translateY(-1px);
+}
+.search-box::placeholder { color: var(--color-text-tertiary); }
+
+.stats {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; flex-wrap: wrap;
+}
+.spill {
+  background: var(--color-background-primary); border-radius: var(--radius-md);
+  padding: 6px 14px; font-size: 12px; color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm); border: 1px solid var(--color-border-tertiary);
+}
+.spill b { color: var(--color-primary-dark); font-weight: 600; }
+.pgbar {
+  flex: 1; min-width: 80px; height: 6px; background: var(--color-background-secondary);
+  border-radius: var(--radius-sm); overflow: hidden;
+}
+.pgfill {
+  height: 100%; background: linear-gradient(90deg, var(--color-success), #34D399);
+  border-radius: var(--radius-sm); transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.cats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.cat {
+  border: 1px solid var(--color-border-secondary); background: var(--color-background-primary);
+  color: var(--color-text-secondary); padding: 6px 14px; border-radius: var(--radius-lg);
+  font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; box-shadow: var(--shadow-sm);
+}
+.cat:hover { border-color: var(--color-primary); color: var(--color-primary); transform: translateY(-1px); }
+.cat.on {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFFFFF; border-color: var(--color-primary); box-shadow: var(--shadow-md);
+}
+
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+.card {
+  background: var(--color-background-primary); border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--radius-xl); overflow: hidden; cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4,0,0.2,1); position: relative;
+  padding: 14px 16px 12px; box-shadow: var(--shadow-sm);
+}
+.card:hover {
+  border-color: var(--color-primary); transform: translateY(-4px) scale(1.02); box-shadow: var(--shadow-xl);
+}
+.card.done {
+  border-color: var(--color-success);
+  background: linear-gradient(135deg, var(--color-success-light) 0%, #ECFDF5 100%);
+}
+.card.done:hover { box-shadow: 0 10px 25px -5px rgba(16,185,129,0.2); }
+.done-badge {
+  position: absolute; top: 8px; right: 8px;
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
+  color: #FFF; border-radius: var(--radius-md); font-size: 10px;
+  font-weight: 600; padding: 2px 8px; box-shadow: 0 2px 4px rgba(16,185,129,0.3);
+}
+
+.card-emoji { font-size: 40px; text-align: center; margin-bottom: 8px; line-height: 1; }
+.card-idiom {
+  font-size: 28px; font-weight: 700; text-align: center;
+  font-family: var(--font-serif); color: var(--color-text-primary); margin-bottom: 4px;
+  letter-spacing: 4px;
+}
+.card-meaning {
+  font-size: 12px; color: var(--color-text-secondary); text-align: center;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; line-height: 1.5;
+}
+.card-example {
+  font-size: 11px; color: var(--color-text-tertiary); text-align: center;
+  margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  background: var(--color-background-tertiary); border-radius: var(--radius-sm); padding: 3px 8px;
+}
+
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex;
+  align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(8px);
+  animation: fadeIn 0.25s ease;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal {
+  background: var(--color-background-primary); border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-secondary); width: 540px; max-width: 96vw;
+  padding: 2rem 2.5rem 1.5rem; box-shadow: var(--shadow-xl); position: relative;
+  animation: slideUp 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.btn-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--color-border-secondary); background: var(--color-background-primary);
+  font-size: 26px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  z-index: 10; transition: all 0.2s ease; box-shadow: var(--shadow-md); color: var(--color-text-primary);
+}
+.btn-nav:hover { background: var(--color-primary-light); border-color: var(--color-primary); }
+.btn-nav-prev { left: -22px; }
+.btn-nav-next { right: -22px; }
+
+.modal-cat { text-align: center; margin-bottom: 10px; }
+.modal-cat-badge {
+  display: inline-block; background: var(--color-primary-light); color: var(--color-primary-dark);
+  border-radius: var(--radius-md); font-size: 14px; font-weight: 500; padding: 4px 18px;
+}
+.modal-emoji { font-size: 64px; text-align: center; margin-bottom: 8px; line-height: 1; }
+.modal-idiom {
+  text-align: center; font-size: 48px; font-weight: 700;
+  font-family: var(--font-serif); color: var(--color-text-primary);
+  letter-spacing: 8px; margin-bottom: 12px;
+}
+.modal-meaning {
+  text-align: center; font-size: 20px; color: var(--color-text-secondary);
+  margin-bottom: 8px; line-height: 1.6;
+}
+.modal-label {
+  font-size: 12px; color: var(--color-text-tertiary); text-align: center; margin-bottom: 2px;
+}
+.modal-example {
+  background: var(--color-background-secondary); border-radius: var(--radius-md); margin-top: 12px;
+  padding: 10px 16px; font-size: 15px; color: var(--color-text-secondary); text-align: center;
+  font-family: var(--font-sans); line-height: 1.6;
+}
+.modal-counter { text-align: center; font-size: 13px; color: var(--color-text-tertiary); margin-top: 14px; }
+
+.modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+.btn-speak {
+  flex: 0 0 auto; border: 2px solid #FCD34D; color: var(--color-primary-dark);
+  background: var(--color-background-primary); border-radius: var(--radius-md);
+  padding: 10px 18px; font-size: 16px; cursor: pointer; transition: all 0.2s ease; font-weight: 500;
+}
+.btn-speak:hover { background: var(--color-primary-light); border-color: var(--color-primary); transform: translateY(-1px); }
+.btn-learn {
+  flex: 1; background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #FFF; border: none; border-radius: var(--radius-md); padding: 10px;
+  font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit;
+}
+.btn-learn:hover { transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+.btn-learn.done { background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%); }
+.btn-close {
+  flex: 0 0 auto; border: 2px solid var(--color-border-secondary); color: var(--color-text-secondary);
+  background: var(--color-background-primary); border-radius: var(--radius-md);
+  padding: 10px 18px; font-size: 16px; font-weight: 500; cursor: pointer; transition: all 0.2s ease;
+}
+.btn-close:hover { border-color: var(--color-text-tertiary); color: var(--color-text-primary); }
+
+.empty {
+  color: var(--color-text-tertiary); font-size: 15px; padding: 3rem 2rem;
+  text-align: center; grid-column: 1/-1; background: var(--color-background-primary);
+  border-radius: var(--radius-xl); border: 1px dashed var(--color-border-tertiary);
+}
+
+@media (max-width: 600px) {
+  #app { padding: 1rem 0.75rem 2rem; }
+  .nav-tab { padding: 7px 12px; font-size: 12px; }
+  .header h1 { font-size: 18px; }
+  .search-box { width: 100%; }
+  .grid { grid-template-columns: repeat(1, 1fr); gap: 10px; }
+  .card-idiom { font-size: 24px; letter-spacing: 2px; }
+  .card-emoji { font-size: 32px; }
+  .modal { padding: 1.5rem 1rem 1.2rem; }
+  .modal-idiom { font-size: 36px; letter-spacing: 4px; }
+  .modal-meaning { font-size: 16px; }
+  .btn-nav { width: 36px; height: 36px; font-size: 22px; }
+  .btn-nav-prev { left: 6px; }
+  .btn-nav-next { right: 6px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="nav-tabs">
+    <div class="nav-tab other" onclick="window.location.href='chinese.html'">📝 汉字学习</div>
+    <div class="nav-tab other" onclick="window.location.href='pinyin.html'">🈶 拼音学习</div>
+    <div class="nav-tab idiom">🏮 成语学习</div>
+    <div class="nav-tab other" onclick="window.location.href='english.html'">🔤 单词学习</div>
+    <div class="nav-tab other" onclick="window.location.href='phonics.html'">🔠 自然拼读</div>
+    <div class="nav-tab other" onclick="window.location.href='math_vocab.html'">🔢 数字词汇</div>
+    <div class="nav-tab other" onclick="window.location.href='math_addition.html'">➕ 加法思路</div>
+    <div class="nav-tab other" onclick="window.location.href='math_subtraction.html'">➖ 减法思路</div>
+    <div class="nav-tab other" onclick="window.location.href='game.html'">🎮 趣味游戏</div>
+  </div>
+  <div class="header">
+    <h1>🏮 成语乐园</h1>
+    <input class="search-box" id="sb" placeholder="🔍 搜索成语..." oninput="doFilter()">
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="ov" style="display:none" onclick="closeOv(event)">
+  <div class="modal" id="modal">
+    <button class="btn-nav btn-nav-prev" onclick="prevItem()">‹</button>
+    <button class="btn-nav btn-nav-next" onclick="nextItem()">›</button>
+    <div class="modal-cat" id="mCat"></div>
+    <div class="modal-emoji" id="mEmoji"></div>
+    <div class="modal-idiom" id="mIdiom"></div>
+    <div class="modal-meaning" id="mMeaning"></div>
+    <div class="modal-example" id="mEx"></div>
+    <div class="modal-btns">
+      <button class="btn-speak" onclick="speakIdiom()">🔊 朗读</button>
+      <button class="btn-learn" id="btnL" onclick="toggleL()">⭐ 学会了</button>
+      <button class="btn-close" onclick="closeOv()">关闭</button>
+    </div>
+    <div class="modal-counter" id="mCounter"></div>
+  </div>
+</div>
+
+<script>
+const IDIOMS = [
+  // ── 数字相关 ──
+  {i:'一心一意',m:'形容心思专一，没有杂念',e:'他做事总是~，从不三心二意',c:'数字',emoji:'1️⃣'},
+  {i:'三心二意',m:'形容犹豫不决或意志不坚定',e:'学习不能~，要专注才能有收获',c:'数字',emoji:'3️⃣'},
+  {i:'五光十色',m:'形容色彩鲜艳，花样繁多',e:'夜晚的城市~，非常漂亮',c:'数字',emoji:'🌈'},
+  {i:'四面八方',m:'各个方向，到处',e:'来自~的朋友齐聚一堂',c:'数字',emoji:'🧭'},
+  {i:'七上八下',m:'形容心里慌乱不安',e:'考试前我心里~，非常紧张',c:'数字',emoji:'💓'},
+  {i:'九牛一毛',m:'比喻极大数量中微不足道的一部分',e:'这点困难对他来说只是~',c:'数字',emoji:'🐂'},
+  {i:'十全十美',m:'各方面都非常完美',e:'世上没有~的人',c:'数字',emoji:'💯'},
+  {i:'千军万马',m:'形容雄壮的队伍或浩大的声势',e:'运动员们像~一样冲向终点',c:'数字',emoji:'🐴'},
+  {i:'万众一心',m:'千万人一条心，团结一致',e:'全国人民~，共渡难关',c:'数字',emoji:'🤝'},
+  {i:'百发百中',m:'形容射击或做事非常有把握',e:'他投篮~，是个优秀的运动员',c:'数字',emoji:'🎯'},
+
+  // ── 动物相关 ──
+  {i:'画龙点睛',m:'在关键处用几句话点明要旨',e:'最后那句话真是~，让文章更精彩了',c:'动物',emoji:'🐉'},
+  {i:'守株待兔',m:'比喻不主动努力，存侥幸心理',e:'我们要主动争取，不能~',c:'动物',emoji:'🐰'},
+  {i:'亡羊补牢',m:'出了问题以后想办法补救',e:'虽然犯了错，但~还不算晚',c:'动物',emoji:'🐑'},
+  {i:'狐假虎威',m:'比喻依仗别人的势力欺压人',e:'他不过是~，没什么真本事',c:'动物',emoji:'🦊'},
+  {i:'马到成功',m:'形容事情顺利，一开始就取得成功',e:'祝你在新的工作中~',c:'动物',emoji:'🐴'},
+  {i:'鹤立鸡群',m:'比喻一个人的才能或仪表出众',e:'他在人群中~，引人注目',c:'动物',emoji:'🦩'},
+  {i:'对牛弹琴',m:'比喻对不懂的人讲道理是白费力气',e:'跟他说这些简直是~',c:'动物',emoji:'🐮'},
+  {i:'鸡飞蛋打',m:'比喻两头落空，一无所得',e:'计划不周往往会~',c:'动物',emoji:'🐔'},
+  {i:'龙飞凤舞',m:'形容书法笔势活泼有力',e:'他的字写得~，非常漂亮',c:'动物',emoji:'🐉'},
+  {i:'虎头蛇尾',m:'比喻做事前紧后松，不能坚持到底',e:'做事要有恒心，不能~',c:'动物',emoji:'🐯'},
+  {i:'鱼目混珠',m:'拿假的冒充真的',e:'市场上有人~，用假货骗人',c:'动物',emoji:'🐟'},
+  {i:'一马当先',m:'形容领先，起带头作用',e:'运动会上他~，第一个冲过终点',c:'动物',emoji:'🐴'},
+
+  // ── 励志进取 ──
+  {i:'坚持不懈',m:'坚持到底，毫不松懈',e:'只要~地努力，就一定能成功',c:'励志',emoji:'💪'},
+  {i:'持之以恒',m:'长期坚持下去',e:'学习贵在~，不能半途而废',c:'励志',emoji:'🎯'},
+  {i:'勤能补拙',m:'勤奋能弥补天生的不足',e:'~，只要努力就会有进步',c:'励志',emoji:'📚'},
+  {i:'学无止境',m:'学习没有尽头，要不断进取',e:'~，活到老学到老',c:'励志',emoji:'🎓'},
+  {i:'笨鸟先飞',m:'能力差的人做事比别人勤快',e:'~，我比别人更努力一些',c:'励志',emoji:'🐦'},
+  {i:'水滴石穿',m:'比喻力量虽小，坚持不懈也能成功',e:'~，每天坚持读一本书就能积累知识',c:'励志',emoji:'💧'},
+  {i:'积少成多',m:'一点一滴积累，就会由少变多',e:'每天记一个单词，~就会有很大收获',c:'励志',emoji:'📈'},
+  {i:'奋不顾身',m:'奋勇向前，不考虑个人安危',e:'消防员~地冲进火场救人',c:'励志',emoji:'🔥'},
+  {i:'废寝忘食',m:'专心到忘了吃饭睡觉',e:'他为了完成项目~地工作',c:'励志',emoji:'🔬'},
+  {i:'自强不息',m:'自己努力向上，永不松懈',e:'面对困难我们要~',c:'励志',emoji:'🦾'},
+
+  // ── 学习求知 ──
+  {i:'不耻下问',m:'乐于向学问或地位比自己低的人请教',e:'学习中遇到问题要~',c:'学习',emoji:'🙋'},
+  {i:'温故知新',m:'温习旧知识，获得新体会',e:'~，复习对学习很重要',c:'学习',emoji:'📖'},
+  {i:'举一反三',m:'从一件事类推而知道其他许多事',e:'聪明人能做到~',c:'学习',emoji:'💡'},
+  {i:'融会贯通',m:'把各方面的知识融合贯穿起来',e:'学完以后要~，才能真正掌握',c:'学习',emoji:'🧩'},
+  {i:'博学多才',m:'学识广博，有多种才能',e:'王老师~，学生们都很敬佩她',c:'学习',emoji:'🎓'},
+  {i:'学以致用',m:'学了知识要能在实际中应用',e:'学习的目的是~',c:'学习',emoji:'🏗️'},
+  {i:'开卷有益',m:'只要翻开书阅读就会有收获',e:'~，多读书总会有好处',c:'学习',emoji:'📚'},
+  {i:'触类旁通',m:'掌握了某一类事物的知识，就能类推了解同类',e:'他学习能力强，能~',c:'学习',emoji:'🔗'},
+  {i:'循序渐进',m:'按一定的顺序逐渐进步',e:'学习要~，不能急于求成',c:'学习',emoji:'🪜'},
+  {i:'专心致志',m:'一心一意，集中精神',e:'上课要~地听讲',c:'学习',emoji:'🧠'},
+
+  // ── 品德修养 ──
+  {i:'助人为乐',m:'以帮助别人为快乐',e:'~是一种美德',c:'品德',emoji:'🤝'},
+  {i:'知恩图报',m:'懂得别人的恩情，想办法报答',e:'~的人受人尊重',c:'品德',emoji:'🙏'},
+  {i:'诚实守信',m:'为人真诚，讲究信用',e:'~是做人的根本',c:'品德',emoji:'✅'},
+  {i:'尊老爱幼',m:'尊敬老人，爱护小孩',e:'~是中华民族的传统美德',c:'品德',emoji:'👴👶'},
+  {i:'拾金不昧',m:'捡到东西不据为己有',e:'他~的精神值得大家学习',c:'品德',emoji:'💰'},
+  {i:'舍己为人',m:'为帮助别人而牺牲自己的利益',e:'英雄~的精神令人感动',c:'品德',emoji:'❤️'},
+  {i:'言而有信',m:'说话算数，有信用',e:'交朋友要交~的人',c:'品德',emoji:'🤞'},
+  {i:'谦虚谨慎',m:'为人虚心，做事小心',e:'取得成绩后仍要~',c:'品德',emoji:'😊'},
+  {i:'严于律己',m:'对自己严格要求',e:'他~，工作上从不马虎',c:'品德',emoji:'📏'},
+  {i:'宽以待人',m:'以宽容的态度对待别人',e:'我们要~，不要斤斤计较',c:'品德',emoji:'💝'},
+
+  // ── 情感友谊 ──
+  {i:'一见如故',m:'初次见面就像老朋友一样',e:'我们~，很快就成了好朋友',c:'情感',emoji:'🤗'},
+  {i:'情同手足',m:'感情很好，像兄弟一样',e:'他们~，互相帮助',c:'情感',emoji:'👬'},
+  {i:'心心相印',m:'彼此心意相通',e:'好朋友之间~，不用多说',c:'情感',emoji:'💞'},
+  {i:'欢声笑语',m:'形容欢乐热闹，充满笑声',e:'教室里一片~',c:'情感',emoji:'😄'},
+  {i:'喜出望外',m:'遇到出乎意料的好事而高兴',e:'收到礼物后他~',c:'情感',emoji:'🥳'},
+  {i:'眉开眼笑',m:'形容非常高兴的样子',e:'看到成绩单，他~',c:'情感',emoji:'😁'},
+  {i:'心花怒放',m:'形容非常高兴，心里像开了花',e:'获得第一名让她~',c:'情感',emoji:'🌸'},
+  {i:'依依不舍',m:'形容舍不得离开',e:'毕业时大家~地告别',c:'情感',emoji:'🥺'},
+  {i:'同甘共苦',m:'共同享受幸福，共同担当辛苦',e:'真正的朋友能够~',c:'情感',emoji:'🤲'},
+  {i:'深情厚谊',m:'深厚的感情与友谊',e:'他们之间有着~',c:'情感',emoji:'💖'},
+
+  // ── 自然景物 ──
+  {i:'鸟语花香',m:'鸟叫得好听，花开的很香',e:'春天的公园~，美不胜收',c:'自然',emoji:'🌸'},
+  {i:'青山绿水',m:'形容美丽的山水风光',e:'这里的~让人心旷神怡',c:'自然',emoji:'⛰️'},
+  {i:'风和日丽',m:'微风和煦，阳光灿烂',e:'今天~，适合出去郊游',c:'自然',emoji:'☀️'},
+  {i:'春暖花开',m:'春天气候温暖，百花盛开',e:'~时节最适合去踏青',c:'自然',emoji:'🌺'},
+  {i:'秋高气爽',m:'秋天天空晴朗，气候凉爽',e:'~的日子去爬山最舒服',c:'自然',emoji:'🍂'},
+  {i:'满天星斗',m:'满天的星星',e:'夜晚~，非常壮观',c:'自然',emoji:'✨'},
+  {i:'狂风暴雨',m:'形容风很大雨很猛',e:'~中他仍然坚持去上班',c:'自然',emoji:'⛈️'},
+  {i:'阳光明媚',m:'阳光明亮，天气美好',e:'~的周末最适合户外活动',c:'自然',emoji:'☀️'},
+  {i:'山清水秀',m:'形容风景优美',e:'桂林~，是旅游的好地方',c:'自然',emoji:'🏞️'},
+  {i:'万里无云',m:'天空晴好，没有一丝云',e:'今天~，是个好天气',c:'自然',emoji:'☀️'},
+
+  // ── 形容描写 ──
+  {i:'人山人海',m:'形容人聚集得非常多',e:'国庆节的广场上~',c:'形容',emoji:'👥'},
+  {i:'车水马龙',m:'形容车马来往不断，非常热闹',e:'大城市里~，非常繁华',c:'形容',emoji:'🚗'},
+  {i:'灯火辉煌',m:'形容夜晚灯光灿烂的样子',e:'节日的街道~',c:'形容',emoji:'🌃'},
+  {i:'栩栩如生',m:'形容艺术作品非常逼真',e:'这幅画里的人物~',c:'形容',emoji:'🎨'},
+  {i:'美不胜收',m:'好东西太多，看不过来',e:'博物馆的展品~',c:'形容',emoji:'✨'},
+  {i:'目不转睛',m:'形容注意力集中，眼睛不转动',e:'孩子们~地看着动画片',c:'形容',emoji:'👀'},
+  {i:'异口同声',m:'不同的人说出同样的话',e:'全班~地回答老师的问题',c:'形容',emoji:'🗣️'},
+  {i:'津津有味',m:'形容吃得很有味道或谈得很有兴趣',e:'他~地吃着妈妈做的饭',c:'形容',emoji:'😋'},
+  {i:'小心翼翼',m:'形容举动十分谨慎',e:'他~地捧着花瓶',c:'形容',emoji:'🤲'},
+  {i:'鸦雀无声',m:'形容非常安静，一点声音也没有',e:'教室里~，大家都在认真考试',c:'形容',emoji:'🤫'},
+
+  // ── 人生哲理 ──
+  {i:'塞翁失马',m:'比喻坏事在一定条件下可变为好事',e:'~，这次挫折也许不是坏事',c:'哲理',emoji:'🐴'},
+  {i:'井底之蛙',m:'比喻见识短浅的人',e:'不要做~，要多出去看看世界',c:'哲理',emoji:'🐸'},
+  {i:'掩耳盗铃',m:'比喻自己欺骗自己',e:'考试作弊是~，骗不了自己',c:'哲理',emoji:'🔔'},
+  {i:'刻舟求剑',m:'比喻拘泥不知变通',e:'时代在变，我们不能~',c:'哲理',emoji:'⚔️'},
+  {i:'拔苗助长',m:'比喻违反事物发展规律，急于求成',e:'教育孩子不能~',c:'哲理',emoji:'🌱'},
+  {i:'雪中送炭',m:'在别人困难时给予帮助',e:'朋友有难我们要~',c:'哲理',emoji:'❄️🔥'},
+  {i:'锦上添花',m:'好上加好',e:'你的到来真是~',c:'哲理',emoji:'🌸'},
+  {i:'饮水思源',m:'喝水时想到水的来源，比喻不忘本',e:'我们要~，感恩父母的养育',c:'哲理',emoji:'💧'},
+  {i:'居安思危',m:'在安定的时候要想到危险',e:'~，平时要做好准备',c:'哲理',emoji:'🏠'},
+  {i:'一箭双雕',m:'做一件事达到两个目的',e:'这个办法可以~，效率很高',c:'哲理',emoji:'🏹'},
+];
+
+const CATS=['全部','已学','数字','动物','励志','学习','品德','情感','自然','形容','哲理'];
+let curCat='全部', learned=new Set(), selIdx=null, sq='';
+
+function getList(){
+  return IDIOMS.filter(d=>{
+    const co=curCat==='全部'?true:(curCat==='已学'?learned.has(d.i):d.c===curCat);
+    const qo=!sq||d.i.includes(sq)||d.m.includes(sq)||d.e.includes(sq)||d.c.includes(sq);
+    return co&&qo;
+  });
+}
+
+function renderStats(){
+  const list=getList();
+  const tot=list.length;
+  const done=list.filter(d=>learned.has(d.i)).length;
+  const totalDone=IDIOMS.filter(d=>learned.has(d.i)).length;
+  const totalAll=IDIOMS.length;
+  const pct=totalAll>0?Math.round(totalDone/totalAll*100):0;
+  document.getElementById('stats').innerHTML=`
+    <div class="spill">已学 <b>${totalDone}</b> / <b>${totalAll}</b></div>
+    <div class="spill">筛选 <b>${tot}</b> 条</div>
+    <div class="spill">完成 <b>${pct}%</b></div>
+    <div class="pgbar"><div class="pgfill" style="width:${pct}%"></div></div>`;
+}
+
+function renderCats(){
+  const counts={};
+  CATS.forEach(c=>{
+    if(c==='已学') counts[c]=IDIOMS.filter(d=>learned.has(d.i)).length;
+    else if(c==='全部') counts[c]=IDIOMS.length;
+    else counts[c]=IDIOMS.filter(d=>d.c===c).length;
+  });
+  document.getElementById('cats').innerHTML=CATS.map(c=>{
+    const label=c==='已学'?`✅ 已学${counts[c]}条`:`${c} <span style="font-size:11px;opacity:0.7">[${counts[c]}]</span>`;
+    return `<button class="cat${c===curCat?' on':''}" onclick="setCat('${c}')">${label}</button>`;
+  }).join('');
+}
+
+function setCat(c){curCat=c;renderCats();renderGrid();}
+function doFilter(){sq=document.getElementById('sb').value.trim();renderCats();renderGrid();}
+
+function renderGrid(){
+  const list=getList();
+  if(!list.length){document.getElementById('grid').innerHTML=`<div class="empty">没有找到相关成语</div>`;return;}
+  document.getElementById('grid').innerHTML=list.map(d=>{
+    const isL=learned.has(d.i);
+    const idx=IDIOMS.indexOf(d);
+    return `<div class="card${isL?' done':''}" onclick="openModal(${idx})">
+      ${isL?'<span class="done-badge">✓ 学会</span>':''}
+      <div class="card-emoji">${d.emoji}</div>
+      <div class="card-idiom">${d.i}</div>
+      <div class="card-meaning">${d.m}</div>
+      <div class="card-example">"${d.e}"</div>
+    </div>`;
+  }).join('');
+}
+
+function openModal(idx){
+  selIdx=idx;
+  const d=IDIOMS[idx];
+  const isL=learned.has(d.i);
+  document.getElementById('mCat').innerHTML=`<span class="modal-cat-badge">${d.c}</span>`;
+  document.getElementById('mEmoji').textContent=d.emoji;
+  document.getElementById('mIdiom').textContent=d.i;
+  document.getElementById('mMeaning').textContent=d.m;
+  document.getElementById('mEx').innerHTML=`<span style="color:var(--color-text-tertiary);font-size:12px;">例句</span><br>"${d.e}"`;
+  const btn=document.getElementById('btnL');
+  btn.textContent=isL?'✅ 已学会':'⭐ 学会了';
+  btn.className='btn-learn'+(isL?' done':'');
+  document.getElementById('mCounter').textContent=`${idx+1} / ${IDIOMS.length}`;
+  document.querySelector('.btn-nav-prev').style.opacity=idx===0?'0.3':'1';
+  document.querySelector('.btn-nav-next').style.opacity=idx===IDIOMS.length-1?'0.3':'1';
+  document.getElementById('ov').style.display='flex';
+}
+
+function prevItem(){if(selIdx>0)openModal(selIdx-1);}
+function nextItem(){if(selIdx<IDIOMS.length-1)openModal(selIdx+1);}
+
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('ov').style.display!=='none'){
+    if(e.key==='ArrowLeft')prevItem();
+    if(e.key==='ArrowRight')nextItem();
+    if(e.key==='Escape')closeOv();
+  }
+});
+
+function closeOv(e){if(!e||e.target.id==='ov'){document.getElementById('ov').style.display='none';selIdx=null;}}
+
+function toggleL(){
+  if(selIdx===null)return;
+  const d=IDIOMS[selIdx];
+  if(learned.has(d.i)) learned.delete(d.i); else learned.add(d.i);
+  saveLearned();
+  renderStats();renderCats();renderGrid();
+  const isL=learned.has(d.i);
+  const btn=document.getElementById('btnL');
+  btn.textContent=isL?'✅ 已学会':'⭐ 学会了';
+  btn.className='btn-learn'+(isL?' done':'');
+}
+
+function speakIdiom(){
+  if(selIdx===null)return;
+  const d=IDIOMS[selIdx];
+  if('speechSynthesis' in window){
+    try{
+      speechSynthesis.cancel();
+      setTimeout(()=>{
+        const u=new SpeechSynthesisUtterance(d.i);
+        u.lang='zh-CN';u.rate=0.8;u.pitch=1.0;u.volume=1.0;
+        const voices=speechSynthesis.getVoices();
+        const v=voices.find(v=>v.name.match(/Microsoft Yaoyao|Google 普通话|Microsoft Xiaoxiao/))||
+                voices.find(v=>v.lang==='zh-CN')||
+                voices.find(v=>v.lang.includes('zh'));
+        if(v){u.voice=v;u.voiceURI=v.voiceURI;}
+        u.onend=()=>speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      },50);
+    }catch(e){}
+  }
+}
+
+function loadLearned(){
+  try{
+    const d=localStorage.getItem('idiom_learned');
+    return d?new Set(JSON.parse(d)):new Set();
+  }catch(e){return new Set();}
+}
+function saveLearned(){
+  localStorage.setItem('idiom_learned',JSON.stringify([...learned]));
+}
+
+if('speechSynthesis' in window){
+  speechSynthesis.getVoices();
+  speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices();
+  setTimeout(()=>speechSynthesis.getVoices(),100);
+}
+
+learned=loadLearned();
+renderStats();renderCats();renderGrid();
+</script>
+</body>
+</html>
