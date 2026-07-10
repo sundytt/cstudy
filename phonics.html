@@ -677,97 +677,103 @@ body {
 // emoji/key/keyZh: 代表词及其中文  words: 例词  example/exampleZh: 例句
 const PHONICS = [
   // ===== 字母基本音 =====
-  { unit:'a', ipa:'/æ/', type:'字母发音', zh:'字母 a 的短音', emoji:'🍎', key:'apple', keyZh:'苹果', words:'apple, ant, cat, hat', example:'The apple is red.', exampleZh:'苹果是红色的。' },
-  { unit:'b', ipa:'/b/', type:'字母发音', zh:'字母 b 的音', emoji:'⚽', key:'ball', keyZh:'球', words:'ball, bag, bus, bird', example:'The ball is big.', exampleZh:'球很大。' },
-  { unit:'c', ipa:'/k/', type:'字母发音', zh:'字母 c 的音', emoji:'🐱', key:'cat', keyZh:'猫', words:'cat, cup, car, cake', example:'The cat is cute.', exampleZh:'猫很可爱。' },
-  { unit:'d', ipa:'/d/', type:'字母发音', zh:'字母 d 的音', emoji:'🐶', key:'dog', keyZh:'狗', words:'dog, duck, door, desk', example:'The dog can run.', exampleZh:'狗会跑。' },
-  { unit:'e', ipa:'/e/', type:'字母发音', zh:'字母 e 的短音', emoji:'🥚', key:'egg', keyZh:'鸡蛋', words:'egg, bed, pen, red', example:'I like the egg.', exampleZh:'我喜欢这个鸡蛋。' },
-  { unit:'f', ipa:'/f/', type:'字母发音', zh:'字母 f 的音', emoji:'🐟', key:'fish', keyZh:'鱼', words:'fish, fan, fox, four', example:'The fish can swim.', exampleZh:'鱼会游泳。' },
-  { unit:'g', ipa:'/g/', type:'字母发音', zh:'字母 g 的音', emoji:'🐐', key:'goat', keyZh:'山羊', words:'goat, girl, gift, green', example:'The goat is white.', exampleZh:'山羊是白色的。' },
-  { unit:'h', ipa:'/h/', type:'字母发音', zh:'字母 h 的音', emoji:'🎩', key:'hat', keyZh:'帽子', words:'hat, hand, hen, home', example:'I have a hat.', exampleZh:'我有一顶帽子。' },
-  { unit:'i', ipa:'/ɪ/', type:'字母发音', zh:'字母 i 的短音', emoji:'🛖', key:'igloo', keyZh:'冰屋', words:'igloo, ink, pig, six', example:'I see an igloo.', exampleZh:'我看到一座冰屋。' },
-  { unit:'j', ipa:'/dʒ/', type:'字母发音', zh:'字母 j 的音', emoji:'🍯', key:'jam', keyZh:'果酱', words:'jam, jump, jet, juice', example:'I like jam.', exampleZh:'我喜欢果酱。' },
-  { unit:'k', ipa:'/k/', type:'字母发音', zh:'字母 k 的音', emoji:'🪁', key:'kite', keyZh:'风筝', words:'kite, key, king, kid', example:'The kite can fly.', exampleZh:'风筝会飞。' },
-  { unit:'l', ipa:'/l/', type:'字母发音', zh:'字母 l 的音', emoji:'🦁', key:'lion', keyZh:'狮子', words:'lion, leg, leaf, look', example:'The lion is big.', exampleZh:'狮子很大。' },
-  { unit:'m', ipa:'/m/', type:'字母发音', zh:'字母 m 的音', emoji:'🌙', key:'moon', keyZh:'月亮', words:'moon, man, map, milk', example:'I see the moon.', exampleZh:'我看到月亮。' },
-  { unit:'n', ipa:'/n/', type:'字母发音', zh:'字母 n 的音', emoji:'🪹', key:'nest', keyZh:'鸟巢', words:'nest, net, nose, nine', example:'The bird has a nest.', exampleZh:'鸟儿有一个巢。' },
-  { unit:'o', ipa:'/ɒ/', type:'字母发音', zh:'字母 o 的短音', emoji:'🍊', key:'orange', keyZh:'橙子', words:'orange, ox, dog, box', example:'The orange is sweet.', exampleZh:'橙子很甜。' },
-  { unit:'p', ipa:'/p/', type:'字母发音', zh:'字母 p 的音', emoji:'🐷', key:'pig', keyZh:'猪', words:'pig, pen, pan, park', example:'The pig is pink.', exampleZh:'猪是粉色的。' },
-  { unit:'q', ipa:'/kw/', type:'字母发音', zh:'字母 q 的音', emoji:'👸', key:'queen', keyZh:'女王', words:'queen, quiet, quick, quiz', example:'The queen is kind.', exampleZh:'女王很善良。' },
-  { unit:'r', ipa:'/r/', type:'字母发音', zh:'字母 r 的音', emoji:'🐰', key:'rabbit', keyZh:'兔子', words:'rabbit, red, run, rain', example:'The rabbit can jump.', exampleZh:'兔子会跳。' },
-  { unit:'s', ipa:'/s/', type:'字母发音', zh:'字母 s 的音', emoji:'☀️', key:'sun', keyZh:'太阳', words:'sun, sit, sea, six', example:'The sun is hot.', exampleZh:'太阳很热。' },
-  { unit:'t', ipa:'/t/', type:'字母发音', zh:'字母 t 的音', emoji:'🐯', key:'tiger', keyZh:'老虎', words:'tiger, ten, top, tree', example:'The tiger is strong.', exampleZh:'老虎很强壮。' },
-  { unit:'u', ipa:'/ʌ/', type:'字母发音', zh:'字母 u 的短音', emoji:'☂️', key:'umbrella', keyZh:'雨伞', words:'umbrella, up, cup, bus', example:'I have an umbrella.', exampleZh:'我有一把雨伞。' },
-  { unit:'v', ipa:'/v/', type:'字母发音', zh:'字母 v 的音', emoji:'🚐', key:'van', keyZh:'厢式货车', words:'van, vet, very, voice', example:'The van is blue.', exampleZh:'货车是蓝色的。' },
-  { unit:'w', ipa:'/w/', type:'字母发音', zh:'字母 w 的音', emoji:'💧', key:'water', keyZh:'水', words:'water, win, wind, week', example:'I drink water.', exampleZh:'我喝水。' },
-  { unit:'x', ipa:'/ks/', type:'字母发音', zh:'字母 x 的音', emoji:'📦', key:'box', keyZh:'盒子', words:'box, fox, six, fix', example:'The box is big.', exampleZh:'盒子很大。' },
-  { unit:'y', ipa:'/j/', type:'字母发音', zh:'字母 y 的音', emoji:'🪀', key:'yoyo', keyZh:'悠悠球', words:'yoyo, yes, you, year', example:'I have a yoyo.', exampleZh:'我有一个悠悠球。' },
-  { unit:'z', ipa:'/z/', type:'字母发音', zh:'字母 z 的音', emoji:'🦓', key:'zebra', keyZh:'斑马', words:'zebra, zoo, zip, zero', example:'The zebra is black and white.', exampleZh:'斑马是黑白色的。' },
+  { unit:'a', ipa:'/æ/', type:'字母发音', zh:'字母 a 的短音', emoji:'🍎', key:'apple', keyIpa:'/ˈæpəl/', keyZh:'苹果', words:'apple, ant, cat, hat', example:'The apple is red.', exampleZh:'苹果是红色的。' },
+  { unit:'b', ipa:'/b/', type:'字母发音', zh:'字母 b 的音', emoji:'⚽', key:'ball', keyIpa:'/bɔːl/', keyZh:'球', words:'ball, bag, bus, bird', example:'The ball is big.', exampleZh:'球很大。' },
+  { unit:'c', ipa:'/k/', type:'字母发音', zh:'字母 c 的音', emoji:'🐱', key:'cat', keyIpa:'/kæt/', keyZh:'猫', words:'cat, cup, car, cake', example:'The cat is cute.', exampleZh:'猫很可爱。' },
+  { unit:'d', ipa:'/d/', type:'字母发音', zh:'字母 d 的音', emoji:'🐶', key:'dog', keyIpa:'/dɒɡ/', keyZh:'狗', words:'dog, duck, door, desk', example:'The dog can run.', exampleZh:'狗会跑。' },
+  { unit:'e', ipa:'/e/', type:'字母发音', zh:'字母 e 的短音', emoji:'🥚', key:'egg', keyIpa:'/eɡ/', keyZh:'鸡蛋', words:'egg, bed, pen, red', example:'I like the egg.', exampleZh:'我喜欢这个鸡蛋。' },
+  { unit:'f', ipa:'/f/', type:'字母发音', zh:'字母 f 的音', emoji:'🐟', key:'fish', keyIpa:'/fɪʃ/', keyZh:'鱼', words:'fish, fan, fox, four', example:'The fish can swim.', exampleZh:'鱼会游泳。' },
+  { unit:'g', ipa:'/g/', type:'字母发音', zh:'字母 g 的音', emoji:'🐐', key:'goat', keyIpa:'/ɡoʊt/', keyZh:'山羊', words:'goat, girl, gift, green', example:'The goat is white.', exampleZh:'山羊是白色的。' },
+  { unit:'h', ipa:'/h/', type:'字母发音', zh:'字母 h 的音', emoji:'🎩', key:'hat', keyIpa:'/hæt/', keyZh:'帽子', words:'hat, hand, hen, home', example:'I have a hat.', exampleZh:'我有一顶帽子。' },
+  { unit:'i', ipa:'/ɪ/', type:'字母发音', zh:'字母 i 的短音', emoji:'🛖', key:'igloo', keyIpa:'/ˈɪɡluː/', keyZh:'冰屋', words:'igloo, ink, pig, six', example:'I see an igloo.', exampleZh:'我看到一座冰屋。' },
+  { unit:'j', ipa:'/dʒ/', type:'字母发音', zh:'字母 j 的音', emoji:'🍯', key:'jam', keyIpa:'/dʒæm/', keyZh:'果酱', words:'jam, jump, jet, juice', example:'I like jam.', exampleZh:'我喜欢果酱。' },
+  { unit:'k', ipa:'/k/', type:'字母发音', zh:'字母 k 的音', emoji:'🪁', key:'kite', keyIpa:'/kaɪt/', keyZh:'风筝', words:'kite, key, king, kid', example:'The kite can fly.', exampleZh:'风筝会飞。' },
+  { unit:'l', ipa:'/l/', type:'字母发音', zh:'字母 l 的音', hint:'发音像"乐"', emoji:'🦁', key:'lion', keyIpa:'/ˈlaɪən/', keyZh:'狮子', words:'lion, leg, leaf, look', example:'The lion is big.', exampleZh:'狮子很大。' },
+  { unit:'m', ipa:'/m/', type:'字母发音', zh:'字母 m 的音', emoji:'🌙', key:'moon', keyIpa:'/muːn/', keyZh:'月亮', words:'moon, man, map, milk', example:'I see the moon.', exampleZh:'我看到月亮。' },
+  { unit:'n', ipa:'/n/', type:'字母发音', zh:'字母 n 的音', emoji:'🪹', key:'nest', keyIpa:'/nest/', keyZh:'鸟巢', words:'nest, net, nose, nine', example:'The bird has a nest.', exampleZh:'鸟儿有一个巢。' },
+  { unit:'o', ipa:'/ɒ/', type:'字母发音', zh:'字母 o 的短音', emoji:'🍊', key:'orange', keyIpa:'/ˈɒrɪndʒ/', keyZh:'橙子', words:'orange, ox, dog, box', example:'The orange is sweet.', exampleZh:'橙子很甜。' },
+  { unit:'p', ipa:'/p/', type:'字母发音', zh:'字母 p 的音', emoji:'🐷', key:'pig', keyIpa:'/pɪɡ/', keyZh:'猪', words:'pig, pen, pan, park', example:'The pig is pink.', exampleZh:'猪是粉色的。' },
+  { unit:'q', ipa:'/kw/', type:'字母发音', zh:'字母 q 的音', emoji:'👸', key:'queen', keyIpa:'/kwiːn/', keyZh:'女王', words:'queen, quiet, quick, quiz', example:'The queen is kind.', exampleZh:'女王很善良。' },
+  { unit:'r', ipa:'/r/', type:'字母发音', zh:'字母 r 的音', emoji:'🐰', key:'rabbit', keyIpa:'/ˈræbɪt/', keyZh:'兔子', words:'rabbit, red, run, rain', example:'The rabbit can jump.', exampleZh:'兔子会跳。' },
+  { unit:'s', ipa:'/s/', type:'字母发音', zh:'字母 s 的音', emoji:'☀️', key:'sun', keyIpa:'/sʌn/', keyZh:'太阳', words:'sun, sit, sea, six', example:'The sun is hot.', exampleZh:'太阳很热。' },
+  { unit:'t', ipa:'/t/', type:'字母发音', zh:'字母 t 的音', emoji:'🐯', key:'tiger', keyIpa:'/ˈtaɪɡər/', keyZh:'老虎', words:'tiger, ten, top, tree', example:'The tiger is strong.', exampleZh:'老虎很强壮。' },
+  { unit:'u', ipa:'/ʌ/', type:'字母发音', zh:'字母 u 的短音', emoji:'☂️', key:'umbrella', keyIpa:'/ʌmˈbrelə/', keyZh:'雨伞', words:'umbrella, up, cup, bus', example:'I have an umbrella.', exampleZh:'我有一把雨伞。' },
+  { unit:'v', ipa:'/v/', type:'字母发音', zh:'字母 v 的音', emoji:'🚐', key:'van', keyIpa:'/væn/', keyZh:'厢式货车', words:'van, vet, very, voice', example:'The van is blue.', exampleZh:'货车是蓝色的。' },
+  { unit:'w', ipa:'/w/', type:'字母发音', zh:'字母 w 的音', emoji:'💧', key:'water', keyIpa:'/ˈwɔːtər/', keyZh:'水', words:'water, win, wind, week', example:'I drink water.', exampleZh:'我喝水。' },
+  { unit:'x', ipa:'/ks/', type:'字母发音', zh:'字母 x 的音', emoji:'📦', key:'box', keyIpa:'/bɒks/', keyZh:'盒子', words:'box, fox, six, fix', example:'The box is big.', exampleZh:'盒子很大。' },
+  { unit:'y', ipa:'/j/', type:'字母发音', zh:'字母 y 的音', emoji:'🪀', key:'yoyo', keyIpa:'/ˈjoʊjoʊ/', keyZh:'悠悠球', words:'yoyo, yes, you, year', example:'I have a yoyo.', exampleZh:'我有一个悠悠球。' },
+  { unit:'z', ipa:'/z/', type:'字母发音', zh:'字母 z 的音', emoji:'🦓', key:'zebra', keyIpa:'/ˈziːbrə/', keyZh:'斑马', words:'zebra, zoo, zip, zero', example:'The zebra is black and white.', exampleZh:'斑马是黑白色的。' },
 
   // ===== 短元音 =====
-  { unit:'a', ipa:'/æ/', type:'短元音', zh:'短元音 a', emoji:'🐱', key:'cat', keyZh:'猫', words:'cat, hat, map, bag', example:'The cat sat on a mat.', exampleZh:'猫坐在垫子上。' },
-  { unit:'e', ipa:'/e/', type:'短元音', zh:'短元音 e', emoji:'🛏️', key:'bed', keyZh:'床', words:'bed, red, pen, ten', example:'The bed is red.', exampleZh:'床是红色的。' },
-  { unit:'i', ipa:'/ɪ/', type:'短元音', zh:'短元音 i', emoji:'🐷', key:'pig', keyZh:'猪', words:'pig, big, sit, six', example:'The pig is big.', exampleZh:'猪很大。' },
-  { unit:'o', ipa:'/ɒ/', type:'短元音', zh:'短元音 o', emoji:'🐶', key:'dog', keyZh:'狗', words:'dog, box, hot, top', example:'The dog is hot.', exampleZh:'狗很热。' },
-  { unit:'u', ipa:'/ʌ/', type:'短元音', zh:'短元音 u', emoji:'☕', key:'cup', keyZh:'杯子', words:'cup, bus, sun, run', example:'The cup is full.', exampleZh:'杯子满了。' },
+  { unit:'a', ipa:'/æ/', type:'短元音', zh:'短元音 a', emoji:'🐱', key:'cat', keyIpa:'/kæt/', keyZh:'猫', words:'cat, hat, map, bag', example:'The cat sat on a mat.', exampleZh:'猫坐在垫子上。' },
+  { unit:'e', ipa:'/e/', type:'短元音', zh:'短元音 e', emoji:'🛏️', key:'bed', keyIpa:'/bed/', keyZh:'床', words:'bed, red, pen, ten', example:'The bed is red.', exampleZh:'床是红色的。' },
+  { unit:'i', ipa:'/ɪ/', type:'短元音', zh:'短元音 i', emoji:'🐷', key:'pig', keyIpa:'/pɪɡ/', keyZh:'猪', words:'pig, big, sit, six', example:'The pig is big.', exampleZh:'猪很大。' },
+  { unit:'o', ipa:'/ɒ/', type:'短元音', zh:'短元音 o', emoji:'🐶', key:'dog', keyIpa:'/dɒɡ/', keyZh:'狗', words:'dog, box, hot, top', example:'The dog is hot.', exampleZh:'狗很热。' },
+  { unit:'u', ipa:'/ʌ/', type:'短元音', zh:'短元音 u', emoji:'☕', key:'cup', keyIpa:'/kʌp/', keyZh:'杯子', words:'cup, bus, sun, run', example:'The cup is full.', exampleZh:'杯子满了。' },
 
   // ===== 长元音（魔法 e）=====
-  { unit:'a_e', ipa:'/eɪ/', type:'长元音', zh:'a-e 组合发字母 a 的名字', emoji:'🎂', key:'cake', keyZh:'蛋糕', words:'cake, name, game, lake', example:'The cake is sweet.', exampleZh:'蛋糕很甜。' },
-  { unit:'i_e', ipa:'/aɪ/', type:'长元音', zh:'i-e 组合发字母 i 的名字', emoji:'🚲', key:'bike', keyZh:'自行车', words:'bike, kite, time, nine', example:'I ride a bike.', exampleZh:'我骑自行车。' },
-  { unit:'o_e', ipa:'/oʊ/', type:'长元音', zh:'o-e 组合发字母 o 的名字', emoji:'🏠', key:'home', keyZh:'家', words:'home, nose, rose, bone', example:'I go home.', exampleZh:'我回家。' },
-  { unit:'u_e', ipa:'/juː/', type:'长元音', zh:'u-e 组合发字母 u 的名字', emoji:'🐹', key:'cute', keyZh:'可爱的', words:'cute, tube, cube, mule', example:'The pet is cute.', exampleZh:'这只宠物很可爱。' },
+  { unit:'a_e', ipa:'/eɪ/', type:'长元音', zh:'a-e 组合发字母 a 的名字', emoji:'🎂', key:'cake', keyIpa:'/keɪk/', keyZh:'蛋糕', words:'cake, name, game, lake', example:'The cake is sweet.', exampleZh:'蛋糕很甜。' },
+  { unit:'i_e', ipa:'/aɪ/', type:'长元音', zh:'i-e 组合发字母 i 的名字', emoji:'🚲', key:'bike', keyIpa:'/baɪk/', keyZh:'自行车', words:'bike, kite, time, nine', example:'I ride a bike.', exampleZh:'我骑自行车。' },
+  { unit:'o_e', ipa:'/oʊ/', type:'长元音', zh:'o-e 组合发字母 o 的名字', emoji:'🏠', key:'home', keyIpa:'/hoʊm/', keyZh:'家', words:'home, nose, rose, bone', example:'I go home.', exampleZh:'我回家。' },
+  { unit:'u_e', ipa:'/juː/', type:'长元音', zh:'u-e 组合发字母 u 的名字', emoji:'🐹', key:'cute', keyIpa:'/kjuːt/', keyZh:'可爱的', words:'cute, tube, cube, mule', example:'The pet is cute.', exampleZh:'这只宠物很可爱。' },
 
   // ===== 辅音组合（二合字母）=====
-  { unit:'sh', ipa:'/ʃ/', type:'辅音组合', zh:'sh 发 /ʃ/ 音', emoji:'🚢', key:'ship', keyZh:'轮船', words:'ship, fish, shop, wash', example:'The ship is big.', exampleZh:'轮船很大。' },
-  { unit:'ch', ipa:'/tʃ/', type:'辅音组合', zh:'ch 发 /tʃ/ 音', emoji:'🪑', key:'chair', keyZh:'椅子', words:'chair, chip, lunch, cheese', example:'Sit on the chair.', exampleZh:'坐在椅子上。' },
-  { unit:'th', ipa:'/θ/', type:'辅音组合', zh:'th 的清音 /θ/', emoji:'🤔', key:'think', keyZh:'思考', words:'think, three, thin, math', example:'I think and learn.', exampleZh:'我思考并学习。' },
-  { unit:'th', ipa:'/ð/', type:'辅音组合', zh:'th 的浊音 /ð/', emoji:'👉', key:'this', keyZh:'这个', words:'this, that, they, mother', example:'This is my mother.', exampleZh:'这是我的妈妈。' },
-  { unit:'wh', ipa:'/w/', type:'辅音组合', zh:'wh 发 /w/ 音', emoji:'🐳', key:'whale', keyZh:'鲸鱼', words:'whale, wheel, white, what', example:'The whale is huge.', exampleZh:'鲸鱼很巨大。' },
-  { unit:'ph', ipa:'/f/', type:'辅音组合', zh:'ph 发 /f/ 音', emoji:'📱', key:'phone', keyZh:'电话', words:'phone, photo, graph, dolphin', example:'The phone is new.', exampleZh:'电话是新的。' },
-  { unit:'ng', ipa:'/ŋ/', type:'辅音组合', zh:'ng 发 /ŋ/ 音', emoji:'🤴', key:'king', keyZh:'国王', words:'king, ring, song, long', example:'The king is tall.', exampleZh:'国王很高。' },
-  { unit:'ck', ipa:'/k/', type:'辅音组合', zh:'ck 发 /k/ 音', emoji:'🦆', key:'duck', keyZh:'鸭子', words:'duck, sock, rock, black', example:'The duck can swim.', exampleZh:'鸭子会游泳。' },
+  { unit:'sh', ipa:'/ʃ/', type:'辅音组合', zh:'sh 发 /ʃ/ 音', emoji:'🚢', key:'ship', keyIpa:'/ʃɪp/', keyZh:'轮船', words:'ship, fish, shop, wash', example:'The ship is big.', exampleZh:'轮船很大。' },
+  { unit:'ch', ipa:'/tʃ/', type:'辅音组合', zh:'ch 发 /tʃ/ 音', emoji:'🪑', key:'chair', keyIpa:'/tʃeər/', keyZh:'椅子', words:'chair, chip, lunch, cheese', example:'Sit on the chair.', exampleZh:'坐在椅子上。' },
+  { unit:'th', ipa:'/θ/', type:'辅音组合', zh:'th 的清音 /θ/', emoji:'🤔', key:'think', keyIpa:'/θɪŋk/', keyZh:'思考', words:'think, three, thin, math', example:'I think and learn.', exampleZh:'我思考并学习。' },
+  { unit:'th', ipa:'/ð/', type:'辅音组合', zh:'th 的浊音 /ð/', emoji:'👉', key:'this', keyIpa:'/ðɪs/', keyZh:'这个', words:'this, that, they, mother', example:'This is my mother.', exampleZh:'这是我的妈妈。' },
+  { unit:'wh', ipa:'/w/', type:'辅音组合', zh:'wh 发 /w/ 音', emoji:'🐳', key:'whale', keyIpa:'/weɪl/', keyZh:'鲸鱼', words:'whale, wheel, white, what', example:'The whale is huge.', exampleZh:'鲸鱼很巨大。' },
+  { unit:'ph', ipa:'/f/', type:'辅音组合', zh:'ph 发 /f/ 音', emoji:'📱', key:'phone', keyIpa:'/foʊn/', keyZh:'电话', words:'phone, photo, graph, dolphin', example:'The phone is new.', exampleZh:'电话是新的。' },
+  { unit:'ng', ipa:'/ŋ/', type:'辅音组合', zh:'ng 发 /ŋ/ 音', emoji:'🤴', key:'king', keyIpa:'/kɪŋ/', keyZh:'国王', words:'king, ring, song, long', example:'The king is tall.', exampleZh:'国王很高。' },
+  { unit:'ck', ipa:'/k/', type:'辅音组合', zh:'ck 发 /k/ 音', emoji:'🦆', key:'duck', keyIpa:'/dʌk/', keyZh:'鸭子', words:'duck, sock, rock, black', example:'The duck can swim.', exampleZh:'鸭子会游泳。' },
 
   // ===== 元音组合 =====
-  { unit:'ai', ipa:'/eɪ/', type:'元音组合', zh:'ai 发 /eɪ/ 音', emoji:'🌧️', key:'rain', keyZh:'雨', words:'rain, tail, mail, train', example:'The rain is cold.', exampleZh:'雨很冷。' },
-  { unit:'ay', ipa:'/eɪ/', type:'元音组合', zh:'ay 发 /eɪ/ 音', emoji:'☀️', key:'day', keyZh:'白天', words:'day, play, say, way', example:'It is a sunny day.', exampleZh:'今天是晴天。' },
-  { unit:'ee', ipa:'/iː/', type:'元音组合', zh:'ee 发 /iː/ 音', emoji:'🐝', key:'bee', keyZh:'蜜蜂', words:'bee, tree, see, three', example:'The bee is small.', exampleZh:'蜜蜂很小。' },
-  { unit:'ea', ipa:'/iː/', type:'元音组合', zh:'ea 发 /iː/ 音', emoji:'🌊', key:'sea', keyZh:'大海', words:'sea, tea, read, leaf', example:'The sea is blue.', exampleZh:'大海是蓝色的。' },
-  { unit:'oa', ipa:'/oʊ/', type:'元音组合', zh:'oa 发 /oʊ/ 音', emoji:'⛵', key:'boat', keyZh:'小船', words:'boat, coat, goat, road', example:'The boat is on the sea.', exampleZh:'小船在海上。' },
-  { unit:'oo', ipa:'/uː/', type:'元音组合', zh:'oo 发长音 /uː/', emoji:'🌙', key:'moon', keyZh:'月亮', words:'moon, food, zoo, room', example:'The moon is bright.', exampleZh:'月亮很亮。' },
-  { unit:'oo', ipa:'/ʊ/', type:'元音组合', zh:'oo 发短音 /ʊ/', emoji:'📖', key:'book', keyZh:'书', words:'book, look, foot, good', example:'I read a book.', exampleZh:'我读一本书。' },
-  { unit:'ou', ipa:'/aʊ/', type:'元音组合', zh:'ou 发 /aʊ/ 音', emoji:'🏠', key:'house', keyZh:'房子', words:'house, mouse, out, loud', example:'The house is big.', exampleZh:'房子很大。' },
-  { unit:'ow', ipa:'/aʊ/', type:'元音组合', zh:'ow 发 /aʊ/ 音', emoji:'🐮', key:'cow', keyZh:'奶牛', words:'cow, now, how, town', example:'The cow eats grass.', exampleZh:'奶牛吃草。' },
-  { unit:'ow', ipa:'/oʊ/', type:'元音组合', zh:'ow 发 /oʊ/ 音', emoji:'❄️', key:'snow', keyZh:'雪', words:'snow, slow, low, window', example:'The snow is white.', exampleZh:'雪是白色的。' },
-  { unit:'oi', ipa:'/ɔɪ/', type:'元音组合', zh:'oi 发 /ɔɪ/ 音', emoji:'🛢️', key:'oil', keyZh:'油', words:'oil, coin, soil, join', example:'The oil is hot.', exampleZh:'油很烫。' },
-  { unit:'oy', ipa:'/ɔɪ/', type:'元音组合', zh:'oy 发 /ɔɪ/ 音', emoji:'👦', key:'boy', keyZh:'男孩', words:'boy, toy, joy, enjoy', example:'The boy has a toy.', exampleZh:'男孩有一个玩具。' },
-  { unit:'aw', ipa:'/ɔː/', type:'元音组合', zh:'aw 发 /ɔː/ 音', emoji:'🪚', key:'saw', keyZh:'锯子', words:'saw, paw, draw, straw', example:'I saw a big dog.', exampleZh:'我看到一只大狗。' },
+  { unit:'ai', ipa:'/eɪ/', type:'元音组合', zh:'ai 发 /eɪ/ 音', emoji:'🌧️', key:'rain', keyIpa:'/reɪn/', keyZh:'雨', words:'rain, tail, mail, train', example:'The rain is cold.', exampleZh:'雨很冷。' },
+  { unit:'ay', ipa:'/eɪ/', type:'元音组合', zh:'ay 发 /eɪ/ 音', emoji:'☀️', key:'day', keyIpa:'/deɪ/', keyZh:'白天', words:'day, play, say, way', example:'It is a sunny day.', exampleZh:'今天是晴天。' },
+  { unit:'ee', ipa:'/iː/', type:'元音组合', zh:'ee 发 /iː/ 音', emoji:'🐝', key:'bee', keyIpa:'/biː/', keyZh:'蜜蜂', words:'bee, tree, see, three', example:'The bee is small.', exampleZh:'蜜蜂很小。' },
+  { unit:'ea', ipa:'/iː/', type:'元音组合', zh:'ea 发 /iː/ 音', emoji:'🌊', key:'sea', keyIpa:'/siː/', keyZh:'大海', words:'sea, tea, read, leaf', example:'The sea is blue.', exampleZh:'大海是蓝色的。' },
+  { unit:'oa', ipa:'/oʊ/', type:'元音组合', zh:'oa 发 /oʊ/ 音', emoji:'⛵', key:'boat', keyIpa:'/boʊt/', keyZh:'小船', words:'boat, coat, goat, road', example:'The boat is on the sea.', exampleZh:'小船在海上。' },
+  { unit:'oo', ipa:'/uː/', type:'元音组合', zh:'oo 发长音 /uː/', emoji:'🌙', key:'moon', keyIpa:'/muːn/', keyZh:'月亮', words:'moon, food, zoo, room', example:'The moon is bright.', exampleZh:'月亮很亮。' },
+  { unit:'oo', ipa:'/ʊ/', type:'元音组合', zh:'oo 发短音 /ʊ/', emoji:'📖', key:'book', keyIpa:'/bʊk/', keyZh:'书', words:'book, look, foot, good', example:'I read a book.', exampleZh:'我读一本书。' },
+  { unit:'ou', ipa:'/aʊ/', type:'元音组合', zh:'ou 发 /aʊ/ 音', emoji:'🏠', key:'house', keyIpa:'/haʊs/', keyZh:'房子', words:'house, mouse, out, loud', example:'The house is big.', exampleZh:'房子很大。' },
+  { unit:'ow', ipa:'/aʊ/', type:'元音组合', zh:'ow 发 /aʊ/ 音', emoji:'🐮', key:'cow', keyIpa:'/kaʊ/', keyZh:'奶牛', words:'cow, now, how, town', example:'The cow eats grass.', exampleZh:'奶牛吃草。' },
+  { unit:'ow', ipa:'/oʊ/', type:'元音组合', zh:'ow 发 /oʊ/ 音', emoji:'❄️', key:'snow', keyIpa:'/snoʊ/', keyZh:'雪', words:'snow, slow, low, window', example:'The snow is white.', exampleZh:'雪是白色的。' },
+  { unit:'oi', ipa:'/ɔɪ/', type:'元音组合', zh:'oi 发 /ɔɪ/ 音', emoji:'🛢️', key:'oil', keyIpa:'/ɔɪl/', keyZh:'油', words:'oil, coin, soil, join', example:'The oil is hot.', exampleZh:'油很烫。' },
+  { unit:'oy', ipa:'/ɔɪ/', type:'元音组合', zh:'oy 发 /ɔɪ/ 音', emoji:'👦', key:'boy', keyIpa:'/bɔɪ/', keyZh:'男孩', words:'boy, toy, joy, enjoy', example:'The boy has a toy.', exampleZh:'男孩有一个玩具。' },
+  { unit:'aw', ipa:'/ɔː/', type:'元音组合', zh:'aw 发 /ɔː/ 音', emoji:'🪚', key:'saw', keyIpa:'/sɔː/', keyZh:'锯子', words:'saw, paw, draw, straw', example:'I saw a big dog.', exampleZh:'我看到一只大狗。' },
 
   // ===== R 控制元音 =====
-  { unit:'ar', ipa:'/ɑːr/', type:'R控制元音', zh:'ar 发 /ɑːr/ 音', emoji:'🚗', key:'car', keyZh:'汽车', words:'car, star, park, farm', example:'The car is fast.', exampleZh:'汽车很快。' },
-  { unit:'or', ipa:'/ɔːr/', type:'R控制元音', zh:'or 发 /ɔːr/ 音', emoji:'🍴', key:'fork', keyZh:'叉子', words:'fork, corn, born, short', example:'I use a fork.', exampleZh:'我用叉子。' },
-  { unit:'er', ipa:'/ɜːr/', type:'R控制元音', zh:'er 发 /ɜːr/ 音', emoji:'👩', key:'her', keyZh:'她', words:'her, sister, water, tiger', example:'I see her sister.', exampleZh:'我看到她的姐姐。' },
-  { unit:'ir', ipa:'/ɜːr/', type:'R控制元音', zh:'ir 发 /ɜːr/ 音', emoji:'🐦', key:'bird', keyZh:'鸟', words:'bird, girl, first, shirt', example:'The bird can fly.', exampleZh:'鸟会飞。' },
-  { unit:'ur', ipa:'/ɜːr/', type:'R控制元音', zh:'ur 发 /ɜːr/ 音', emoji:'👩‍⚕️', key:'nurse', keyZh:'护士', words:'nurse, turn, burn, purple', example:'The nurse is kind.', exampleZh:'护士很善良。' },
+  { unit:'ar', ipa:'/ɑːr/', type:'R控制元音', zh:'ar 发 /ɑːr/ 音', emoji:'🚗', key:'car', keyIpa:'/kɑːr/', keyZh:'汽车', words:'car, star, park, farm', example:'The car is fast.', exampleZh:'汽车很快。' },
+  { unit:'or', ipa:'/ɔːr/', type:'R控制元音', zh:'or 发 /ɔːr/ 音', emoji:'🍴', key:'fork', keyIpa:'/fɔːrk/', keyZh:'叉子', words:'fork, corn, born, short', example:'I use a fork.', exampleZh:'我用叉子。' },
+  { unit:'er', ipa:'/ɜːr/', type:'R控制元音', zh:'er 发 /ɜːr/ 音', emoji:'👩', key:'her', keyIpa:'/hɜːr/', keyZh:'她', words:'her, sister, water, tiger', example:'I see her sister.', exampleZh:'我看到她的姐姐。' },
+  { unit:'ir', ipa:'/ɜːr/', type:'R控制元音', zh:'ir 发 /ɜːr/ 音', emoji:'🐦', key:'bird', keyIpa:'/bɜːrd/', keyZh:'鸟', words:'bird, girl, first, shirt', example:'The bird can fly.', exampleZh:'鸟会飞。' },
+  { unit:'ur', ipa:'/ɜːr/', type:'R控制元音', zh:'ur 发 /ɜːr/ 音', emoji:'👩‍⚕️', key:'nurse', keyIpa:'/nɜːrs/', keyZh:'护士', words:'nurse, turn, burn, purple', example:'The nurse is kind.', exampleZh:'护士很善良。' },
 
   // ===== 首辅音连缀 =====
-  { unit:'bl', ipa:'/bl/', type:'辅音连缀', zh:'bl 连缀音', emoji:'🔵', key:'blue', keyZh:'蓝色', words:'blue, black, block, blow', example:'The sky is blue.', exampleZh:'天空是蓝色的。' },
-  { unit:'br', ipa:'/br/', type:'辅音连缀', zh:'br 连缀音', emoji:'🍞', key:'bread', keyZh:'面包', words:'bread, brown, bring, brush', example:'I eat bread.', exampleZh:'我吃面包。' },
-  { unit:'cl', ipa:'/kl/', type:'辅音连缀', zh:'cl 连缀音', emoji:'🕐', key:'clock', keyZh:'时钟', words:'clock, clap, clean, close', example:'The clock is round.', exampleZh:'时钟是圆的。' },
-  { unit:'cr', ipa:'/kr/', type:'辅音连缀', zh:'cr 连缀音', emoji:'🦀', key:'crab', keyZh:'螃蟹', words:'crab, cray, cry, cross', example:'The crab is red.', exampleZh:'螃蟹是红色的。' },
-  { unit:'dr', ipa:'/dr/', type:'辅音连缀', zh:'dr 连缀音', emoji:'🥁', key:'drum', keyZh:'鼓', words:'drum, dry, draw, dress', example:'I play the drum.', exampleZh:'我打鼓。' },
-  { unit:'fl', ipa:'/fl/', type:'辅音连缀', zh:'fl 连缀音', emoji:'🚩', key:'flag', keyZh:'旗子', words:'flag, fly, floor, flower', example:'The flag is red.', exampleZh:'旗子是红色的。' },
-  { unit:'fr', ipa:'/fr/', type:'辅音连缀', zh:'fr 连缀音', emoji:'🐸', key:'frog', keyZh:'青蛙', words:'frog, free, from, fresh', example:'The frog can jump.', exampleZh:'青蛙会跳。' },
-  { unit:'gl', ipa:'/gl/', type:'辅音连缀', zh:'gl 连缀音', emoji:'🥛', key:'glass', keyZh:'玻璃杯', words:'glass, glad, glue, glow', example:'The glass is full.', exampleZh:'杯子满了。' },
-  { unit:'gr', ipa:'/gr/', type:'辅音连缀', zh:'gr 连缀音', emoji:'🌱', key:'grass', keyZh:'草', words:'grass, green, grow, great', example:'The grass is green.', exampleZh:'草是绿色的。' },
-  { unit:'pl', ipa:'/pl/', type:'辅音连缀', zh:'pl 连缀音', emoji:'✈️', key:'plane', keyZh:'飞机', words:'plane, play, plant, please', example:'The plane can fly.', exampleZh:'飞机会飞。' },
-  { unit:'pr', ipa:'/pr/', type:'辅音连缀', zh:'pr 连缀音', emoji:'🏆', key:'prize', keyZh:'奖品', words:'prize, print, proud, press', example:'I win a prize.', exampleZh:'我赢得了奖品。' },
-  { unit:'sl', ipa:'/sl/', type:'辅音连缀', zh:'sl 连缀音', emoji:'🛷', key:'sled', keyZh:'雪橇', words:'sled, sleep, slow, slide', example:'I ride a sled.', exampleZh:'我坐雪橇。' },
-  { unit:'sm', ipa:'/sm/', type:'辅音连缀', zh:'sm 连缀音', emoji:'😊', key:'smile', keyZh:'微笑', words:'smile, small, smell, smart', example:'I like your smile.', exampleZh:'我喜欢你的微笑。' },
-  { unit:'sn', ipa:'/sn/', type:'辅音连缀', zh:'sn 连缀音', emoji:'🐍', key:'snake', keyZh:'蛇', words:'snake, snow, snack, snail', example:'The snake is long.', exampleZh:'蛇很长。' },
-  { unit:'sp', ipa:'/sp/', type:'辅音连缀', zh:'sp 连缀音', emoji:'🥄', key:'spoon', keyZh:'勺子', words:'spoon, spin, sport, space', example:'I use a spoon.', exampleZh:'我用勺子。' },
-  { unit:'st', ipa:'/st/', type:'辅音连缀', zh:'st 连缀音', emoji:'⭐', key:'star', keyZh:'星星', words:'star, stop, stand, stone', example:'The star is bright.', exampleZh:'星星很亮。' },
-  { unit:'sw', ipa:'/sw/', type:'辅音连缀', zh:'sw 连缀音', emoji:'🏊', key:'swim', keyZh:'游泳', words:'swim, sweet, swing, swan', example:'I can swim.', exampleZh:'我会游泳。' },
-  { unit:'tr', ipa:'/tr/', type:'辅音连缀', zh:'tr 连缀音', emoji:'🌳', key:'tree', keyZh:'树', words:'tree, train, try, trip', example:'The tree is tall.', exampleZh:'树很高。' }
+  { unit:'bl', ipa:'/bl/', type:'辅音连缀', zh:'bl 连缀音', emoji:'🔵', key:'blue', keyIpa:'/bluː/', keyZh:'蓝色', words:'blue, black, block, blow', example:'The sky is blue.', exampleZh:'天空是蓝色的。' },
+  { unit:'br', ipa:'/br/', type:'辅音连缀', zh:'br 连缀音', emoji:'🍞', key:'bread', keyIpa:'/bred/', keyZh:'面包', words:'bread, brown, bring, brush', example:'I eat bread.', exampleZh:'我吃面包。' },
+  { unit:'cl', ipa:'/kl/', type:'辅音连缀', zh:'cl 连缀音', emoji:'🕐', key:'clock', keyIpa:'/klɒk/', keyZh:'时钟', words:'clock, clap, clean, close', example:'The clock is round.', exampleZh:'时钟是圆的。' },
+  { unit:'cr', ipa:'/kr/', type:'辅音连缀', zh:'cr 连缀音', emoji:'🦀', key:'crab', keyIpa:'/kræb/', keyZh:'螃蟹', words:'crab, cray, cry, cross', example:'The crab is red.', exampleZh:'螃蟹是红色的。' },
+  { unit:'dr', ipa:'/dr/', type:'辅音连缀', zh:'dr 连缀音', emoji:'🥁', key:'drum', keyIpa:'/drʌm/', keyZh:'鼓', words:'drum, dry, draw, dress', example:'I play the drum.', exampleZh:'我打鼓。' },
+  { unit:'fl', ipa:'/fl/', type:'辅音连缀', zh:'fl 连缀音', emoji:'🚩', key:'flag', keyIpa:'/flæɡ/', keyZh:'旗子', words:'flag, fly, floor, flower', example:'The flag is red.', exampleZh:'旗子是红色的。' },
+  { unit:'fr', ipa:'/fr/', type:'辅音连缀', zh:'fr 连缀音', emoji:'🐸', key:'frog', keyIpa:'/frɒɡ/', keyZh:'青蛙', words:'frog, free, from, fresh', example:'The frog can jump.', exampleZh:'青蛙会跳。' },
+  { unit:'gl', ipa:'/gl/', type:'辅音连缀', zh:'gl 连缀音', emoji:'🥛', key:'glass', keyIpa:'/ɡlæs/', keyZh:'玻璃杯', words:'glass, glad, glue, glow', example:'The glass is full.', exampleZh:'杯子满了。' },
+  { unit:'gr', ipa:'/gr/', type:'辅音连缀', zh:'gr 连缀音', emoji:'🌱', key:'grass', keyIpa:'/ɡræs/', keyZh:'草', words:'grass, green, grow, great', example:'The grass is green.', exampleZh:'草是绿色的。' },
+  { unit:'pl', ipa:'/pl/', type:'辅音连缀', zh:'pl 连缀音', emoji:'✈️', key:'plane', keyIpa:'/pleɪn/', keyZh:'飞机', words:'plane, play, plant, please', example:'The plane can fly.', exampleZh:'飞机会飞。' },
+  { unit:'pr', ipa:'/pr/', type:'辅音连缀', zh:'pr 连缀音', emoji:'🏆', key:'prize', keyIpa:'/praɪz/', keyZh:'奖品', words:'prize, print, proud, press', example:'I win a prize.', exampleZh:'我赢得了奖品。' },
+  { unit:'sl', ipa:'/sl/', type:'辅音连缀', zh:'sl 连缀音', emoji:'🛷', key:'sled', keyIpa:'/sled/', keyZh:'雪橇', words:'sled, sleep, slow, slide', example:'I ride a sled.', exampleZh:'我坐雪橇。' },
+  { unit:'sm', ipa:'/sm/', type:'辅音连缀', zh:'sm 连缀音', emoji:'😊', key:'smile', keyIpa:'/smaɪl/', keyZh:'微笑', words:'smile, small, smell, smart', example:'I like your smile.', exampleZh:'我喜欢你的微笑。' },
+  { unit:'sn', ipa:'/sn/', type:'辅音连缀', zh:'sn 连缀音', emoji:'🐍', key:'snake', keyIpa:'/sneɪk/', keyZh:'蛇', words:'snake, snow, snack, snail', example:'The snake is long.', exampleZh:'蛇很长。' },
+  { unit:'sp', ipa:'/sp/', type:'辅音连缀', zh:'sp 连缀音', emoji:'🥄', key:'spoon', keyIpa:'/spuːn/', keyZh:'勺子', words:'spoon, spin, sport, space', example:'I use a spoon.', exampleZh:'我用勺子。' },
+  { unit:'st', ipa:'/st/', type:'辅音连缀', zh:'st 连缀音', emoji:'⭐', key:'star', keyIpa:'/stɑːr/', keyZh:'星星', words:'star, stop, stand, stone', example:'The star is bright.', exampleZh:'星星很亮。' },
+  { unit:'sw', ipa:'/sw/', type:'辅音连缀', zh:'sw 连缀音', emoji:'🏊', key:'swim', keyIpa:'/swɪm/', keyZh:'游泳', words:'swim, sweet, swing, swan', example:'I can swim.', exampleZh:'我会游泳。' },
+  { unit:'tr', ipa:'/tr/', type:'辅音连缀', zh:'tr 连缀音', emoji:'🌳', key:'tree', keyIpa:'/triː/', keyZh:'树', words:'tree, train, try, trip', example:'The tree is tall.', exampleZh:'树很高。' },
+  // L 结尾连缀
+  { unit:'ld', ipa:'/ld/', type:'辅音连缀', zh:'ld 连缀音', hint:'l 发 哦 的音', emoji:'🥶', key:'cold', keyIpa:'/koʊld/', keyZh:'冷', words:'cold, old, gold, hold', example:'It is very cold.', exampleZh:'天气很冷。' },
+  { unit:'lk', ipa:'/lk/', type:'辅音连缀', zh:'lk 连缀音', hint:'l 发 哦 的音', emoji:'🥛', key:'milk', keyIpa:'/mɪlk/', keyZh:'牛奶', words:'milk, walk, talk, chalk', example:'I drink milk.', exampleZh:'我喝牛奶。' },
+  { unit:'lp', ipa:'/lp/', type:'辅音连缀', zh:'lp 连缀音', hint:'l 发 哦 的音', emoji:'🆘', key:'help', keyIpa:'/help/', keyZh:'帮助', words:'help, gulp, yelp, scalp', example:'Please help me.', exampleZh:'请帮助我。' },
+  { unit:'lt', ipa:'/lt/', type:'辅音连缀', zh:'lt 连缀音', hint:'l 发 哦 的音', emoji:'🔔', key:'belt', keyIpa:'/belt/', keyZh:'腰带', words:'belt, melt, salt, quilt', example:'I wear a belt.', exampleZh:'我系着腰带。' },
+  { unit:'lf', ipa:'/lf/', type:'辅音连缀', zh:'lf 连缀音', hint:'l 发 哦 的音', emoji:'📚', key:'shelf', keyIpa:'/ʃelf/', keyZh:'书架', words:'shelf, self, wolf, golf', example:'The shelf is full.', exampleZh:'书架满了。' }
 ];
 
 // IPA → TTS 字母音素发音映射（用于小喇叭按钮，直接读字母本身的音而非单词）
@@ -789,7 +795,8 @@ const SOUND_MAP = {
   '/dr/':'druh','/fl/':'fluh','/fr/':'fruh','/gl/':'gluh',
   '/gr/':'gruh','/pl/':'pluh','/pr/':'pruh','/sl/':'sluh',
   '/sm/':'smuh','/sn/':'snuh','/sp/':'spuh','/st/':'stuh',
-  '/sw/':'swuh','/tr/':'truh'
+  '/sw/':'swuh','/tr/':'truh',
+  '/ld/':'old','/lk/':'ulk','/lp/':'ulp','/lt/':'ult','/lf/':'ulf'
 };
 
 const CATS = ['全部', ...new Set(PHONICS.map(p => p.type))];
@@ -933,10 +940,10 @@ function openModal(idx) {
   document.getElementById('mEmoji').textContent = p.emoji;
   document.getElementById('mWord').textContent = p.unit;
   document.getElementById('mPhonetic').textContent = p.ipa;
-  document.getElementById('mMean').textContent = p.zh;
+  document.getElementById('mMean').textContent = p.zh + (p.hint ? ' · ' + p.hint : '');
   document.getElementById('mKeyEmoji').textContent = p.emoji;
   document.getElementById('mKeyWord').innerHTML = highlightKey(p.key, p.unit);
-  document.getElementById('mKeyZh').textContent = p.keyZh;
+  document.getElementById('mKeyZh').textContent = p.keyZh + (p.keyIpa ? ' ' + p.keyIpa : '');
   document.getElementById('mWords').innerHTML = '例词：' + p.words.split(',').map(w => `<span>${w.trim()}</span>`).join('');
   document.getElementById('mExEn').textContent = p.example || '';
   document.getElementById('mExZh').textContent = p.exampleZh || '';
