@@ -1046,7 +1046,6 @@ body {
     <h1>🍎 汉字乐园</h1>
     <input class="search-box" id="sb" placeholder="🔍 搜索..." oninput="doFilter()">
      <button class="cat" id="btnDiff" onclick="toggleDiffOnly()">🔄 全部</button>
-    <button class="cat" onclick="setGistConfig()">⚙️ 配置</button>
   </div>
   <div class="stats" id="stats"></div>
   <div class="daily-goal" id="dailyGoal"></div>
@@ -1088,8 +1087,6 @@ for(const d of RAW){if(!seen.has(d.s)){seen.add(d.s);CHARS.push(d);}}
 const DEFAULT_LEARNED = new Set(RAW.filter(d=>d.L).map(d=>d.s));
 
 let curCat='全部', learned=new Set(), selIdx=null, sq='', showDiffOnly=false;
-let gistToken = localStorage.getItem('gistToken') || '';
-let gistId = localStorage.getItem('gistId') || '';
 
 const DB_NAME = 'ChineseCharDB';
 const DB_VERSION = 1;
@@ -1183,7 +1180,6 @@ function importData(event) {
       if (data.learned && Array.isArray(data.learned)) {
         learned = new Set(data.learned);
         await saveLearned(learned);
-        if (gistToken) await syncToGist();
         renderStats();
         renderGrid();
         alert('导入成功！已导入 ' + data.learned.length + ' 个已学汉字');
@@ -1195,129 +1191,6 @@ function importData(event) {
     }
   };
   reader.readAsText(file);
-}
-
-function setGistConfig() {
-  const token = prompt('请输入 GitHub Personal Access Token:\n\n获取方式：https://github.com/settings/tokens\n需要勾选 gist 权限', gistToken);
-  if (token === null) return;
-  
-  if (token.trim()) {
-    gistToken = token.trim();
-    localStorage.setItem('gistToken', gistToken);
-    
-    const existingGistId = prompt('请输入已有的 Gist ID（可选，留空则创建新Gist）:', gistId);
-    if (existingGistId !== null) {
-      if (existingGistId.trim()) {
-        gistId = existingGistId.trim();
-        localStorage.setItem('gistId', gistId);
-      } else {
-        gistId = '';
-        localStorage.removeItem('gistId');
-      }
-    }
-    
-    alert('配置已保存！下次同步时将使用 GitHub Gist');
-  } else {
-    gistToken = '';
-    localStorage.removeItem('gistToken');
-    alert('已清除 GitHub Gist 配置');
-  }
-}
-
-async function syncToGist() {
-  if (!gistToken) {
-    alert('请先配置 GitHub Token');
-    return;
-  }
-  
-  const data = {
-    learned: [...learned],
-    exportTime: new Date().toISOString(),
-    version: '1.0'
-  };
-  
-  const gistData = {
-    description: '汉字乐园 - 学习进度备份',
-    public: false,
-    files: {
-      'chinese_chars_progress.json': {
-        content: JSON.stringify(data, null, 2)
-      }
-    }
-  };
-  
-  try {
-    const url = gistId 
-      ? `https://api.github.com/gists/${gistId}`
-      : 'https://api.github.com/gists';
-    
-    const method = gistId ? 'PATCH' : 'POST';
-    
-    const response = await fetch(url, {
-      method,
-      headers: {
-        'Authorization': `token ${gistToken}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(gistData)
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-    }
-    
-    const result = await response.json();
-    if (!gistId) {
-      gistId = result.id;
-      localStorage.setItem('gistId', gistId);
-    }
-    
-  } catch (e) {
-    alert(`❌ 同步失败：${e.message}`);
-  }
-}
-
-async function syncFromGist() {
-  if (!gistToken) {
-    alert('请先配置 GitHub Token');
-    return;
-  }
-  
-  if (!gistId) {
-    alert('请先配置 Gist ID 或先同步一次创建 Gist');
-    return;
-  }
-  
-  try {
-    const response = await fetch(`https://api.github.com/gists/${gistId}`, {
-      headers: {
-        'Authorization': `token ${gistToken}`
-      }
-    });
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
-    }
-    
-    const gist = await response.json();
-    const content = gist.files['chinese_chars_progress.json']?.content;
-    
-    if (!content) {
-      throw new Error('Gist 中未找到学习进度文件');
-    }
-    
-    const data = JSON.parse(content);
-    if (data.learned && Array.isArray(data.learned)) {
-      learned = new Set(data.learned);
-      await saveLearned(learned);
-      renderStats();
-      renderGrid();
-    } else {
-      alert('Gist 中的数据格式无效');
-    }
-  } catch (e) {
-    alert(`❌ 同步失败：${e.message}`);
-  }
 }
 
 const DAILY_GOAL = 10;
@@ -1698,7 +1571,6 @@ async function toggleL(){
     saveDailyProgress(progress.count + 1);
   }
   await saveLearned(learned);
-  if(gistToken) await syncToGist();
   renderStats();
   renderDailyGoal();
   renderCats();
