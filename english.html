@@ -1164,7 +1164,7 @@ const ENGLISH_WORDS = [
   { word: 'or', phonetic: '/ɔːr/', meaning: '或者', exampleEn: 'Tea or coffee.', exampleZh: '茶或者咖啡。', category: '连词' },
   { word: 'not', phonetic: '/nɒt/', meaning: '不', exampleEn: 'I am not happy.', exampleZh: '我不开心。', category: '副词' },
   { word: 'no', phonetic: '/noʊ/', meaning: '不', exampleEn: 'No, thank you.', exampleZh: '不，谢谢。', category: '副词' },
-  { word: 'yes', phonetic: '/jes/', meaning: '是', exampleEn: 'Yes, please.', exampleZh: '是的，请。', category: '副词' },
+  { word: 'yes', phonetic: '/jes/', meaning: '是', exampleEn: 'Yes, please.', exampleZh: '是的，请。', category: '副词',L:1 },
   { word: 'please', phonetic: '/pliːz/', meaning: '请', exampleEn: 'Please help me.', exampleZh: '请帮助我。', category: '副词' },
   { word: 'thank', phonetic: '/θæŋk/', meaning: '感谢', exampleEn: 'Thank you.', exampleZh: '谢谢。', category: '动词' },
   { word: 'sorry', phonetic: '/ˈsɒri/', meaning: '抱歉', exampleEn: 'I am sorry.', exampleZh: '我很抱歉。', category: '形容词' },
@@ -1246,7 +1246,7 @@ const CATS = ['全部', '已学', '需复习', ...new Set(ENGLISH_WORDS.map(w =>
 // 默认已学会单词：通过 L:1 标识维护，每次加载强制并入且不可取消
 const DEFAULT_LEARNED = new Set(ENGLISH_WORDS.filter(w => w.L).map(w => w.word));
 
-let curCat = '全部', learned = new Set(), selIdx = null, sq = '';
+let curCat = '全部', learned = new Set(), selIdx = null, sq = '', curList = [];
 
 const DB_NAME = 'EnglishWordDB';
 const DB_VERSION = 1;
@@ -1503,11 +1503,12 @@ function getEmoji(meaning, category) {
 
 function renderGrid() {
   const list = getList();
+  curList = list;
   if (!list.length) { document.getElementById('grid').innerHTML = `<div class="empty">没有找到「${sq}」相关单词</div>`; return; }
-  document.getElementById('grid').innerHTML = list.map(w => {
+  document.getElementById('grid').innerHTML = list.map((w, i) => {
     const isL = learned.has(w.word);
     const emoji = getEmoji(w.meaning, w.category);
-    return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${ENGLISH_WORDS.indexOf(w)})">
+    return `<div class="card${isL ? ' done' : ''}" onclick="openModal(${i})">
       ${isL ? '<span class="done-badge">✓ 学会</span>' : ''}
       ${w.r ? '<span style="position:absolute;top:8px;left:8px;background:#F59E0B;color:#fff;font-size:11px;padding:2px 6px;border-radius:8px;font-weight:bold;">🔁 需复习</span>' : ''}
       <div class="card-emoji">${emoji}</div>
@@ -1520,7 +1521,7 @@ function renderGrid() {
 
 function openModal(idx) {
   selIdx = idx;
-  const w = ENGLISH_WORDS[idx];
+  const w = curList[idx];
   document.getElementById('mCat').innerHTML = `<span class="modal-cat-badge">${w.category}</span>`;
   document.getElementById('mEmoji').textContent = getEmoji(w.meaning, w.category);
   document.getElementById('mWord').textContent = w.word;
@@ -1534,9 +1535,9 @@ function openModal(idx) {
   btn.textContent = isDefault ? '✅ 基础常用词' : (isL ? '✅ 已学会' : '⭐ 学会了');
   btn.className = 'btn-learn' + (isL ? ' done' : '');
   btn.title = isDefault ? '基础常用词，默认已学会，不可取消' : '';
-  document.getElementById('mCounter').textContent = `${idx+1} / ${ENGLISH_WORDS.length}`;
+  document.getElementById('mCounter').textContent = `${idx+1} / ${curList.length}`;
   document.querySelector('.btn-nav-prev').style.opacity = idx === 0 ? '0.3' : '1';
-  document.querySelector('.btn-nav-next').style.opacity = idx === ENGLISH_WORDS.length - 1 ? '0.3' : '1';
+  document.querySelector('.btn-nav-next').style.opacity = idx === curList.length - 1 ? '0.3' : '1';
   document.getElementById('ov').style.display = 'flex';
 }
 
@@ -1545,7 +1546,7 @@ function prevItem() {
 }
 
 function nextItem() {
-  if (selIdx < ENGLISH_WORDS.length - 1) openModal(selIdx + 1);
+  if (selIdx < curList.length - 1) openModal(selIdx + 1);
 }
 
 document.addEventListener('keydown', function(e) {
@@ -1560,7 +1561,7 @@ function closeOv(e) { if (!e || e.target.id === 'ov') { document.getElementById(
 
 async function toggleL() {
   if (selIdx === null) return;
-  const w = ENGLISH_WORDS[selIdx];
+  const w = curList[selIdx];
   const wasLearned = learned.has(w.word);
   if (wasLearned) {
     // 默认已学会（L:1）的单词不允许取消，始终保持已学状态
@@ -1594,7 +1595,7 @@ function getEnVoice() {
 
 function speak() {
   if (selIdx === null) return;
-  const w = ENGLISH_WORDS[selIdx];
+  const w = curList[selIdx];
   if ('speechSynthesis' in window) {
     try {
       speechSynthesis.cancel();
@@ -1615,7 +1616,7 @@ function speak() {
 
 function speakEx() {
   if (selIdx === null) return;
-  const w = ENGLISH_WORDS[selIdx];
+  const w = curList[selIdx];
   if ('speechSynthesis' in window) {
     try {
       speechSynthesis.cancel();

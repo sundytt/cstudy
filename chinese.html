@@ -950,7 +950,7 @@ for(const d of RAW){if(!seen.has(d.s)){seen.add(d.s);CHARS.push(d);}}
 // 默认已学会汉字：在 raw_data.js 中通过 L:1 标识维护，每次加载强制并入且不可取消
 const DEFAULT_LEARNED = new Set(RAW.filter(d=>d.L).map(d=>d.s));
 
-let curCat='全部', learned=new Set(), selIdx=null, sq='', showDiffOnly=false;
+let curCat='全部', learned=new Set(), selIdx=null, sq='', showDiffOnly=false, curList=[];
 
 const DB_NAME = 'ChineseCharDB';
 const DB_VERSION = 1;
@@ -1284,12 +1284,13 @@ function getEmoji(meaning,category){
 
 function renderGrid(){
   const list=getList();
+  curList=list;
   if(!list.length){document.getElementById('grid').innerHTML=`<div class="empty">没有找到「${sq}」相关汉字</div>`;return;}
-  document.getElementById('grid').innerHTML=list.map(ch=>{
+  document.getElementById('grid').innerHTML=list.map((ch,i)=>{
     const isL=learned.has(ch.s);
     const same=ch.s===ch.t;
     const emoji=getEmoji(ch.m,ch.c);
-    return `<div class="card${isL?' done':''}" onclick="openModal(${CHARS.indexOf(ch)})">
+    return `<div class="card${isL?' done':''}" onclick="openModal(${i})">
       ${isL?'<span class="done-badge">✓ 学会</span>':''}
       ${ch.r?'<span style="position:absolute;top:6px;left:6px;background:#F59E0B;color:#fff;font-size:11px;padding:2px 6px;border-radius:8px;font-weight:bold;">🔁 需复习</span>':''}
       <div class="card-emoji">${emoji}</div>
@@ -1327,7 +1328,7 @@ function renderRadicalInfo(chars, clazz) {
 
 function openModal(idx){
   selIdx=idx;
-  const ch=CHARS[idx];
+  const ch=curList[idx];
   const same=ch.s===ch.t;
   document.getElementById('mCat').innerHTML=`<span class="modal-cat-badge">${ch.c}</span>`;
   document.getElementById('mEmoji').textContent=getEmoji(ch.m,ch.c);
@@ -1356,9 +1357,9 @@ function openModal(idx){
   btn.textContent=isDefault?'✅ 基础常用字':(isL?'✅ 已学会':'⭐ 学会了');
   btn.className='btn-learn'+(isL?' done':'');
   btn.title=isDefault?'基础常用字，默认已学会，不可取消':'';
-  document.getElementById('mCounter').textContent=`${idx+1} / ${CHARS.length}`;
+  document.getElementById('mCounter').textContent=`${idx+1} / ${curList.length}`;
   document.querySelector('.btn-nav-prev').style.opacity=idx===0?'0.3':'1';
-  document.querySelector('.btn-nav-next').style.opacity=idx===CHARS.length-1?'0.3':'1';
+  document.querySelector('.btn-nav-next').style.opacity=idx===curList.length-1?'0.3':'1';
   document.getElementById('ov').style.display='flex';
 }
 
@@ -1367,7 +1368,7 @@ function prevItem(){
 }
 
 function nextItem(){
-  if(selIdx<CHARS.length-1)openModal(selIdx+1);
+  if(selIdx<curList.length-1)openModal(selIdx+1);
 }
 
 document.addEventListener('keydown',function(e){
@@ -1382,7 +1383,7 @@ function closeOv(e){if(!e||e.target.id==='ov'){document.getElementById('ov').sty
 
 async function toggleL(){
   if(selIdx===null)return;
-  const ch=CHARS[selIdx];
+  const ch=curList[selIdx];
   const wasLearned = learned.has(ch.s);
   if(wasLearned){
     // 默认已学会（L:1）的汉字不允许取消，始终保持已学状态
@@ -1436,7 +1437,7 @@ function getVoice(lang){
 
 function speak(lang){
   if(selIdx===null)return;
-  const ch=CHARS[selIdx];
+  const ch=curList[selIdx];
   if('speechSynthesis' in window){
     try{
       speechSynthesis.cancel();
@@ -1471,7 +1472,7 @@ function speak(lang){
 
 function speakEx(lang){
   if(selIdx===null)return;
-  const ch=CHARS[selIdx];
+  const ch=curList[selIdx];
   if('speechSynthesis' in window){
     try{
       speechSynthesis.cancel();
