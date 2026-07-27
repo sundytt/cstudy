@@ -1407,20 +1407,26 @@ function getVoice(lang){
   const voices=speechSynthesis.getVoices();
   const targetLang=lang==='yue'?'zh-HK':'zh-CN';
   
+  // 按自然度排序的语音优先级：系统原生语音 > 在线高质量语音 > 通用降级
   const priorityPatterns = [
+    /Tingting/,        // macOS 系统中文女声，最自然
+    /Mei-Jia/,         // macOS 台湾女声
+    /Sinji/,           // macOS 粤语女声
+    /Microsoft Xiaoxiao/, // Windows 11 自然女声
+    /Microsoft Yunyang/,  // Windows 11 自然男声
     /Microsoft Yaoyao/,
+    /Microsoft Huihui/,
+    /Microsoft Kangkang/,
     /Google 普通话/,
     /Google Chinese/,
-    /Microsoft Xiaoxiao/,
-    /Microsoft Huihui/,
-    /Tingting/,
-    /Sinji/,
     /Liangliang/,
     /Meimei/
   ];
   
+  // 优先精确匹配语言标签
   let voice = voices.find(v => v.lang === targetLang);
   
+  // 按优先级匹配
   if (!voice) {
     for (const pattern of priorityPatterns) {
       voice = voices.find(v => v.name.match(pattern));
@@ -1428,8 +1434,9 @@ function getVoice(lang){
     }
   }
   
+  // 降级：匹配含 zh 的语言
+  if (!voice) voice = voices.find(v => v.lang.startsWith('zh'));
   if (!voice) voice = voices.find(v => v.lang.includes('zh'));
-  if (!voice) voice = voices.find(v => v.lang === 'zh');
   if (!voice && voices.length > 0) voice = voices[0];
   
   return voice;
@@ -1445,24 +1452,15 @@ function speak(lang){
       setTimeout(() => {
         const u=new SpeechSynthesisUtterance(ch.s);
         u.lang=lang==='yue'?'zh-HK':'zh-CN';
-        u.rate=0.85;
+        u.rate=0.9;
         u.pitch=1.0;
         u.volume=1.0;
-        u.range = 0;
         
         const voice=getVoice(lang);
         if(voice){
           u.voice=voice;
           u.voiceURI=voice.voiceURI;
         }
-        
-        u.onend = () => {
-          speechSynthesis.cancel();
-        };
-        
-        u.onerror = (e) => {
-          console.log('Speech error:', e);
-        };
         
         speechSynthesis.speak(u);
       }, 50);
@@ -1480,24 +1478,15 @@ function speakEx(lang){
       setTimeout(() => {
         const u=new SpeechSynthesisUtterance(ch.e);
         u.lang=lang==='yue'?'zh-HK':'zh-CN';
-        u.rate=0.85;
+        u.rate=0.95;
         u.pitch=1.0;
         u.volume=1.0;
-        u.range = 0;
         
         const voice=getVoice(lang);
         if(voice){
           u.voice=voice;
           u.voiceURI=voice.voiceURI;
         }
-        
-        u.onend = () => {
-          speechSynthesis.cancel();
-        };
-        
-        u.onerror = (e) => {
-          console.log('Speech error:', e);
-        };
         
         speechSynthesis.speak(u);
       }, 50);
