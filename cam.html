@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小变色龙的奇妙变装秀 - 故事互动绘本</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --chameleon-body: #34d399;
+            --chameleon-belly: #a7f3d0;
+            --chameleon-stripe: #059669;
+            --chameleon-crest: #10b981;
+            --scene-bg-from: #d1fae5;
+            --scene-bg-to: #6ee7b7;
+            --branch-color: #854d0e;
+        }
+
+        body {
+            font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+        }
+
+        .fun-title {
+            font-family: 'ZCOOL KuaiLe', 'PingFang SC', cursive, sans-serif;
+        }
+
+        /* Smooth color transitions for the Chameleon SVG */
+        .cham-body {
+            fill: var(--chameleon-body);
+            transition: fill 0.85s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+        }
+        .cham-belly {
+            fill: var(--chameleon-belly);
+            transition: fill 0.85s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+        }
+        .cham-stripe {
+            fill: var(--chameleon-stripe);
+            transition: fill 0.85s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+        }
+        .cham-crest {
+            fill: var(--chameleon-crest);
+            transition: fill 0.85s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.6s ease;
+        }
+
+        /* Rainbow Mode Animation */
+        @keyframes rainbowCycle {
+            0% { filter: hue-rotate(0deg) saturate(1.3); }
+            50% { filter: hue-rotate(180deg) saturate(1.5); }
+            100% { filter: hue-rotate(360deg) saturate(1.3); }
+        }
+
+        .rainbow-active #chameleon-group {
+            animation: rainbowCycle 3.5s linear infinite;
+        }
+
+        /* Breathing & Idle Animation */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1) translateY(0px); }
+            50% { transform: scale(1.025, 1.04) translateY(-3px); }
+        }
+        .chameleon-breathe {
+            animation: breathe 3.2s ease-in-out infinite;
+            transform-origin: 350px 260px;
+        }
+
+        /* Happy Bounce Animation */
+        @keyframes happyBounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            25% { transform: translateY(-28px) scale(1.06) rotate(-3deg); }
+            50% { transform: translateY(0) scale(0.96, 1.05); }
+            75% { transform: translateY(-15px) scale(1.03) rotate(3deg); }
+        }
+        .bounce-anim {
+            animation: happyBounce 0.75s ease-in-out !important;
+        }
+
+        /* Tail Coiling Animation */
+        @keyframes tailSway {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(8deg) scale(0.97); }
+        }
+        .tail-group {
+            transform-origin: 230px 265px;
+            animation: tailSway 4s ease-in-out infinite;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.6s ease;
+        }
+        .tail-curled {
+            transform: rotate(22deg) scale(0.88) !important;
+        }
+
+        /* Camouflage / Peekaboo Mode (Includes Body, Limbs, Head & Spiral Tail) */
+        .camouflage-mode #chameleon-master .cham-body:not(#chameleon-eyelid),
+        .camouflage-mode #chameleon-master .cham-belly,
+        .camouflage-mode #chameleon-master .cham-stripe,
+        .camouflage-mode #chameleon-master .cham-crest,
+        .camouflage-mode #chameleon-master .cham-limb,
+        .camouflage-mode #chameleon-tail,
+        .camouflage-mode #chameleon-cheek,
+        .camouflage-mode #chameleon-mouth {
+            opacity: 0.14 !important;
+            filter: blur(0.5px);
+        }
+        .camouflage-mode #chameleon-tail path {
+            stroke-dasharray: 10 10;
+        }
+        .camouflage-mode #chameleon-eye-group {
+            transform: scale(1.18);
+            transform-origin: 435px 195px;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Crazy Eye Roll Animation */
+        @keyframes crazyEyes {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(8px, -6px); }
+            40% { transform: translate(-8px, -6px); }
+            60% { transform: translate(-8px, 6px); }
+            80% { transform: translate(8px, 6px); }
+            100% { transform: translate(0, 0); }
+        }
+        .rolling-eyes {
+            animation: crazyEyes 0.7s ease-in-out 2;
+        }
+
+        /* Bug Flying Animation */
+        @keyframes bugFloat {
+            0%, 100% { transform: translate(0px, 0px) rotate(-5deg); }
+            25% { transform: translate(-18px, -22px) rotate(8deg); }
+            50% { transform: translate(12px, -35px) rotate(-4deg); }
+            75% { transform: translate(22px, -12px) rotate(10deg); }
+        }
+        .bug-floating {
+            animation: bugFloat 4.5s ease-in-out infinite;
+            cursor: pointer;
+        }
+
+        /* Floating Background Particles */
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.75; }
+            50% { transform: translateY(-22px) rotate(12deg); opacity: 1; }
+        }
+        .particle-float {
+            animation: floatParticle 4s ease-in-out infinite;
+        }
+
+        /* Kid-friendly 3D Tactile Buttons */
+        .kid-btn {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 6px 0 rgba(0,0,0,0.15), 0 8px 15px rgba(0,0,0,0.08);
+        }
+        .kid-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 rgba(0,0,0,0.15), 0 12px 20px rgba(0,0,0,0.12);
+        }
+        .kid-btn:active, .kid-btn.active-scene {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.15), 0 3px 6px rgba(0,0,0,0.08);
+        }
+
+        /* Custom Scrollbar for Story Text if needed */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.15);
+            border-radius: 9999px;
+        }
+
+        /* Ruby Pinyin Annotations Styling & Default Hidden State */
+        ruby {
+            ruby-align: center;
+            margin: 0 1px;
+        }
+        rt {
+            font-size: 0.58em;
+            color: #b45309;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            user-select: none;
+        }
+        .hide-pinyin rt {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-amber-50 min-h-screen flex flex-col justify-between p-2 sm:p-4 md:p-6 transition-colors duration-700" id="app-body">
+
+    <!-- Top Navigation & Story Controls Bar -->
+    <header class="max-w-5xl w-full mx-auto flex flex-wrap items-center justify-between gap-2 mb-2 sm:mb-3 z-20">
+        <div class="flex items-center gap-2 sm:gap-3 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full shadow-md border-2 border-amber-200">
+            <span class="text-2xl sm:text-3xl animate-bounce">🦎</span>
+            <div>
+                <h1 class="fun-title text-lg sm:text-2xl text-emerald-800 tracking-wide">小变色龙奇奇的奇妙变装秀</h1>
+            </div>
+        </div>
+
+        <!-- Utility Toggles for Speaker / Daughter -->
+        <div class="flex items-center gap-2">
+            <button id="btn-toggle-pinyin" onclick="togglePinyin()" class="kid-btn bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1 border-2 border-amber-300">
+                <span>🔤</span> <span id="pinyin-label">显示拼音</span>
+            </button>
+            <button id="btn-toggle-card" onclick="toggleStoryCard()" class="kid-btn bg-sky-100 hover:bg-sky-200 text-sky-900 font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1 border-2 border-sky-300">
+                <span>📖</span> <span id="card-label">隐藏台词卡</span>
+            </button>
+            <button id="btn-sound" onclick="toggleSound()" class="kid-btn bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold px-3 py-2 rounded-2xl text-xs sm:text-sm flex items-center gap-1 border-2 border-emerald-300">
+                <span id="sound-icon">🔊</span> <span class="hidden sm:inline" id="sound-label">音效开启</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Interactive Stage & Storybook Container -->
+    <main class="max-w-5xl w-full mx-auto flex-1 flex flex-col gap-3 justify-center">
+
+        <!-- Interactive SVG Stage Canvas -->
+        <div id="stage-container" class="relative w-full aspect-[16/10] sm:aspect-[16/9] max-h-[58vh] rounded-3xl shadow-xl border-4 sm:border-8 border-white overflow-hidden transition-all duration-1000 bg-gradient-to-b from-emerald-100 via-teal-100 to-emerald-300">
+
+            <!-- Scene Badge (Top Left) -->
+            <div class="absolute top-3 left-3 sm:top-4 sm:left-4 z-20 flex items-center gap-2 bg-white/85 backdrop-blur-md px-3.5 py-1.5 rounded-full shadow-md border border-white/60">
+                <span id="scene-badge-icon" class="text-xl sm:text-2xl">🌿</span>
+                <span id="scene-badge-title" class="fun-title text-sm sm:text-lg text-slate-800">第一幕：翠绿森林</span>
+            </div>
+
+            <!-- Interactive Hint (Top Right) -->
+            <div class="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 hidden md:flex items-center gap-1.5 bg-white/75 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold text-slate-600 shadow-sm">
+                <span>👆 点击小虫子或奇奇都有惊喜哦！</span>
+            </div>
+
+            <!-- Confetti Canvas Overlay for Finale -->
+            <canvas id="confetti-canvas" class="absolute inset-0 pointer-events-none z-30 w-full h-full"></canvas>
+
+            <!-- Master SVG Illustration -->
+            <svg id="story-svg" viewBox="0 0 800 450" class="w-full h-full object-cover select-none" preserveAspectRatio="xMidYMid slice">
+                <defs>
+                    <!-- Rainbow Gradient for Scene 5 -->
+                    <linearGradient id="rainbowGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stop-color="#ff595e" />
+                        <stop offset="20%" stop-color="#ffca3a" />
+                        <stop offset="40%" stop-color="#8ac926" />
+                        <stop offset="60%" stop-color="#1982c4" />
+                        <stop offset="80%" stop-color="#6a4c93" />
+                        <stop offset="100%" stop-color="#ff595e" />
+                    </linearGradient>
+
+                    <!-- Soft Glow Filter for Fireflies & Magic -->
+                    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+                        <feGaussianBlur stdDeviation="5" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+
+                    <!-- Drop Shadow for Chameleon -->
+                    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="125%">
+                        <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.18"/>
+                    </filter>
+                </defs>
+
+                <!-- ================= SCENE SPECIFIC BACKGROUNDS ================= -->
+
+                <!-- Sun / Moon Celestial Element -->
+                <g id="celestial-group" class="transition-all duration-1000">
+                    <!-- Sun -->
+                    <g id="bg-sun" transform="translate(110, 85)">
+                        <circle cx="0" cy="0" r="48" fill="#fde047" opacity="0.35" class="animate-pulse"/>
+                        <circle cx="0" cy="0" r="36" fill="#facc15"/>
+                    </g>
+                    <!-- Moon & Stars (Hidden unless Night Scene) -->
+                    <g id="bg-moon" transform="translate(115, 85)" opacity="0" class="transition-opacity duration-700">
+                        <circle cx="0" cy="0" r="45" fill="#fef08a" opacity="0.2" filter="url(#glow)"/>
+                        <path d="M-10,-32 A35,35 0 1,0 28,20 A28,28 0 1,1 -10,-32 Z" fill="#fef08a"/>
+                        <!-- Twinkling Stars -->
+                        <circle cx="150" cy="-30" r="3" fill="#fff" class="animate-ping" style="animation-duration: 3s"/>
+                        <circle cx="290" cy="10" r="4" fill="#fef08a" class="animate-pulse"/>
+                        <circle cx="480" cy="-25" r="3.5" fill="#fff" class="animate-pulse"/>
+                        <circle cx="600" cy="25" r="2.5" fill="#fef08a"/>
+                        <circle cx="380" cy="-40" r="2.5" fill="#fff"/>
+                    </g>
+                </g>
+
+                <!-- Rainbow Arc (Scene 5) -->
+                <g id="bg-rainbow" opacity="0" class="transition-opacity duration-1000">
+                    <path d="M 60 430 A 340 340 0 0 1 740 430" fill="none" stroke="#ff595e" stroke-width="18" opacity="0.55"/>
+                    <path d="M 78 430 A 322 322 0 0 1 722 430" fill="none" stroke="#ffca3a" stroke-width="18" opacity="0.55"/>
+                    <path d="M 96 430 A 304 304 0 0 1 704 430" fill="none" stroke="#8ac926" stroke-width="18" opacity="0.55"/>
+                    <path d="M 114 430 A 286 286 0 0 1 686 430" fill="none" stroke="#1982c4" stroke-width="18" opacity="0.55"/>
+                    <path d="M 132 430 A 268 268 0 0 1 668 430" fill="none" stroke="#6a4c93" stroke-width="18" opacity="0.55"/>
+                </g>
+
+                <!-- Soft Rolling Hills in Background -->
+                <path id="hill-back" d="M0,360 Q220,270 460,340 T800,320 L800,450 L0,450 Z" fill="#6ee7b7" opacity="0.5" class="transition-colors duration-1000"/>
+                <path id="hill-front" d="M0,390 Q180,330 410,380 T800,365 L800,450 L0,450 Z" fill="#34d399" opacity="0.6" class="transition-colors duration-1000"/>
+
+                <!-- SCENE 1 PROPS: Lush Jungle Leaves -->
+                <g id="props-forest" class="transition-opacity duration-700" opacity="1">
+                    <g class="particle-float" style="animation-delay: 0s">
+                        <path d="M60,220 Q110,170 150,230 Q100,260 60,220 Z" fill="#10b981" opacity="0.8"/>
+                        <path d="M60,220 L135,225" stroke="#047857" stroke-width="3" fill="none"/>
+                    </g>
+                    <g class="particle-float" style="animation-delay: 1.2s">
+                        <path d="M670,110 Q730,70 760,130 Q710,165 670,110 Z" fill="#34d399" opacity="0.85"/>
+                        <path d="M670,110 L745,122" stroke="#059669" stroke-width="3" fill="none"/>
+                    </g>
+                    <circle cx="220" cy="120" r="8" fill="#a7f3d0" opacity="0.7" class="particle-float"/>
+                </g>
+
+                <!-- SCENE 2 PROPS: Giant Sunflowers & Bananas -->
+                <g id="props-yellow" class="transition-opacity duration-700" opacity="0">
+                    <!-- Big Sunflower Left -->
+                    <g transform="translate(115, 290)" class="particle-float">
+                        <line x1="0" y1="0" x2="0" y2="160" stroke="#65a30d" stroke-width="12" stroke-linecap="round"/>
+                        <!-- Petals -->
+                        <g fill="#facc15">
+                            <ellipse cx="0" cy="-42" rx="14" ry="26"/>
+                            <ellipse cx="0" cy="42" rx="14" ry="26"/>
+                            <ellipse cx="-42" cy="0" rx="26" ry="14"/>
+                            <ellipse cx="42" cy="0" rx="26" ry="14"/>
+                            <ellipse cx="-30" cy="-30" rx="20" ry="20"/>
+                            <ellipse cx="30" cy="-30" rx="20" ry="20"/>
+                            <ellipse cx="-30" cy="30" rx="20" ry="20"/>
+                            <ellipse cx="30" cy="30" rx="20" ry="20"/>
+                        </g>
+                        <circle cx="0" cy="0" r="25" fill="#78350f"/>
+                        <circle cx="-7" cy="-5" r="3" fill="#fde047"/>
+                        <circle cx="7" cy="-5" r="3" fill="#fde047"/>
+                        <path d="M-8,6 Q0,14 8,6" stroke="#fde047" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    </g>
+                    <!-- Cute Hanging Bananas Right -->
+                    <g transform="translate(660, 90)" class="particle-float" style="animation-delay: 1s">
+                        <path d="M0,0 Q35,45 10,95 Q-10,55 0,0 Z" fill="#fde047" stroke="#eab308" stroke-width="3"/>
+                        <path d="M12,-4 Q55,40 32,92 Q10,55 12,-4 Z" fill="#facc15" stroke="#ca8a04" stroke-width="3"/>
+                        <rect x="-4" y="-12" width="22" height="12" rx="4" fill="#65a30d"/>
+                    </g>
+                </g>
+
+                <!-- SCENE 3 PROPS: Red Apples & Sweet Berries -->
+                <g id="props-red" class="transition-opacity duration-700" opacity="0">
+                    <!-- Hanging Apple 1 -->
+                    <g transform="translate(150, 125)" class="particle-float">
+                        <line x1="0" y1="-125" x2="0" y2="-22" stroke="#78350f" stroke-width="4"/>
+                        <circle cx="-12" cy="0" r="26" fill="#ef4444"/>
+                        <circle cx="12" cy="0" r="26" fill="#dc2626"/>
+                        <path d="M0,-22 Q18,-38 28,-22 Q14,-12 0,-22 Z" fill="#22c55e"/>
+                        <ellipse cx="-18" cy="-8" rx="5" ry="10" fill="#fca5a5" transform="rotate(-20 -18 -8)"/>
+                    </g>
+                    <!-- Hanging Apple 2 -->
+                    <g transform="translate(675, 165)" class="particle-float" style="animation-delay: 1.5s">
+                        <line x1="0" y1="-165" x2="0" y2="-20" stroke="#78350f" stroke-width="4"/>
+                        <circle cx="-10" cy="0" r="22" fill="#f43f5e"/>
+                        <circle cx="10" cy="0" r="22" fill="#e11d48"/>
+                        <path d="M0,-20 Q15,-34 24,-20 Q12,-10 0,-20 Z" fill="#22c55e"/>
+                        <ellipse cx="-14" cy="-6" rx="4" ry="8" fill="#fda4af" transform="rotate(-20 -14 -6)"/>
+                    </g>
+                    <!-- Floating Hearts/Petals -->
+                    <circle cx="260" cy="95" r="7" fill="#fda4af" class="particle-float"/>
+                    <circle cx="550" cy="110" r="9" fill="#f43f5e" opacity="0.6" class="particle-float"/>
+                </g>
+
+                <!-- SCENE 4 PROPS: Glowing Fireflies & Magic Mushrooms -->
+                <g id="props-night" class="transition-opacity duration-700" opacity="0">
+                    <!-- Glowing Fireflies -->
+                    <g class="particle-float" style="animation-duration: 3s">
+                        <circle cx="160" cy="190" r="9" fill="#fef08a" filter="url(#glow)"/>
+                        <circle cx="160" cy="190" r="4" fill="#ffffff"/>
+                    </g>
+                    <g class="particle-float" style="animation-duration: 4.2s; animation-delay: 1s">
+                        <circle cx="280" cy="110" r="8" fill="#fde047" filter="url(#glow)"/>
+                        <circle cx="280" cy="110" r="3.5" fill="#ffffff"/>
+                    </g>
+                    <g class="particle-float" style="animation-duration: 3.6s; animation-delay: 0.5s">
+                        <circle cx="670" cy="150" r="10" fill="#fef08a" filter="url(#glow)"/>
+                        <circle cx="670" cy="150" r="4" fill="#ffffff"/>
+                    </g>
+                    <g class="particle-float" style="animation-duration: 5s; animation-delay: 2s">
+                        <circle cx="540" cy="85" r="7" fill="#a78bfa" filter="url(#glow)"/>
+                        <circle cx="540" cy="85" r="3" fill="#ffffff"/>
+                    </g>
+                </g>
+
+                <!-- ================= TREE BRANCH & FOLIAGE PERCH ================= -->
+                <g id="tree-branch-group">
+                    <!-- Main Sturdy Branch -->
+                    <path d="M-20,330 Q180,305 360,315 T750,285 L820,280 L820,335 Q580,340 360,350 T-20,385 Z" fill="#78350f"/>
+                    <!-- Branch Highlight -->
+                    <path d="M-10,335 Q180,312 360,322 T750,292" stroke="#92400e" stroke-width="8" fill="none" stroke-linecap="round"/>
+
+                    <!-- Decorative Prop on Branch (Changes color with scene!) -->
+                    <g id="branch-prop" transform="translate(520, 290)">
+                        <path d="M0,0 Q35,-45 75,-15 Q45,25 0,0 Z" class="cham-body" stroke="#065f46" stroke-width="2.5"/>
+                        <path d="M5,-2 Q38,-20 65,-14" stroke="#ffffff" stroke-width="2" opacity="0.5" fill="none"/>
+                    </g>
+                    <g transform="translate(130, 325) scale(-0.85, 0.85)">
+                        <path d="M0,0 Q35,-45 75,-15 Q45,25 0,0 Z" class="cham-crest" opacity="0.9"/>
+                    </g>
+                </g>
+
+                <!-- ================= TONGUE LAYER (Behind Head, Hits Bug) ================= -->
+                <g id="tongue-layer">
+                    <line id="chameleon-tongue" x1="458" y1="222" x2="458" y2="222" stroke="#fb7185" stroke-width="12" stroke-linecap="round"/>
+                    <circle id="tongue-tip" cx="458" cy="222" r="9" fill="#f43f5e" opacity="0"/>
+                </g>
+
+                <!-- ================= THE CUTE CHAMELEON ("QIQI / 奇奇") ================= -->
+                <g id="chameleon-master" filter="url(#softShadow)" onclick="triggerHappyBounce()" class="cursor-pointer">
+                    <g id="chameleon-group" class="chameleon-breathe">
+
+                        <!-- Back Legs (Darker Shade) -->
+                        <g class="cham-limb">
+                            <path d="M295,280 L280,322 Q272,330 288,332 L308,330 L312,285 Z" class="cham-stripe"/>
+                            <path d="M395,282 L405,322 Q415,328 425,322 L412,278 Z" class="cham-stripe"/>
+                        </g>
+
+                        <!-- Coiling Spiraled Tail -->
+                        <g id="chameleon-tail" class="tail-group">
+                            <path d="M 248 272
+                                     C 185 278, 145 235, 165 188
+                                     C 180 152, 225 152, 232 185
+                                     C 238 210, 208 225, 192 208
+                                     C 182 198, 190 180, 204 185"
+                                  fill="none"
+                                  stroke="var(--chameleon-body)"
+                                  stroke-width="26"
+                                  stroke-linecap="round"
+                                  style="transition: stroke 0.85s ease;"/>
+                            <path d="M 248 272
+                                     C 185 278, 145 235, 165 188
+                                     C 180 152, 225 152, 232 185
+                                     C 238 210, 208 225, 192 208"
+                                  fill="none"
+                                  stroke="var(--chameleon-stripe)"
+                                  stroke-width="10"
+                                  stroke-dasharray="8 14"
+                                  stroke-linecap="round"
+                                  style="transition: stroke 0.85s ease;"/>
+                        </g>
+
+                        <!-- Back Ridges / Spines -->
+                        <g class="cham-crest">
+                            <circle cx="265" cy="202" r="7"/>
+                            <circle cx="283" cy="187" r="8.5"/>
+                            <circle cx="304" cy="176" r="10"/>
+                            <circle cx="328" cy="170" r="11"/>
+                            <circle cx="353" cy="169" r="10.5"/>
+                            <circle cx="377" cy="174" r="9.5"/>
+                            <circle cx="398" cy="183" r="8"/>
+                        </g>
+
+                        <!-- Chameleon Main Body (Plump & Cute) -->
+                        <path d="M 240 265
+                                 C 235 195, 295 165, 355 170
+                                 C 405 175, 435 205, 435 255
+                                 C 435 285, 395 298, 335 298
+                                 C 275 298, 242 290, 240 265 Z"
+                              class="cham-body"/>
+
+                        <!-- Soft Belly -->
+                        <path d="M 262 276
+                                 C 295 255, 375 255, 415 275
+                                 C 390 296, 290 296, 262 276 Z"
+                              class="cham-belly"/>
+
+                        <!-- Cute Decorative Stripes on Body -->
+                        <path d="M 300 176 Q 312 220 295 255 Q 280 220 285 182 Z" class="cham-stripe" opacity="0.85"/>
+                        <path d="M 342 170 Q 358 220 340 262 Q 324 220 326 172 Z" class="cham-stripe" opacity="0.85"/>
+                        <path d="M 382 177 Q 396 218 382 255 Q 368 218 368 175 Z" class="cham-stripe" opacity="0.85"/>
+
+                        <!-- Front Legs Holding the Branch -->
+                        <g class="cham-limb">
+                            <path d="M 272 278 L 262 324 Q 255 335 274 335 L 292 332 L 295 282 Z" class="cham-body"/>
+                            <ellipse cx="275" cy="332" rx="14" ry="7" class="cham-crest"/>
+
+                            <path d="M 375 278 L 385 322 Q 395 334 412 328 L 398 275 Z" class="cham-body"/>
+                            <ellipse cx="398" cy="326" rx="14" ry="7" class="cham-crest"/>
+                        </g>
+
+                        <!-- Chameleon Head & Casque (Crown) -->
+                        <g id="chameleon-head">
+                            <!-- Head Crest / Helmet -->
+                            <path d="M 385 190
+                                     C 375 135, 415 118, 442 145
+                                     C 465 168, 492 195, 488 228
+                                     C 485 255, 445 268, 405 260 Z"
+                                  class="cham-crest"/>
+
+                            <!-- Main Face Shape -->
+                            <path d="M 392 195
+                                     C 388 150, 425 140, 452 162
+                                     C 478 182, 496 205, 492 232
+                                     C 488 258, 445 268, 402 258 Z"
+                                  class="cham-body"/>
+
+                            <!-- Rosy Cheek -->
+                            <ellipse id="chameleon-cheek" cx="452" cy="230" rx="12" ry="7.5" fill="#fb7185" opacity="0.55" style="transition: opacity 0.6s ease;"/>
+
+                            <!-- Cute Happy Smile -->
+                            <path id="chameleon-mouth" d="M 452 242 Q 470 248 487 234" stroke="#064e3b" stroke-width="4" stroke-linecap="round" fill="none" style="transition: opacity 0.6s ease;"/>
+
+                            <!-- Big Expressive Turret Eye -->
+                            <g id="chameleon-eye-group">
+                                <!-- Outer Eye Ring -->
+                                <circle cx="436" cy="196" r="26" class="cham-crest" stroke="#ffffff" stroke-width="2"/>
+                                <circle cx="436" cy="196" r="20" fill="#ffffff"/>
+
+                                <!-- Movable Pupil -->
+                                <g id="chameleon-pupil">
+                                    <circle cx="440" cy="196" r="11" fill="#1e293b"/>
+                                    <!-- Eye Sparkles -->
+                                    <circle cx="444" cy="191" r="4.5" fill="#ffffff"/>
+                                    <circle cx="435" cy="201" r="2" fill="#ffffff"/>
+                                </g>
+
+                                <!-- Blinking Eyelid Overlay -->
+                                <circle id="chameleon-eyelid" cx="436" cy="196" r="21" class="cham-body" opacity="0"/>
+                            </g>
+                        </g>
+
+                        <!-- Floating Heart / Happy Icon when Fed -->
+                        <g id="happy-heart" transform="translate(445, 105) scale(0)" style="transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);">
+                            <path d="M0,12 C-12,-5 -28,5 -16,22 L0,36 L16,22 C28,5 12,-5 0,12 Z" fill="#f43f5e" stroke="#fff" stroke-width="2"/>
+                        </g>
+                    </g>
+                </g>
+
+                <!-- ================= FLYING BUG TARGET (Interactive) ================= -->
+                <g id="flying-bug-container" transform="translate(635, 175)" onclick="catchBug()">
+                    <g id="flying-bug" class="bug-floating">
+                        <!-- Glowing Aura behind bug -->
+                        <circle cx="0" cy="0" r="24" fill="#fef08a" opacity="0.45" filter="url(#glow)"/>
+                        <!-- Flapping Wings -->
+                        <ellipse cx="-6" cy="-12" rx="12" ry="7" fill="#e0f2fe" opacity="0.9" transform="rotate(-25 -6 -12)"/>
+                        <ellipse cx="6" cy="-12" rx="12" ry="7" fill="#bae6fd" opacity="0.9" transform="rotate(25 6 -12)"/>
+                        <!-- Ladybug / Beetle Body -->
+                        <ellipse cx="0" cy="0" rx="14" ry="11" fill="#f43f5e" stroke="#881337" stroke-width="2"/>
+                        <circle cx="-4" cy="-2" r="2.5" fill="#1e293b"/>
+                        <circle cx="4" cy="3" r="2.5" fill="#1e293b"/>
+                        <!-- Bug Head & Antennae -->
+                        <circle cx="-13" cy="0" r="6" fill="#1e293b"/>
+                        <path d="M-17,-3 Q-24,-12 -20,-15" stroke="#1e293b" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <path d="M-17,3 Q-24,12 -20,15" stroke="#1e293b" stroke-width="2" fill="none" stroke-linecap="round"/>
+                        <!-- Click Me Badge -->
+                        <text x="-18" y="28" font-size="12" font-weight="bold" fill="#334155" opacity="0.8">点我抓虫</text>
+                    </g>
+                </g>
+
+            </svg>
+        </div>
+
+        <!-- Story Narration & Prompt Card (For Daughter to Read or Customize) -->
+        <div id="story-card" class="bg-white/95 backdrop-blur-md rounded-3xl p-3 sm:p-5 shadow-lg border-4 border-amber-200 transition-all duration-300">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+
+                <!-- Previous Scene Button -->
+                <button onclick="prevScene()" class="kid-btn order-2 sm:order-1 bg-amber-400 hover:bg-amber-500 text-amber-950 font-extrabold px-4 py-2.5 rounded-2xl flex items-center gap-1.5 text-sm sm:text-base shrink-0">
+                    <span>⬅️</span> <span>上一页</span>
+                </button>
+
+                <!-- Story Script Display (Pinyin OFF by default via hide-pinyin class & hidden line) -->
+                <div class="order-1 sm:order-2 flex-1 text-center px-2">
+                    <p id="story-pinyin" style="display: none;" class="text-xs sm:text-sm text-amber-700/80 font-semibold tracking-wider mb-1 transition-all">
+                        dà jiā hǎo ！ wǒ shì xiǎo biàn sè lóng qí qí 。 zǒu jìn cuì lǜ de sēn lín ， wǒ jiù biàn chéng le fěi cuì lǜ ， hé dà shù wán zhuō mí cáng ！
+                    </p>
+                    <p id="story-text" class="hide-pinyin text-base sm:text-xl md:text-2xl font-extrabold text-slate-800 leading-relaxed">
+                        “大家好！我是小变色龙奇奇。走进翠绿的森林，我就变成了翡翠绿，躲在树叶间跟大家玩捉迷藏！”
+                    </p>
+                </div>
+
+                <!-- Next Scene Button -->
+                <button onclick="nextScene()" class="kid-btn order-3 bg-emerald-400 hover:bg-emerald-500 text-emerald-950 font-extrabold px-4 py-2.5 rounded-2xl flex items-center gap-1.5 text-sm sm:text-base shrink-0">
+                    <span>下一页</span> <span>➡️</span>
+                </button>
+
+            </div>
+
+            <!-- Page Progress Dots -->
+            <div class="flex justify-center items-center gap-2 mt-2.5" id="scene-dots">
+                <button onclick="setScene(0)" class="w-3 h-3 rounded-full bg-emerald-500 transition-all scale-125"></button>
+                <button onclick="setScene(1)" class="w-3 h-3 rounded-full bg-slate-300 transition-all"></button>
+                <button onclick="setScene(2)" class="w-3 h-3 rounded-full bg-slate-300 transition-all"></button>
+                <button onclick="setScene(3)" class="w-3 h-3 rounded-full bg-slate-300 transition-all"></button>
+                <button onclick="setScene(4)" class="w-3 h-3 rounded-full bg-slate-300 transition-all"></button>
+            </div>
+        </div>
+
+        <!-- Bottom Control Deck: Scene Color Buttons + Special Action Props -->
+        <div class="grid grid-cols-2 lg:grid-cols-12 gap-2.5 sm:gap-3 items-stretch">
+
+            <!-- 5 Color/Scene Transformation Buttons (Left 7 Cols on Desktop) -->
+            <div class="col-span-2 lg:col-span-7 bg-white/90 backdrop-blur-md p-2.5 sm:p-3 rounded-3xl shadow-md border-2 border-white flex flex-wrap sm:flex-nowrap justify-around items-center gap-2">
+                <button onclick="setScene(0)" id="scene-btn-0" class="kid-btn active-scene flex-1 min-w-[60px] bg-emerald-400 hover:bg-emerald-300 text-emerald-950 font-extrabold py-2.5 px-2 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 border-emerald-500">
+                    <span class="text-xl sm:text-2xl">🌿</span>
+                    <span class="text-xs sm:text-sm whitespace-nowrap">变绿色</span>
+                </button>
+
+                <button onclick="setScene(1)" id="scene-btn-1" class="kid-btn flex-1 min-w-[60px] bg-yellow-300 hover:bg-yellow-200 text-yellow-950 font-extrabold py-2.5 px-2 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 border-yellow-400">
+                    <span class="text-xl sm:text-2xl">🌻</span>
+                    <span class="text-xs sm:text-sm whitespace-nowrap">变黄色</span>
+                </button>
+
+                <button onclick="setScene(2)" id="scene-btn-2" class="kid-btn flex-1 min-w-[60px] bg-rose-400 hover:bg-rose-300 text-white font-extrabold py-2.5 px-2 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 border-rose-500">
+                    <span class="text-xl sm:text-2xl">🍎</span>
+                    <span class="text-xs sm:text-sm whitespace-nowrap">变红色</span>
+                </button>
+
+                <button onclick="setScene(3)" id="scene-btn-3" class="kid-btn flex-1 min-w-[60px] bg-indigo-500 hover:bg-indigo-400 text-white font-extrabold py-2.5 px-2 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 border-indigo-600">
+                    <span class="text-xl sm:text-2xl">🫐</span>
+                    <span class="text-xs sm:text-sm whitespace-nowrap">变星空紫</span>
+                </button>
+
+                <button onclick="setScene(4)" id="scene-btn-4" class="kid-btn flex-1 min-w-[68px] bg-gradient-to-r from-pink-400 via-amber-300 to-sky-400 text-slate-900 font-extrabold py-2.5 px-2 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 border-purple-400">
+                    <span class="text-xl sm:text-2xl">🌈</span>
+                    <span class="text-xs sm:text-sm whitespace-nowrap">彩虹魔法</span>
+                </button>
+            </div>
+
+            <!-- 3 Fun Action Prop Buttons (Right 5 Cols on Desktop) -->
+            <div class="col-span-2 lg:col-span-5 bg-white/90 backdrop-blur-md p-2.5 sm:p-3 rounded-3xl shadow-md border-2 border-white flex justify-around items-center gap-2">
+                <button onclick="catchBug()" class="kid-btn flex-1 bg-pink-400 hover:bg-pink-300 text-pink-950 font-extrabold py-2.5 px-3 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 border-pink-500">
+                    <span class="text-xl sm:text-2xl">👅</span>
+                    <span class="text-xs sm:text-sm whitespace-nowrap">吐舌抓虫</span>
+                </button>
+
+                <button onclick="rollEyesAction()" class="kid-btn flex-1 bg-cyan-300 hover:bg-cyan-200 text-cyan-950 font-extrabold py-2.5 px-3 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 border-cyan-400">
+                    <span class="text-xl sm:text-2xl">👀</span>
+                    <span class="text-xs sm:text-sm whitespace-nowrap">转眼珠子</span>
+                </button>
+
+                <button onclick="toggleCamouflage()" id="btn-camo" class="kid-btn flex-1 bg-violet-300 hover:bg-violet-200 text-violet-950 font-extrabold py-2.5 px-3 rounded-2xl flex flex-col items-center justify-center gap-1 border-2 border-violet-400">
+                    <span class="text-xl sm:text-2xl">🫣</span>
+                    <span class="text-xs sm:text-sm whitespace-nowrap" id="camo-label">隐身捉迷藏</span>
+                </button>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Interactive JavaScript Engine -->
+    <script>
+        /* ==============================================================
+         * 1. STORY SCENES DATA (Colors, Props, Narration & Pinyin)
+         * ============================================================== */
+        const SCENES = [
+            {
+                id: 0,
+                badgeIcon: '🌿',
+                badgeTitle: '第一幕：翠绿森林',
+                bodyColor: '#10b981',
+                bellyColor: '#a7f3d0',
+                stripeColor: '#047857',
+                crestColor: '#34d399',
+                stageGradient: 'from-emerald-100 via-teal-100 to-emerald-300',
+                hillBack: '#6ee7b7',
+                hillFront: '#34d399',
+                isNight: false,
+                isRainbow: false,
+                propGroup: 'props-forest',
+                pinyin: 'dà jiā hǎo ！ wǒ shì xiǎo biàn sè lóng qí qí 。 zǒu jìn cuì lǜ de sēn lín ， wǒ jiù biàn chéng le fěi cuì lǜ ， hé dà shù wán zhuō mí cáng ！',
+                text: '“大家好！我是小变色龙奇奇。走进翠绿的森林，我就变成了翡翠绿，躲在树叶间跟大家玩捉迷藏！”'
+            },
+            {
+                id: 1,
+                badgeIcon: '🌻',
+                badgeTitle: '第二幕：金黄向日葵花园',
+                bodyColor: '#facc15',
+                bellyColor: '#fef08a',
+                stripeColor: '#ca8a04',
+                crestColor: '#eab308',
+                stageGradient: 'from-amber-100 via-yellow-100 to-orange-200',
+                hillBack: '#fde047',
+                hillFront: '#facc15',
+                isNight: false,
+                isRainbow: false,
+                propGroup: 'props-yellow',
+                pinyin: 'qí qí pá呀pá ， lái dào le xiàng rì kuí huā yuán 。 kàn zhe jīn灿càn de huā duǒ hé xiāng jiāo ， tā摇shēn yī biàn ， chéng le亮jīng jīng de jīn huáng sè ！',
+                text: '奇奇爬呀爬，来到了向日葵花园。看着金灿灿的花朵和香蕉，他摇身一变，成了亮晶晶的金黄色！'
+            },
+            {
+                id: 2,
+                badgeIcon: '🍎',
+                badgeTitle: '第三幕：红彤彤的苹果树',
+                bodyColor: '#f43f5e',
+                bellyColor: '#fecdd3',
+                stripeColor: '#be123c',
+                crestColor: '#fb7185',
+                stageGradient: 'from-rose-100 via-pink-100 to-red-200',
+                hillBack: '#fda4af',
+                hillFront: '#fb7185',
+                isNight: false,
+                isRainbow: false,
+                propGroup: 'props-red',
+                pinyin: 'wā ！ shù shàng结mǎn le香tián de hóng píng guǒ ！ qí qí闻zhe果xiāng ，小liǎn和shēn zi“唰”de yī xià biàn chéng le喜qìng de大hóng sè ！',
+                text: '哇！树上结满了香甜的红苹果！奇奇闻着果香，小脸和身子“唰”地一下变成了热情的大红色！'
+            },
+            {
+                id: 3,
+                badgeIcon: '🫐',
+                badgeTitle: '第四幕：神秘萤火虫之夜',
+                bodyColor: '#6366f1',
+                bellyColor: '#c7d2fe',
+                stripeColor: '#3730a3',
+                crestColor: '#818cf8',
+                stageGradient: 'from-slate-900 via-indigo-950 to-purple-900',
+                hillBack: '#312e81',
+                hillFront: '#1e1b4b',
+                isNight: true,
+                isRainbow: false,
+                propGroup: 'props-night',
+                pinyin: 'yè幕jiàng lín le ，漫tiān星xīng闪shuò ，萤huǒ chóng提zhe小dēng lóng飞lái 。 qí qí披shàng了神mì de星空zǐ蓝sè晚lǐ fú ！',
+                text: '夜幕降临了，漫天星星闪烁，萤火虫提着小灯笼飞来。奇奇披上了神秘的星空紫蓝色晚礼服！'
+            },
+            {
+                id: 4,
+                badgeIcon: '🌈',
+                badgeTitle: '第五幕：独一无二的彩虹派对',
+                bodyColor: '#ec4899',
+                bellyColor: '#fde047',
+                stripeColor: '#06b6d4',
+                crestColor: '#8b5cf6',
+                stageGradient: 'from-pink-200 via-amber-100 to-cyan-200',
+                hillBack: '#c084fc',
+                hillFront: '#38bdf8',
+                isNight: false,
+                isRainbow: true,
+                propGroup: 'props-forest',
+                pinyin: 'yǔ过tiān晴 ，天kōng架qǐ美丽的cǎi hóng ！ qí qí开xīn极le ，把所yǒu颜sè穿zài身shàng ，做最dú yī wú èr 、闪闪fā guāng de自己 ！',
+                text: '雨过天晴，天空架起美丽的彩虹！奇奇开心极了，把所有漂亮的颜色穿在身上，做最独一无二、闪闪发光的自己！'
+            }
+        ];
+
+        let currentSceneIndex = 0;
+        let soundEnabled = true;
+        let showPinyin = false;
+        let showCard = true;
+        let isCamouflaged = false;
+        let isCatchingBug = false;
+
+        /* ==============================================================
+         * 2. SYNTHESIZED SOUND EFFECTS (Web Audio API - No External MP3s)
+         * ============================================================== */
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'magic') {
+                    // Sparkling chime arpeggio for color change
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+                        gain.gain.setValueAtTime(0.12, now + idx * 0.06);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.06 + 0.35);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.06);
+                        osc.stop(now + idx * 0.06 + 0.36);
+                    });
+                } else if (type === 'slurp') {
+                    // Funny tongue zip + pop sound
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(240, now);
+                    osc.frequency.exponentialRampToValueAtTime(880, now + 0.14);
+                    osc.frequency.exponentialRampToValueAtTime(320, now + 0.28);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.31);
+                } else if (type === 'boing') {
+                    // Cute eye roll / bounce boing
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, now);
+                    osc.frequency.
+                        linearRampToValueAtTime(620, now + 0.12);
+                    osc.frequency.linearRampToValueAtTime(420, now + 0.25);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.29);
+                } else if (type === 'rainbow') {
+                    // Grand celebratory fanfare
+                    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98];
+                    notes.forEach((freq, idx) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+                        gain.gain.setValueAtTime(0.14, now + idx * 0.07);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.5);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + idx * 0.07);
+                        osc.stop(now + idx * 0.07 + 0.52);
+                    });
+                }
+            } catch (e) {
+                // Ignore audio errors if blocked
+            }
+        }
+
+        /* ==============================================================
+         * 3. SCENE SWITCHING & CHAMELEON COLOR SYNC
+         * ============================================================== */
+        function setScene(index) {
+            currentSceneIndex = index;
+            const scene = SCENES[index];
+            const root = document.documentElement;
+
+            // 1. Update Chameleon CSS Variables
+            root.style.setProperty('--chameleon-body', scene.bodyColor);
+            root.style.setProperty('--chameleon-belly', scene.bellyColor);
+            root.style.setProperty('--chameleon-stripe', scene.stripeColor);
+            root.style.setProperty('--chameleon-crest', scene.crestColor);
+
+            // 2. Update Stage Gradient Background
+            const stage = document.getElementById('stage-container');
+            stage.className = `relative w-full aspect-[16/10] sm:aspect-[16/9] max-h-[58vh] rounded-3xl shadow-xl border-4 sm:border-8 border-white overflow-hidden transition-all duration-1000 bg-gradient-to-b ${scene.stageGradient}`;
+            if (scene.isRainbow) {
+                stage.classList.add('rainbow-active');
+                playSound('rainbow');
+                launchConfetti();
+            } else {
+                stage.classList.remove('rainbow-active');
+                playSound('magic');
+            }
+
+            if (isCamouflaged) {
+                stage.classList.add('camouflage-mode');
+            }
+
+            // 3. Update Hills & Celestial Elements
+            document.getElementById('hill-back').setAttribute('fill', scene.hillBack);
+            document.getElementById('hill-front').setAttribute('fill', scene.hillFront);
+            document.getElementById('bg-sun').style.opacity = scene.isNight ? '0' : '1';
+            document.getElementById('bg-moon').style.opacity = scene.isNight ? '1' : '0';
+            document.getElementById('bg-rainbow').style.opacity = scene.isRainbow ? '1' : '0';
+
+            // 4. Toggle Scene Props
+            ['props-forest', 'props-yellow', 'props-red', 'props-night'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.style.opacity = (id === scene.propGroup) ? '1' : '0';
+                }
+            });
+
+            // 5. Update Texts & Badges
+            document.getElementById('scene-badge-icon').textContent = scene.badgeIcon;
+            document.getElementById('scene-badge-title').textContent = scene.badgeTitle;
+            document.getElementById('story-pinyin').textContent = scene.pinyin;
+            document.getElementById('story-text').textContent = scene.text;
+
+            // 6. Update Active Buttons & Dots
+            for (let i = 0; i < SCENES.length; i++) {
+                const btn = document.getElementById(`scene-btn-${i}`);
+                if (btn) {
+                    if (i === index) btn.classList.add('active-scene', 'ring-4', 'ring-amber-400');
+                    else btn.classList.remove('active-scene', 'ring-4', 'ring-amber-400');
+                }
+            }
+
+            const dots = document.getElementById('scene-dots').children;
+            for (let i = 0; i < dots.length; i++) {
+                dots[i].className = i === index
+                    ? 'w-3.5 h-3.5 rounded-full bg-emerald-500 transition-all scale-125'
+                    : 'w-3 h-3 rounded-full bg-slate-300 hover:bg-slate-400 transition-all';
+            }
+
+            // 7. Trigger a cute tail curl & happy bounce on color change
+            const tail = document.getElementById('chameleon-tail');
+            tail.classList.add('tail-curled');
+            setTimeout(() => tail.classList.remove('tail-curled'), 650);
+            triggerHappyBounce(false);
+        }
+
+        function nextScene() {
+            const next = (currentSceneIndex + 1) % SCENES.length;
+            setScene(next);
+        }
+
+        function prevScene() {
+            const prev = (currentSceneIndex - 1 + SCENES.length) % SCENES.length;
+            setScene(prev);
+        }
+
+        /* ==============================================================
+         * 4. CHAMELEON ACTIONS: TONGUE CATCH BUG, EYE ROLL, CAMOUFLAGE
+         * ============================================================== */
+        function catchBug() {
+            if (isCatchingBug) return;
+            isCatchingBug = true;
+            playSound('slurp');
+
+            const tongue = document.getElementById('chameleon-tongue');
+            const tongueTip = document.getElementById('tongue-tip');
+            const bugContainer = document.getElementById('flying-bug-container');
+            const bug = document.getElementById('flying-bug');
+            const mouth = document.getElementById('chameleon-mouth');
+            const heart = document.getElementById('happy-heart');
+
+            // Get current bug coordinates from transform attribute
+            const match = bugContainer.getAttribute('transform').match(/translate\(([^,]+),\s*([^)]+)\)/);
+            const targetX = match ? parseFloat(match[1]) : 635;
+            const targetY = match ? parseFloat(match[2]) : 175;
+
+            // Open mouth wide
+            mouth.setAttribute('d', 'M 450 236 Q 475 262 488 232');
+            tongueTip.setAttribute('opacity', '1');
+
+            // Shoot tongue out to the bug
+            tongue.style.transition = 'all 0.14s ease-out';
+            tongueTip.style.transition = 'all 0.14s ease-out';
+            tongue.setAttribute('x2', targetX);
+            tongue.setAttribute('y2', targetY);
+            tongueTip.setAttribute('cx', targetX);
+            tongueTip.setAttribute('cy', targetY);
+
+            // Retract tongue with bug
+            setTimeout(() => {
+                bug.style.transition = 'transform 0.15s ease-in, opacity 0.15s';
+                bug.style.transform = 'scale(0.1)';
+                bug.style.opacity = '0';
+
+                tongue.setAttribute('x2', 458);
+                tongue.setAttribute('y2', 222);
+                tongueTip.setAttribute('cx', 458);
+                tongueTip.setAttribute('cy', 222);
+            }, 150);
+
+            // Finish eating & show happy heart
+            setTimeout(() => {
+                tongueTip.setAttribute('opacity', '0');
+                mouth.setAttribute('d', 'M 452 242 Q 470 248 487 234');
+                heart.style.transform = 'translate(445px, 95px) scale(1.15)';
+                triggerHappyBounce(false);
+
+                setTimeout(() => {
+                    heart.style.transform = 'translate(445px, 105px) scale(0)';
+                }, 900);
+
+                // Respawn bug at a new random spot on the right
+                setTimeout(() => {
+                    const newX = Math.floor(560 + Math.random() * 145);
+                    const newY = Math.floor(95 + Math.random() * 140);
+                    bugContainer.setAttribute('transform', `translate(${newX}, ${newY})`);
+                    bug.style.transform = 'scale(1)';
+                    bug.style.opacity = '1';
+                    isCatchingBug = false;
+                }, 650);
+            }, 320);
+        }
+
+        function rollEyesAction() {
+            playSound('boing');
+            const pupil = document.getElementById('chameleon-pupil');
+            pupil.classList.remove('rolling-eyes');
+            void pupil.offsetWidth; // Force reflow
+            pupil.classList.add('rolling-eyes');
+
+            // Also curl tail playfully
+            const tail = document.getElementById('chameleon-tail');
+            tail.classList.toggle('tail-curled');
+        }
+
+        function toggleCamouflage() {
+            isCamouflaged = !isCamouflaged;
+            const stage = document.getElementById('stage-container');
+            const label = document.getElementById('camo-label');
+            const btn = document.getElementById('btn-camo');
+
+            playSound('boing');
+            if (isCamouflaged) {
+                stage.classList.add('camouflage-mode');
+                label.textContent = '现身出来';
+                btn.classList.add('ring-4', 'ring-violet-500');
+            } else {
+                stage.classList.remove('camouflage-mode');
+                label.textContent = '隐身捉迷藏';
+                btn.classList.remove('ring-4', 'ring-violet-500');
+            }
+        }
+
+        function triggerHappyBounce(withSound = true) {
+            if (withSound) playSound('boing');
+            const master = document.getElementById('chameleon-master');
+            master.classList.remove('bounce-anim');
+            void master.offsetWidth;
+            master.classList.add('bounce-anim');
+        }
+
+        /* ==============================================================
+         * 5. NATURAL EYE BLINKING & MOUSE TRACKING
+         * ============================================================== */
+        // Blink every few seconds
+        setInterval(() => {
+            const eyelid = document.getElementById('chameleon-eyelid');
+            if (!eyelid) return;
+            eyelid.setAttribute('opacity', '1');
+            setTimeout(() => eyelid.setAttribute('opacity', '0'), 160);
+        }, 3800);
+
+        // Follow cursor/touch gently with chameleon's pupil
+        document.getElementById('stage-container').addEventListener('mousemove', (e) => {
+            const svg = document.getElementById('story-svg');
+            const rect = svg.getBoundingClientRect();
+            const relX = (e.clientX - rect.left) / rect.width - 0.55;
+            const relY = (e.clientY - rect.top) / rect.height - 0.45;
+            const moveX = Math.max(-7, Math.min(7, relX * 18));
+            const moveY = Math.max(-6, Math.min(6, relY * 16));
+            const pupil = document.getElementById('chameleon-pupil');
+            pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+
+        /* ==============================================================
+         * 6. TOP BAR UI TOGGLES (Pinyin, Story Card, Sound)
+         * ============================================================== */
+        function togglePinyin() {
+            showPinyin = !showPinyin;
+            const pinyinEl = document.getElementById('story-pinyin');
+            const textEl = document.getElementById('story-text');
+            const label = document.getElementById('pinyin-label');
+            pinyinEl.style.display = showPinyin ? 'block' : 'none';
+            textEl.classList.toggle('hide-pinyin', !showPinyin);
+            label.textContent = showPinyin ? '隐藏拼音' : '显示拼音';
+        }
+
+        function toggleStoryCard() {
+            showCard = !showCard;
+            const card = document.getElementById('story-card');
+            const label = document.getElementById('card-label');
+            card.style.display = showCard ? 'block' : 'none';
+            label.textContent = showCard ? '隐藏台词卡' : '显示台词卡';
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('sound-icon').textContent = soundEnabled ? '🔊' : '🔇';
+            document.getElementById('sound-label').textContent = soundEnabled ? '音效开启' : '音效静音';
+            if (soundEnabled) playSound('magic');
+        }
+
+        /* ==============================================================
+         * 7. CONFETTI CELEBRATION ENGINE (For Scene 5 Rainbow Finale)
+         * ============================================================== */
+        let confettiParticles = [];
+        let confettiAnimId = null;
+
+        function launchConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            const colors = ['#ff595e', '#ffca3a', '#8ac926', '#1982c4', '#6a4c93', '#f472b6'];
+            confettiParticles = Array.from({ length: 65 }, () => ({
+                x: Math.random() * canvas.width,
+                y: -20 - Math.random() * 150,
+                size: 7 + Math.random() * 7,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                speedY: 2 + Math.random() * 3.5,
+                speedX: (Math.random() - 0.5) * 2.5,
+                rotation: Math.random() * 360,
+                rotSpeed: (Math.random() - 0.5) * 8
+            }));
+
+            if (confettiAnimId) cancelAnimationFrame(confettiAnimId);
+
+            function renderConfetti() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                let active = false;
+                confettiParticles.forEach(p => {
+                    p.y += p.speedY;
+                    p.x += p.speedX;
+                    p.rotation += p.rotSpeed;
+                    if (p.y < canvas.height + 20) active = true;
+
+                    ctx.save();
+                    ctx.translate(p.x, p.y);
+                    ctx.rotate((p.rotation * Math.PI) / 180);
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.65);
+                    ctx.restore();
+                });
+
+                if (active) {
+                    confettiAnimId = requestAnimationFrame(renderConfetti);
+                } else {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+            renderConfetti();
+        }
+
+        // Keyboard Support (Left/Right Arrows for Page Turning, Space to Catch Bug)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextScene();
+            else if (e.key === 'ArrowLeft') prevScene();
+            else if (e.key === ' ') {
+                e.preventDefault();
+                catchBug();
+            }
+        });
+    </script>
+</body>
+</html>
